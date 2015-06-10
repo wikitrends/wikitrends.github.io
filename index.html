@@ -227,6 +227,28 @@ function grandPlotter(pageIDin) {
                     .scale(y)
                     .orient("left");
 
+                var zoom = d3.behavior.zoom()
+                    .x(x)
+                    .y(y)
+                    .scaleExtent([1, 10])
+                    .on("zoom", zoomed);
+
+                var line = d3.svg.line()
+                    .interpolate("linear")
+                    .x(function(d) {
+                        return x(parseDate(d.key));
+                    })
+                    .y(function(d) {
+
+                        // console.log(d[plotParameter])
+
+                        return y(d.values);
+                        // }
+                        // } else {
+                        //     return y(0)
+                        // }
+                    });
+
                 var upperline = d3.svg.line()
                     .interpolate(interpolation)
                     .x(function(d) {
@@ -257,6 +279,7 @@ function grandPlotter(pageIDin) {
                 //     });
 
                 var svg = d3.select("body").select(idname).append("svg")
+                    .call(zoom)
                     .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
                     .append("g")
@@ -274,9 +297,9 @@ function grandPlotter(pageIDin) {
                     // tempDate = tempDate.substring(0, 13);
                     // tempDate = tempDate.concat(":00:00.000Z");
 
-                    // Days
-                    tempDate = tempDate.substring(0, 10);
-                    tempDate = tempDate.concat("T00:00:01.000Z");
+                    // // Days
+                    // tempDate = tempDate.substring(0, 10);
+                    // tempDate = tempDate.concat("T00:00:01.000Z");
 
                     d.timestamp = tempDate;
 
@@ -334,7 +357,7 @@ function grandPlotter(pageIDin) {
                             console.log(tempIn)
 
                             // Adding the new Zeroed entry at relevant location so as to avoid sorting.
-                            data.splice(i-1, 1, {
+                            data.splice(i - 1, 1, {
                                 key: tempIn,
                                 values: 0
                             })
@@ -378,13 +401,33 @@ function grandPlotter(pageIDin) {
                     .style("text-anchor", "end")
                     //.text("Ratings");
 
-                svg.append("path")
-                    .datum(data)
-                    .attr("class", "upperline")
-                    .attr("d", upperline)
-                    .attr("fill", "none")
-                    .attr("stroke", "#3FC380")
-                    .attr("stroke-width", "1px")
+                svg.append("clipPath")
+                    .attr("id", "clip")
+                    .append("rect")
+                    .attr("width", width)
+                    .attr("height", height);
+
+                svg.selectAll('.line')
+                    .data(data)
+                    .enter()
+                    .append("path")
+                    .attr("class", "line")
+                    .attr("clip-path", "url(#clip)")
+                    .attr("d", line);
+
+                // svg.append("path")
+                //     .datum(data)
+                //     .attr("class", "upperline")
+                //     .attr("d", upperline)
+                //     .attr("fill", "none")
+                //     .attr("stroke", "#3FC380")
+                //     .attr("stroke-width", "1px")
+
+                function zoomed() {
+                    svg.select(".x.axis").call(xAxis);
+                    svg.select(".y.axis").call(yAxis);
+                    svg.selectAll('path.line').attr('d', line);
+                }
 
             }
 
@@ -395,7 +438,9 @@ function grandPlotter(pageIDin) {
             //console.log(dataSource)
 
         }
+
         pageEdits(linkInitial)
+
     }
     // var tip = d3.tip()
     //               //.data(csv_data)
