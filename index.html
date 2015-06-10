@@ -187,7 +187,6 @@ function grandPlotter(pageIDin) {
         };
     }
 
-
     var myLoader = loader({
         width: 960,
         height: 500,
@@ -266,23 +265,26 @@ function grandPlotter(pageIDin) {
 
             $('#one').html('');
 
+            1008
+
+            // Keep in mind: http://bl.ocks.org/mbostock/3019563
             var margin = {
                     top: 20,
                     right: 20,
                     bottom: 30,
                     left: 50
                 },
-                width = 960 - margin.left - margin.right,
-                height = 300 - margin.top - margin.bottom;
+                width = 958 - margin.left - margin.right,
+                height = 532 - margin.top - margin.bottom;
 
             //var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
             var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%S.%LZ").parse;
 
             var x = d3.time.scale()
-                .range([30, width]);
+                .range([0, width]);
 
             var y = d3.scale.linear()
-                .range([height, 0]);
+                .range([height, 150]);
 
             var xAxis = d3.svg.axis()
                 .scale(x)
@@ -290,6 +292,7 @@ function grandPlotter(pageIDin) {
 
             var yAxis = d3.svg.axis()
                 .scale(y)
+                .ticks(5)
                 .orient("left");
 
             var upperline = d3.svg.line()
@@ -298,34 +301,19 @@ function grandPlotter(pageIDin) {
                     return x(parseDate(d.key));
                 })
                 .y(function(d) {
-
-                    // console.log(d[plotParameter])
-
                     return y(d.values);
-                    // }
-                    // } else {
-                    //     return y(0)
-                    // }
                 });
 
-            // var bottomline = d3.svg.line()
-            //     .interpolate(interpolation)
-            //     .x(function(d) {
-            //         return x(d.timestamp);
-            //     })
-            //     .y(function(d) {
-            //         if (d[parameter] > 0) {
-            //             return y(0)
-            //         } else {
-            //             return y(d[parameter]);
-            //         }
-            //     });
-
-            var svg = d3.select("body").select(idname).append("svg")
+            var svgBase = d3.select("body").select(idname).append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var svgFull = svgBase.append("g")
+                // .attr("width", width + margin.left + margin.right)
+                // .attr("height", height + margin.top + margin.bottom)
+                .attr("transform", "translate(" + (-1) * margin.left + "," + (-1) * margin.top + ")");
 
             var count = 0;
 
@@ -424,16 +412,33 @@ function grandPlotter(pageIDin) {
                 return d.values;
             }));
 
-            var heightAxis = height + 10;
+            // The opacity rectangle and the image need to be above everything else. Otherwise the graphs and the text would be hidden
+            var imgs = svgFull.selectAll("image").data([0]);
+            imgs.enter()
+                .append("svg:image")
+                .attr("xlink:href", "http://upload.wikimedia.org/wikipedia/commons/0/0b/Nepal_relief_location_map.jpg")
+                // .attr("x", "0")
+                // .attr("y", "0")
+                .attr("width", width + margin.left + margin.right)
+                .attr("overflow-x", "hidden")
+                .attr("overflow-y", "hidden")
+                //.attr("width", "100%")
+                .attr("height", height + margin.top + margin.bottom);
 
-            //console.log(data)
+            var opacityRect = svgFull.append("rect")
+                .attr("width", width + margin.right + margin.left)
+                .attr("fill", "black")
+                .attr("opacity", 0.7)
+                .attr("z-index", 0)
+                .attr("height", height + margin.top + margin.bottom);
 
-            svg.append("g")
+            // .attr("transform", "translate(0," + height + ")") shifts the axis to the bottom part of the G element. 
+            svgBase.append("g")
                 .attr("class", "x axis")
-                .attr("transform", "translate(0," + heightAxis + ")")
+                .attr("transform", "translate(0," + height + ")")
                 .call(xAxis);
 
-            svg.append("g")
+            svgBase.append("g")
                 .attr("class", "y axis")
                 .call(yAxis)
                 .append("text")
@@ -443,11 +448,11 @@ function grandPlotter(pageIDin) {
                 .style("text-anchor", "end")
                 //.text("Ratings");
 
-            svg.append("path")
+            svgBase.append("path")
                 .datum(data)
                 .attr("class", "upperline")
                 .attr("d", upperline)
-                .attr("fill", "none")
+                .attr("fill", "white")
                 .attr("stroke", "#3FC380")
                 .attr("stroke-width", "1px")
 
@@ -455,7 +460,7 @@ function grandPlotter(pageIDin) {
 
         var dataSource = dataSource
 
-        normalPlotter(dataSource, "#one", "bundle", "size", "size")
+        normalPlotter(dataSource, "#one", "none", "size", "size")
 
         //console.log(dataSource)
 
