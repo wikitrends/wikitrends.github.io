@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!--
+Copyright (c) 2015 by Josh Simon (http://codepen.io/simonja2/pen/YXGQEy)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+</head>
+
+<body>
+  <h1>Wikipedia Article Search</h1>
+  
+  <i class="fa fa-search"></i>
+  <input type='text' name='searchQuery' placeholder='Search'/></input>
+
+  <div class="num_results"></div>
+  <div id="results_pane">
+
+  </div>
+</body>
+
+<style>
+@import url(http://fonts.googleapis.com/css?family=Roboto:400,700);
+
+html {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #637986;
+  font-family: Roboto, sans-serif;
+  text-align: center;
+  margin: 0;
+}
+
+h1 {
+  color: #004c75;
+}
+
+input {
+  border: 3px solid #fa8734;
+  background-color: #637986;
+  color: #004c75;
+  border-radius: 10px;
+  padding: 5px;
+  padding-left: 25px;
+  font-size: 1.25em;
+}
+
+input:focus {
+  outline: none;
+}
+
+.fa-search {
+  position: relative;
+  color: #fa8734;
+  left: 27px;
+}
+
+.num_results {
+  color: #004c75;
+  font-weight: bold;
+}
+
+#results_pane {
+  width: 60%;
+  margin: 0 auto;
+}
+
+.result_card {
+  background-color: #e0e0e0;
+  color: #004c75;
+  border-left: 5px solid #e0e0e0;
+  margin: 10px;
+  padding: 5px 25px;
+  text-align: left;
+}
+
+.result_card:hover {
+  border-left: 5px solid #fa8734;
+}
+
+.result_card:last-of-type {
+  margin-bottom: 3em;
+}
+
+.result_card h1 {
+  margin: 0;
+}
+
+.result_card a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.result_card p {
+  margin-top: 0.5em;
+  text-indent: 1.5em;
+  line-height: 1.5em;
+}
+
+#footer {
+  position: fixed;
+  background-color: #aaa;
+  border-top: 2px solid black;
+  width: 100%;
+  bottom: 0px;
+  font-size: 62.5%;
+}
+</style>
+
+<script>
+$(document).ready(function() {
+  $('input[type=text]').bind('change paste keyup', function() {
+    //console.log('changing');
+    var query = $('input[name=searchQuery]').val();
+    if (query.length >= 3) search(query);
+    else if (query.length === 0) resetDisplay();
+  });
+});
+
+var search = function(query) {
+  $.ajax({
+    url: 'http://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=' + query,
+    type: 'GET',
+    dataType: 'jsonp',
+    headers: {'Api-User-Agent': 'WikiReader/0.1.0'}
+  }).success(function(data, status) {
+    updateNumResults(data.query);
+    requestArticleExtracts(data.query);
+  }).error(function(data, status) {
+    console.log("ERROR! " + status);
+  });
+};
+
+var requestArticleExtracts = function(queryResult) {
+  // Request extracts for each of the articles found in the search
+  var extractQuery = 'http://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exsentences=2&exlimit=max&exintro=&explaintext=&titles=';
+  
+  // Add each page title to the query
+  var searchResults = queryResult.search;
+  for (var i=0; i<searchResults.length-1; i++) {
+    extractQuery += searchResults[i].title + '|';
+  }
+  extractQuery += searchResults[searchResults.length-1].title;
+  extractQuery = encodeURI(extractQuery);
+  
+  $.ajax({
+    url: extractQuery,
+    type: 'GET',
+    dataType: 'jsonp',
+    headers: {'Api-User-Agent': 'WikiReader/0.1.0'}
+  }).success(function(data, status) {
+    updateDisplay(data);
+  })
+}
+
+var updateNumResults = function(queryResult) {
+  $('.num_results').html("<p class='num_results'>Showing results 1 to 10 of " + queryResult.searchinfo.totalhits + "</p>");
+};
+
+var resetDisplay = function() {
+  $('#results_pane').html('');
+  $('.num_results').html('');
+}
+
+var updateDisplay = function(queryResult) {
+  //console.log(queryResult);
+  var pages = queryResult.query.pages;
+  
+  // Find the results pane and reset it
+  $('#results_pane').html('');
+  
+  for(var pId in pages) {
+    // I pray for forgiveness.
+    // Todo: look for lightweight template libraries
+    var htmlToAdd = "<div class='result_card'>";
+    // htmlToAdd += "<a target='_' "  href='http://en.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
+    htmlToAdd += "<a target='_' href='grandPlotter(" + pages[pId].title + ")'>";
+    htmlToAdd += "<h1>" + pages[pId].title + "</h1>";
+    htmlToAdd += "<p>" + pages[pId].extract + "</p></a></div>";
+    $('#results_pane').append(htmlToAdd);
+  }
+}
+
+</script>

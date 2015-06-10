@@ -1,0 +1,71 @@
+{
+    "query-continue": {
+        "revisions": {
+            "rvcontinue": "20150512110151|661981084"
+        }
+    },
+    "warnings": {
+        "query": {
+            "*": "Formatting of continuation data will be changing soon. To continue using the current formatting, use the 'rawcontinue' parameter. To begin using the new format, pass an empty string for 'continue' in the initial query."
+        },
+        "revisions": {
+            "*": "rvlimit may not be over 500 (set to 1000) for users"
+        }
+    },
+    "query": {
+        "normalized": [{
+            "from": "April_2015_Nepal_earthquake",
+            "to": "April 2015 Nepal earthquake"
+        }],
+        "pages": {
+            "46514718": {
+                "pageid": 46514718,
+                "ns": 0,
+                "title": "April 2015 Nepal earthquake",
+                "revisions": [{
+                    "revid": 666111596,
+                    "parentid": 666110340,
+                    "user": "Mortyman",
+                    "userid": 1548957,
+                    "timestamp": "2015-06-08T23:47:06Z",
+                    "size": 126327
+                }, {
+                    "revid": 666110340,
+                    "parentid": 666107737,
+                    "user": "Mortyman",
+                    "userid": 1548957,
+                    "timestamp": "2015-06-08T23:36:28Z",
+                    "size": 126325
+                }, {
+                    "revid": 666107737,
+                    "parentid": 666106954,
+                    "user": "Mortyman",
+                    "userid": 1548957,
+                    "timestamp": "2015-06-04T23:14:08Z",
+                    "size": 126287
+                }, {
+                    "revid": 666106954,
+                    "parentid": 666008075,
+                    "user": "Mortyman",
+                    "userid": 1548957,
+                    "timestamp": "2015-06-04T23:07:11Z",
+                    "size": 126165
+                }, {
+                    "revid": 666008075,
+                    "parentid": 665997194,
+                    "user": "Russal Arya",
+                    "userid": 25249352,
+                    "timestamp": "2015-06-04T08:28:21Z",
+                    "size": 125883
+                }, {
+                    "revid": 666008075,
+                    "parentid": 665997194,
+                    "user": "Russal Arya",
+                    "userid": 25249352,
+                    "timestamp": "2015-06-02T08:28:21Z",
+                    "size": 125883
+                }]
+            }
+        }
+    }
+}

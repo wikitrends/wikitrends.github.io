@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+    <!-- Bootstrap and JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+
+    <!-- Font Files -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
+    <link href="http://netdna.bootstrapcddn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,900' rel='stylesheet' type='text/css'>
+
+
+    <!-- StyleSheets -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Core D3 files -->
+    <script src="http://d3js.org/d3.v3.js"></script>
+
+    <!-- Extensions or Addons -->
+    <script src="http://cdn.jsdelivr.net/lodash/2.4.1/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.min.js"></script>
+
+</head>
+
+<body>
+
+    <i class="fa fa-search"></i>
+    <input type='text' name='searchQuery' placeholder='Search' /></input>
+
+    <div class="num_results"></div>
+    <div id="results_pane">
+
+    </div>
+    <div id="one"></div>
+
+</body>
+
+
+<script>
+
+function normalPlotter(idname, interpolation, parameter, plotParameter) {
+
+    var margin = {
+            top: 20,
+            right: 20,
+            bottom: 30,
+            left: 50
+        },
+        width = 960 - margin.left - margin.right,
+        height = 300 - margin.top - margin.bottom;
+
+    //var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
+    var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%S.%LZ").parse;
+
+
+    // var upperline = d3.svg.line()
+    //     .interpolate(interpolation)
+    //     .x(function(d) {
+    //         return x(parseDate(d.key));
+    //     })
+    //     .y(function(d) {
+
+    //         // console.log(d[plotParameter])
+
+    //         return y(d.values);
+    //         // }
+    //         // } else {
+    //         //     return y(0)
+    //         // }
+    //     });
+
+    // var bottomline = d3.svg.line()
+    //     .interpolate(interpolation)
+    //     .x(function(d) {
+    //         return x(d.timestamp);
+    //     })
+    //     .y(function(d) {
+    //         if (d[parameter] > 0) {
+    //             return y(0)
+    //         } else {
+    //             return y(d[parameter]);
+    //         }
+    //     });
+
+    var svg = d3.select("body").select(idname).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var count = 0;
+
+    var previousParameter = 0;
+
+    d3.json("css/datasource.json", function(error, data) {
+
+        //console.log(data)
+
+        delete data["query-continue"]
+        delete data["warnings"]
+        delete data.query.normalized
+
+        data = data.query.pages["46514718"].revisions
+
+        if (error) return console.warn(error);
+
+        data.forEach(function(d) {
+
+            //console.log(d.timestamp);
+
+            var tempDate = d.timestamp;
+
+            // // Hours
+            // tempDate = tempDate.substring(0, 13);
+            // tempDate = tempDate.concat(":00:00.000Z");
+
+            // Days
+            tempDate = tempDate.substring(0, 10);
+            tempDate = tempDate.concat("T08:00:00.000Z");
+
+            //d.timestamp = parseDate(tempDate);
+            d.timestamp = tempDate;
+
+            //console.log(d.timestamp);
+
+            d.values = 1;
+
+            //d.timestamp = parseDate(d.timestamp);
+
+            // d[parameter] = +d[parameter];
+
+            // d.difference = d[parameter] - previousParameter;
+
+            // if (d.difference < 0 ) {
+            //     d.difference = d.difference*(-1)
+            // } else {
+            // }
+
+            // previousParameter = d[parameter]; 
+
+        });
+
+        //console.log(data)
+
+        var dataNew = d3.nest()
+            .key(function(d) {
+                return d.timestamp;
+            })
+            .rollup(function(d) {
+                return d3.sum(d, function(g) {
+                    return g.values;
+                });
+            }).entries(data);
+
+        // Attempting to fix the Zero Date problem
+
+        var previousDatePractical = "";
+        var theDayPlus;
+
+        console.log(dataNew)
+
+        dataNew.forEach(function(d, i) {
+
+            // // Getting Zeroed Date
+            // // Fun Fact: In JS, the month and the day starts from 0. *Fucking-Weird*
+            // var date = parseDate(d.key).getDate();
+            // date = date + 1;
+            // date = date.toString();
+            // if (date.length == 1) {
+            //     date = "0" + date
+            // }
+
+            // // Getting Zeroed Month
+            // var month = parseDate(d.key).getMonth();
+            // month = month + 1;  // Because JS is weird.
+            // month = month.toString()
+            // if (month.length == 1) {
+            //     month = "0" + month
+            // }
+
+            // var year = parseDate(d.key).getFullYear();
+
+            var theDayMinus = moment(d.key).add(1, 'days')
+            theDayPlus = moment(d.key).add(2, 'days')
+
+            var theDay = moment(d.key)
+
+            var previousDate = moment(previousDatePractical)
+
+            //console.log(theDayMinus + "  " + previousDate)
+
+            // console.log("------------------------")
+
+            // console.log(JSON.stringify(theDayMinus))
+            // console.log(JSON.stringify(previousDate))
+
+            if (JSON.stringify(theDayMinus) != JSON.stringify(previousDate)) {
+                //console.log(data)
+                var tempIn = JSON.stringify(theDayMinus).replace("\"", "").replace("\"", "")
+                console.log(tempIn)
+                dataNew.splice(i, 1, {
+                        key: tempIn,
+                        values: 0
+                    })
+                // dataNew.push({
+                //         key: tempIn,
+                //         values: 0
+                //     })
+                    // onsole.log('')
+            } else {}
+
+            // if (JSON.stringify(theDayPlus) != JSON.stringify(previousDate))
+
+            previousDatePractical = d.key;
+
+        })
+
+console.log(dataNew)
+
+
+		// dataNew.sort(function(a, b){ return d3.ascending(a.finished_at, b.finished_at); });
+		    
+    var x = d3.time.scale()
+        .range([30, width]);
+
+    var y = d3.scale.linear()
+        .range([height, 0]);
+
+        x.domain(d3.extent(dataNew, function(d) {
+            return parseDate(d.key);
+        }))
+        y.domain(d3.extent(dataNew, function(d) {
+            return d.values;
+        }));
+
+
+		var line = d3.svg.line()
+		    .x(function(d) { return x(parseDate(d.key)); })
+		    .y(function(d) { return y(d.values); });
+
+
+    // var xAxis = d3.svg.axis()
+    //     .scale(x)
+    //     .orient("bottom");
+
+    // var yAxis = d3.svg.axis()
+    //     .scale(y)
+    //     .orient("left");
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .innerTickSize(-height)
+        .outerTickSize(0)
+        .tickPadding(10);
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .innerTickSize(-width)
+        .outerTickSize(0)
+        .tickPadding(10);
+
+
+
+        var heightAxis = height + 10;
+
+        //console.log(data)
+
+        // svg.append("g")
+        //     .attr("class", "x axis")
+        //     .attr("transform", "translate(0," + heightAxis + ")")
+        //     .call(xAxis);
+
+        // svg.append("g")
+        //     .attr("class", "y axis")
+        //     .call(yAxis)
+        //     .append("text")
+        //     .attr("transform", "rotate(-90)")
+        //     .attr("y", 6)
+        //     .attr("dy", ".71em")
+        //     .style("text-anchor", "end")
+        //     //.text("Ratings");
+
+        // svg.append("path")
+        //     .datum(data)
+        //     .attr("class", "upperline")
+        //     .attr("d", upperline)
+        //     .attr("fill", "none")
+        //     .attr("stroke", "#3FC380")
+        //     .attr("stroke-width", "1px")
+
+        svg.append("path")
+            .datum(dataNew)
+            .attr("class", "line")
+            .attr("d", line);
+
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+
+    })
+}
+
+normalPlotter("#one", "none", "size", "size")
+
+//console.log(dataSource)
+</script>
