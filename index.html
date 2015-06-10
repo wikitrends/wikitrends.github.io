@@ -133,322 +133,333 @@ var updateDisplay = function(queryResult) {
 
 function grandPlotter(pageIDin) {
 
-        $('#one').html('');
+    $('#one').html('');
 
-        var jsonObject;
-        var lastRevID;
+    // Loader Section begin
 
-        var pageID = pageIDin;
+    function loader(config) {
+        return function() {
+            var radius = Math.min(config.width, config.height) / 2;
+            var tau = 2 * Math.PI;
 
-        var linkInitial = "http://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&pageids=" + pageID + "&format=json&callback=?"
+            var arc = d3.svg.arc()
+                .innerRadius(radius * 0.2)
+                .outerRadius(radius * 0.4)
+                .startAngle(0);
 
-        var linkSubsequent = "http://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?"
+            var svg = d3.select(config.container).append("svg")
+                .attr("id", config.id)
+                .attr("width", config.width)
+                .attr("height", config.height)
+                .append("g")
+                .attr("transform", "translate(" + config.width / 2 + "," + config.height / 2 + ")")
 
-        function getData(url, callback) {
-            return $.ajax({
+            var background = svg.append("path")
+                .datum({
+                    endAngle: 0.33 * tau
+                })
+                .style("fill", "#4D4D4D")
+                .attr("d", arc)
+                .call(spin, 1500)
 
-                url: url,
+            function spin(selection, duration) {
+                selection.transition()
+                    .ease("linear")
+                    .duration(duration)
+                    .attrTween("transform", function() {
+                        return d3.interpolateString("rotate(0)", "rotate(360)");
+                    });
 
-                dataType: 'json',
-                type: 'GET',
-                headers: {
-                    'Api-User-Agent': 'Example/1.0'
+                setTimeout(function() {
+                    spin(selection, duration);
+                }, duration);
+            }
+
+            function transitionFunction(path) {
+                path.transition()
+                    .duration(7500)
+                    .attrTween("stroke-dasharray", tweenDash)
+                    .each("end", function() {
+                        d3.select(this).call(transition);
+                    });
+            }
+
+        };
+    }
+
+
+    var myLoader = loader({
+        width: 960,
+        height: 500,
+        container: "#one",
+        id: "one"
+    });
+    myLoader();
+
+    // Loader Container End
+
+    var jsonObject;
+    var lastRevID;
+
+    var pageID = pageIDin;
+
+    var linkInitial = "http://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&pageids=" + pageID + "&format=json&callback=?"
+
+    var linkSubsequent = "http://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?"
+
+    function getData(url, callback) {
+        return $.ajax({
+
+            url: url,
+
+            dataType: 'json',
+            type: 'GET',
+            headers: {
+                'Api-User-Agent': 'Example/1.0'
+            },
+            success: callback,
+        });
+    }
+
+    var finaljsonObject = [];
+
+    function pageEdits(url) {
+
+        getData(url, function(data) {
+
+            jsonObject = data;
+
+            // Clean up Data
+            var pageID = Object.keys(jsonObject.query.pages)[0]
+            jsonObject = jsonObject.query.pages[pageID].revisions
+
+            // Get last revision ID
+            lastRevID = jsonObject[Object.keys(jsonObject)[Object.keys(jsonObject).length - 1]].revid
+
+            console.log(lastRevID)
+
+            // This is the length of the useful JSON object
+            console.log(Object.keys(jsonObject).length)
+
+            // Run this part of the if - else everytime except for the last time.
+            if (Object.keys(jsonObject).length > 2) {
+
+                pageEdits("http://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?")
+
+                finaljsonObject = finaljsonObject.concat(jsonObject)
+            }
+
+            // Run this part of the if - else everytime only for the last time when the callback exits.
+            else {
+
+                // initialises runNow function which has the d3 stuff. Passes the concated data as the parameter.
+                runNow(finaljsonObject)
+                return finaljsonObject
+
+            }
+        })
+    }
+
+    function runNow(dataSource) {
+
+        function normalPlotter(dataSource, idname, interpolation, parameter, plotParameter) {
+
+            $('#one').html('');
+
+            var margin = {
+                    top: 20,
+                    right: 20,
+                    bottom: 30,
+                    left: 50
                 },
-                success: callback,
-            });
-        }
+                width = 960 - margin.left - margin.right,
+                height = 300 - margin.top - margin.bottom;
 
-        var finaljsonObject = [];
+            //var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
+            var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%S.%LZ").parse;
 
-        function pageEdits(url) {
+            var x = d3.time.scale()
+                .range([30, width]);
 
-            getData(url, function(data) {
+            var y = d3.scale.linear()
+                .range([height, 0]);
 
-                jsonObject = data;
+            var xAxis = d3.svg.axis()
+                .scale(x)
+                .orient("bottom");
 
-                // Clean up Data
-                var pageID = Object.keys(jsonObject.query.pages)[0]
-                jsonObject = jsonObject.query.pages[pageID].revisions
+            var yAxis = d3.svg.axis()
+                .scale(y)
+                .orient("left");
 
-                // Get last revision ID
-                lastRevID = jsonObject[Object.keys(jsonObject)[Object.keys(jsonObject).length - 1]].revid
+            var upperline = d3.svg.line()
+                .interpolate(interpolation)
+                .x(function(d) {
+                    return x(parseDate(d.key));
+                })
+                .y(function(d) {
 
-                console.log(lastRevID)
+                    // console.log(d[plotParameter])
 
-                // This is the length of the useful JSON object
-                console.log(Object.keys(jsonObject).length)
-
-                // Run this part of the if - else everytime except for the last time.
-                if (Object.keys(jsonObject).length > 2) {
-
-                    pageEdits("http://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?")
-
-                    finaljsonObject = finaljsonObject.concat(jsonObject)
-                }
-
-                // Run this part of the if - else everytime only for the last time when the callback exits.
-                else {
-
-                    // initialises runNow function which has the d3 stuff. Passes the concated data as the parameter.
-                    runNow(finaljsonObject)
-                    return finaljsonObject
-
-                }
-            })
-        }
-
-        function runNow(dataSource) {
-
-            function normalPlotter(dataSource, idname, interpolation, parameter, plotParameter) {
-
-                var margin = {
-                        top: 20,
-                        right: 20,
-                        bottom: 30,
-                        left: 50
-                    },
-                    width = 960 - margin.left - margin.right,
-                    height = 300 - margin.top - margin.bottom;
-
-                //var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
-                var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%S.%LZ").parse;
-
-                var x = d3.time.scale()
-                    .range([30, width]);
-
-                var y = d3.scale.linear()
-                    .range([height, 0]);
-
-                var xAxis = d3.svg.axis()
-                    .scale(x)
-                    .orient("bottom");
-
-                var yAxis = d3.svg.axis()
-                    .scale(y)
-                    .orient("left");
-
-                var zoom = d3.behavior.zoom()
-                    .x(x)
-                    .y(y)
-                    .scaleExtent([1, 10])
-                    .on("zoom", zoomed);
-
-                var line = d3.svg.line()
-                    .interpolate("linear")
-                    .x(function(d) {
-                        return x(parseDate(d.key));
-                    })
-                    .y(function(d) {
-
-                        // console.log(d[plotParameter])
-
-                        return y(d.values);
-                        // }
-                        // } else {
-                        //     return y(0)
-                        // }
-                    });
-
-                var upperline = d3.svg.line()
-                    .interpolate(interpolation)
-                    .x(function(d) {
-                        return x(parseDate(d.key));
-                    })
-                    .y(function(d) {
-
-                        // console.log(d[plotParameter])
-
-                        return y(d.values);
-                        // }
-                        // } else {
-                        //     return y(0)
-                        // }
-                    });
-
-                // var bottomline = d3.svg.line()
-                //     .interpolate(interpolation)
-                //     .x(function(d) {
-                //         return x(d.timestamp);
-                //     })
-                //     .y(function(d) {
-                //         if (d[parameter] > 0) {
-                //             return y(0)
-                //         } else {
-                //             return y(d[parameter]);
-                //         }
-                //     });
-
-                var svg = d3.select("body").select(idname).append("svg")
-                    .call(zoom)
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom)
-                    .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-                var count = 0;
-
-                var previousParameter = 0;
-
-                dataSource.forEach(function(d) {
-
-                    var tempDate = d.timestamp;
-
-                    // // Hours
-                    // tempDate = tempDate.substring(0, 13);
-                    // tempDate = tempDate.concat(":00:00.000Z");
-
-                    // // Days
-                    // tempDate = tempDate.substring(0, 10);
-                    // tempDate = tempDate.concat("T00:00:01.000Z");
-
-                    d.timestamp = tempDate;
-
-                    d.values = 1;
-
+                    return y(d.values);
+                    // }
+                    // } else {
+                    //     return y(0)
+                    // }
                 });
 
-                var data = d3.nest()
-                    .key(function(d) {
-                        return d.timestamp;
+            // var bottomline = d3.svg.line()
+            //     .interpolate(interpolation)
+            //     .x(function(d) {
+            //         return x(d.timestamp);
+            //     })
+            //     .y(function(d) {
+            //         if (d[parameter] > 0) {
+            //             return y(0)
+            //         } else {
+            //             return y(d[parameter]);
+            //         }
+            //     });
+
+            var svg = d3.select("body").select(idname).append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            var count = 0;
+
+            var previousParameter = 0;
+
+            dataSource.forEach(function(d) {
+
+                var tempDate = d.timestamp;
+
+                // // Hours
+                // tempDate = tempDate.substring(0, 13);
+                // tempDate = tempDate.concat(":00:00.000Z");
+
+                // Days
+                tempDate = tempDate.substring(0, 10);
+                tempDate = tempDate.concat("T00:00:01.000Z");
+
+                d.timestamp = tempDate;
+
+                d.values = 1;
+
+            });
+
+            var data = d3.nest()
+                .key(function(d) {
+                    return d.timestamp;
+                })
+                .rollup(function(d) {
+                    return d3.sum(d, function(g) {
+                        return g.values;
+                    });
+                }).entries(dataSource);
+
+            // Attempting to fix the Zero Date problem
+
+            // BEWARE BEWARE BEWARE!
+            // Countless hours have been spent trying to get this part to work. 
+            // TLDR; On MediaWiki APIs, time runs backwards!
+
+            var previousDateActual = "";
+            var theDayMisnomerPlus;
+
+            data.forEach(function(d, i) {
+
+                var theDayMisnomerMinus = moment(d.key).add(1, 'days')
+
+                var theDay = moment(d.key)
+
+                var previousDate = moment(previousDateActual)
+
+                if (JSON.stringify(theDayMisnomerMinus) != JSON.stringify(previousDate)) {
+
+                    // tempIn is just of temporary string conversions.
+                    var tempIn = JSON.stringify(theDayMisnomerMinus).replace("\"", "").replace("\"", "")
+                    console.log(tempIn)
+
+                    // Adding the new Zeroed entry at relevant location so as to avoid sorting.
+                    data.splice(i, 1, {
+                        key: tempIn,
+                        values: 0
                     })
-                    .rollup(function(d) {
-                        return d3.sum(d, function(g) {
-                            return g.values;
-                        });
-                    }).entries(dataSource);
 
-                // Attempting to fix the Zero Date problem
+                } else {}
 
-                // BEWARE BEWARE BEWARE!
-                // Countless hours have been spent trying to get this part to work. 
-                // TLDR; On MediaWiki APIs, time runs backwards!
+                // START: At all costs, this needs to be in front before -> theDayMisnomerPlus = moment(d.key).subtract(1, 'days')
+                if (i != 0) {
+                    if (JSON.stringify(theDayMisnomerPlus) != JSON.stringify(d.key)) {
 
-                var previousDateActual = "";
-                var theDayMisnomerPlus;
-
-                data.forEach(function(d, i) {
-
-                    var theDayMisnomerMinus = moment(d.key).add(1, 'days')
-
-                    var theDay = moment(d.key)
-
-                    var previousDate = moment(previousDateActual)
-
-                    if (JSON.stringify(theDayMisnomerMinus) != JSON.stringify(previousDate)) {
-
-                        // tempIn is just of temporary string conversions.
-                        var tempIn = JSON.stringify(theDayMisnomerMinus).replace("\"", "").replace("\"", "")
+                        // tempIn is just of temporary string conversions. '"' need to be removed.å
+                        var tempIn = JSON.stringify(theDayMisnomerPlus).replace("\"", "").replace("\"", "")
                         console.log(tempIn)
 
                         // Adding the new Zeroed entry at relevant location so as to avoid sorting.
-                        data.splice(i, 1, {
+                        data.splice(i - 1, 1, {
                             key: tempIn,
                             values: 0
                         })
 
                     } else {}
-
-                    // START: At all costs, this needs to be in front before -> theDayMisnomerPlus = moment(d.key).subtract(1, 'days')
-                    if (i != 0) {
-                        if (JSON.stringify(theDayMisnomerPlus) != JSON.stringify(d.key)) {
-
-                            // tempIn is just of temporary string conversions. '"' need to be removed.å
-                            var tempIn = JSON.stringify(theDayMisnomerPlus).replace("\"", "").replace("\"", "")
-                            console.log(tempIn)
-
-                            // Adding the new Zeroed entry at relevant location so as to avoid sorting.
-                            data.splice(i - 1, 1, {
-                                key: tempIn,
-                                values: 0
-                            })
-
-                        } else {}
-                    }
-
-                    // END
-
-                    // Checks for the next 
-                    theDayMisnomerPlus = moment(d.key).subtract(1, 'days')
-
-                    // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
-                    previousDateActual = d.key;
-
-                })
-
-                x.domain(d3.extent(data, function(d) {
-                    return parseDate(d.key);
-                }))
-                y.domain(d3.extent(data, function(d) {
-                    return d.values;
-                }));
-
-                var heightAxis = height + 10;
-
-                //console.log(data)
-
-                svg.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(0," + heightAxis + ")")
-                    .call(xAxis);
-
-                svg.append("g")
-                    .attr("class", "y axis")
-                    .call(yAxis)
-                    .append("text")
-                    .attr("transform", "rotate(-90)")
-                    .attr("y", 6)
-                    .attr("dy", ".71em")
-                    .style("text-anchor", "end")
-                    //.text("Ratings");
-
-                svg.append("clipPath")
-                    .attr("id", "clip")
-                    .append("rect")
-                    .attr("width", width)
-                    .attr("height", height);
-
-                svg.selectAll('.line')
-                    .data(data)
-                    .enter()
-                    .append("path")
-                    .attr("class", "line")
-                    .attr("clip-path", "url(#clip)")
-                    .attr("d", line);
-
-                // svg.append("path")
-                //     .datum(data)
-                //     .attr("class", "upperline")
-                //     .attr("d", upperline)
-                //     .attr("fill", "none")
-                //     .attr("stroke", "#3FC380")
-                //     .attr("stroke-width", "1px")
-
-                function zoomed() {
-                    svg.select(".x.axis").call(xAxis);
-                    svg.select(".y.axis").call(yAxis);
-                    svg.selectAll('path.line').attr('d', line);
                 }
 
-            }
+                // END
 
-            var dataSource = dataSource
+                // Checks for the next 
+                theDayMisnomerPlus = moment(d.key).subtract(1, 'days')
 
-            normalPlotter(dataSource, "#one", "none", "size", "size")
+                // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
+                previousDateActual = d.key;
 
-            //console.log(dataSource)
+            })
+
+            x.domain(d3.extent(data, function(d) {
+                return parseDate(d.key);
+            }))
+            y.domain(d3.extent(data, function(d) {
+                return d.values;
+            }));
+
+            var heightAxis = height + 10;
+
+            //console.log(data)
+
+            svg.append("g")
+                .attr("class", "x axis")
+                .attr("transform", "translate(0," + heightAxis + ")")
+                .call(xAxis);
+
+            svg.append("g")
+                .attr("class", "y axis")
+                .call(yAxis)
+                .append("text")
+                .attr("transform", "rotate(-90)")
+                .attr("y", 6)
+                .attr("dy", ".71em")
+                .style("text-anchor", "end")
+                //.text("Ratings");
+
+            svg.append("path")
+                .datum(data)
+                .attr("class", "upperline")
+                .attr("d", upperline)
+                .attr("fill", "none")
+                .attr("stroke", "#3FC380")
+                .attr("stroke-width", "1px")
 
         }
 
-        pageEdits(linkInitial)
+        var dataSource = dataSource
+
+        normalPlotter(dataSource, "#one", "bundle", "size", "size")
+
+        //console.log(dataSource)
 
     }
-    // var tip = d3.tip()
-    //               //.data(csv_data)
-    //               .attr('id', 'd3-tip')
-    //               .offset([-10, 100])
-    //               .html(function(d) {
-
-//                   return "<span style='color:white'>" + "Stories on " + " <span id='close' onclick='myFunction()'>Close</span><br>" + d.timestamp + "</span>";
-
-//               })
+    pageEdits(linkInitial)
+}
 </script>
