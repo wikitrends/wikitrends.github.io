@@ -221,101 +221,67 @@ function grandPlotter(pageIDin) {
     }
 
     var finaljsonObject = [];
-    var linkAddress;
 
     function pageEdits(url) {
 
         getData(url, function(data) {
 
-            if (url.indexOf("revisions") > -1) {
+            jsonObject = data;
 
-                jsonObject = data;
+            // Clean up Data
+            var pageID = Object.keys(jsonObject.query.pages)[0]
+            jsonObject = jsonObject.query.pages[pageID].revisions
 
-                // Clean up Data
-                var pageID = Object.keys(jsonObject.query.pages)[0]
-                jsonObject = jsonObject.query.pages[pageID].revisions
+            // Get last revision ID
+            lastRevID = jsonObject[Object.keys(jsonObject)[Object.keys(jsonObject).length - 1]].revid
 
-                // Get last revision ID
-                lastRevID = jsonObject[Object.keys(jsonObject)[Object.keys(jsonObject).length - 1]].revid
+            console.log(lastRevID)
 
-                //console.log(lastRevID)
+            // This is the length of the useful JSON object
+            console.log(Object.keys(jsonObject).length)
 
-                // This is the length of the useful JSON object
-                //c.log(Object.keys(jsonObject).length)
+            // Run this part of the if - else everytime except for the last time.
+            if (Object.keys(jsonObject).length > 2) {
 
-                // Run this part of the if - else everytime except for the last time.
-                if (Object.keys(jsonObject).length > 2) {
+                pageEdits("http://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?")
 
-                    pageEdits("http://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?")
-
-                    finaljsonObject = finaljsonObject.concat(jsonObject)
-                }
-
-                // Run this part of the if - else everytime only for the last time when the callback exits.
-                else {
-
-                    linkAddress = pageEdits("http://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
-
-                    // var pageID = Object.keys(linkAddress.query.pages)[0]
-                    // linkAddress = linkAddress.query.pages[pageID].thumbnail
-
-                    // console.log(linkAddress)
-
-                    // initialises runNow function which has the d3 stuff. Passes the concated data as the parameter.
-
-                }
-
-            } else {
-                //console.log('asd')
-                // var linkAddress = getData("http://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
-
-                linkAddress = data;
-
-                var pageID = Object.keys(linkAddress.query.pages)[0]
-                linkAddress = linkAddress.query.pages[pageID].thumbnail
-
-                // Extrememly Sorry for this shitfuckery!
-                var photoUrl = JSON.stringify(linkAddress)
-                if (photoUrl != undefined) {
-                    photoUrl = photoUrl.substring(13)
-                    photoUrl = photoUrl.substring(0, photoUrl.length - 2);
-
-                    runNow(photoUrl, finaljsonObject)
-                    return finaljsonObject
-                } else {
-                    runNow("assets/defaultImage.jpg", finaljsonObject)
-                    return finaljsonObject
-                }
-
+                finaljsonObject = finaljsonObject.concat(jsonObject)
             }
 
+            // Run this part of the if - else everytime only for the last time when the callback exits.
+            else {
+
+                // initialises runNow function which has the d3 stuff. Passes the concated data as the parameter.
+                runNow(finaljsonObject)
+                return finaljsonObject
+
+            }
         })
     }
 
-    function runNow(picUrl, dataSource) {
+    function runNow(dataSource) {
 
         function normalPlotter(dataSource, idname, interpolation, parameter, plotParameter) {
 
             $('#one').html('');
 
-            // Keep in mind: http://bl.ocks.org/mbostock/3019563
             var margin = {
                     top: 20,
                     right: 20,
                     bottom: 30,
                     left: 50
                 },
-                width = 958 - margin.left - margin.right,
-                height = 532 - margin.top - margin.bottom;
+                width = 1008 - margin.left - margin.right,
+                height = 572 - margin.top - margin.bottom;
 
             //var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
             var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%S.%LZ").parse;
 
             var x = d3.time.scale()
-                .range([0, width]);
+                .range([30, width]);
 
             var y = d3.scale.linear()
-                .range([height, 150]);
+                .range([height, 0]);
 
             var xAxis = d3.svg.axis()
                 .scale(x)
@@ -323,7 +289,6 @@ function grandPlotter(pageIDin) {
 
             var yAxis = d3.svg.axis()
                 .scale(y)
-                .ticks(5)
                 .orient("left");
 
             var upperline = d3.svg.line()
@@ -332,23 +297,54 @@ function grandPlotter(pageIDin) {
                     return x(parseDate(d.key));
                 })
                 .y(function(d) {
+
+                    // console.log(d[plotParameter])
+
                     return y(d.values);
+                    // }
+                    // } else {
+                    //     return y(0)
+                    // }
                 });
 
-            var svgBase = d3.select("body").select(idname).append("svg")
+            // var bottomline = d3.svg.line()
+            //     .interpolate(interpolation)
+            //     .x(function(d) {
+            //         return x(d.timestamp);
+            //     })
+            //     .y(function(d) {
+            //         if (d[parameter] > 0) {
+            //             return y(0)
+            //         } else {
+            //             return y(d[parameter]);
+            //         }
+            //     });
+
+            var svg = d3.select("body").select(idname).append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
-                .append("g")
+                //.append("g")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            var svgFull = svgBase.append("g")
-                // .attr("width", width + margin.left + margin.right)
-                // .attr("height", height + margin.top + margin.bottom)
-                .attr("transform", "translate(" + (-1) * margin.left + "," + (-1) * margin.top + ")");
+            // var svgImage = d3.select("body").select(idname).select("svg").append("svg")
+            //     .attr("width", width + margin.left + margin.right)
+            //     .attr("height", height + margin.top + margin.bottom)
+            //     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            //     .attr("viewBox", "\"" + margin.left + ", 0," + width + margin.left + margin.right + "," + height + margin.top + margin.bottom + "\"")
+            //     .attr("preserveAspectRatio", "none")
+            //     //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-            var count = 0;
+//             <svg width="70px" height="70px" viewBox="50 50 70 70">    
+//     <image x="0" y="0" width="200" height="200" 
+//         xlink:href="http://placekitten.com/200/200" clip-path="url(#myClip)">
+//     </image>
+// </svg>
+           
 
-            var previousParameter = 0;
+
+            
+
+                var previousParameter = 0;
 
             dataSource.forEach(function(d) {
 
@@ -399,7 +395,7 @@ function grandPlotter(pageIDin) {
 
                     // tempIn is just of temporary string conversions.
                     var tempIn = JSON.stringify(theDayMisnomerMinus).replace("\"", "").replace("\"", "")
-                        // console.log(tempIn)
+                    console.log(tempIn)
 
                     // Adding the new Zeroed entry at relevant location so as to avoid sorting.
                     data.splice(i, 1, {
@@ -415,6 +411,7 @@ function grandPlotter(pageIDin) {
 
                         // tempIn is just of temporary string conversions. '"' need to be removed.å
                         var tempIn = JSON.stringify(theDayMisnomerPlus).replace("\"", "").replace("\"", "")
+                        console.log(tempIn)
 
                         // Adding the new Zeroed entry at relevant location so as to avoid sorting.
                         data.splice(i - 1, 1, {
@@ -442,43 +439,16 @@ function grandPlotter(pageIDin) {
                 return d.values;
             }));
 
-            // The opacity rectangle and the image need to be above everything else. Otherwise the graphs and the text would be hidden
-            var imgs = svgFull.selectAll("image").data([0]);
-            imgs.enter()
-                .append("svg:image")
-                .attr("xlink:href", function(d) {
-                    if (picUrl == undefined) {
-                        return "assets/defaultImage.jpg"
-                    } else {
-                        return picUrl
-                    }
-                })
-                // .attr("x", "0")
-                // .attr("y", "0")
-                .attr("width", width + margin.left + margin.right)
-                .attr("overflow-x", "hidden")
-                .attr("overflow-y", "hidden")
-                //.attr("width", "100%")
-                .attr("height", height + margin.top + margin.bottom);
+            var heightAxis = height + 10;
 
-            if (picUrl != "assets/defaultImage.jpg") {
+            //console.log(data)
 
-                var opacityRect = svgFull.append("rect")
-                    .attr("width", width + margin.right + margin.left)
-                    .attr("fill", "black")
-                    .attr("opacity", 0.7)
-                    .attr("z-index", 0)
-                    .attr("height", height + margin.top + margin.bottom);
-
-            }
-
-            // .attr("transform", "translate(0," + height + ")") shifts the axis to the bottom part of the G element. 
-            svgBase.append("g")
+            svg.append("g")
                 .attr("class", "x axis")
-                .attr("transform", "translate(0," + height + ")")
+                .attr("transform", "translate(0," + heightAxis + ")")
                 .call(xAxis);
 
-            svgBase.append("g")
+            svg.append("g")
                 .attr("class", "y axis")
                 .call(yAxis)
                 .append("text")
@@ -488,19 +458,42 @@ function grandPlotter(pageIDin) {
                 .style("text-anchor", "end")
                 //.text("Ratings");
 
-            svgBase.append("path")
+            svg.append("path")
                 .datum(data)
                 .attr("class", "upperline")
                 .attr("d", upperline)
-                .attr("fill", "white")
+                .attr("fill", "none")
                 .attr("stroke", "#3FC380")
                 .attr("stroke-width", "1px")
 
+
+         // var imgs = svgImage.selectAll("image").data([0]);
+         //    imgs.enter()
+         //        .append("svg:image")
+         //        .attr("xlink:href", "http://upload.wikimedia.org/wikipedia/commons/0/0b/Nepal_relief_location_map.jpg")
+         //        // .attr("x", "0")
+         //        // .attr("y", "0")
+         //        .attr("width", width + margin.left + margin.right)
+         //        .attr("overflow-x", "hidden")
+         //        .attr("overflow-y", "hidden")
+         //        // .attr("width", "100%")
+         //        .attr("height", height + margin.top + margin.bottom);
+
+         //    var opacityRect = svg.append("rect")
+         //         // .attr("x", 10)
+         //         // .attr("y", 10)
+         //        .attr("width", width)
+         //        .attr("fill", "black")
+         //        .attr("opacity", 0.4)
+         //        .attr("height", height);
+
+
         }
+
 
         var dataSource = dataSource
 
-        normalPlotter(dataSource, "#one", "none", "size", "size")
+        normalPlotter(dataSource, "#one", "bundle", "size", "size")
 
         //console.log(dataSource)
 
