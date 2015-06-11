@@ -294,7 +294,7 @@ function grandPlotter(pageIDin) {
 
     function runNow(picUrl, dataSource) {
 
-        function normalPlotter(dataSource, idname, interpolation, parameter, plotParameter) {
+        function normalPlotter(dataSource, idname, interpolation, parameter, plotParameter, timeDuration) {
 
             $('#one').html('');
 
@@ -349,20 +349,51 @@ function grandPlotter(pageIDin) {
             var count = 0;
 
             var previousParameter = 0;
+            var weekInitial;
+            var weekNumber;
+            var thisWeekNumber;
 
             dataSource.forEach(function(d) {
 
-                var tempDate = d.timestamp;
+                console.log(timeDuration)
+
+                if (timeDuration == "day") {
+                    
+                    // Days
+                    var tempDate = d.timestamp;
+                    tempDate = tempDate.substring(0, 10);
+                    tempDate = tempDate.concat("T00:00:01.000Z");
+                    d.timestamp = tempDate;
+
+                } 
+
+                if (timeDuration == "week") {
+
+                    // Weeks
+                    thisWeekNumber = moment(d.timestamp).week();
+                    if (weekNumber == thisWeekNumber) {
+                        d.timestamp = weekInitial
+                        d.timestamp = d.timestamp.substring(0, 10);
+                        d.timestamp = d.timestamp.concat("T00:00:01.000Z");
+                    } else {
+                        d.timestamp = d.timestamp.substring(0, 10);
+                        d.timestamp = d.timestamp.concat("T00:00:01.000Z");
+
+                        dayOfTheWeek = moment(d.timestamp).day()
+                        d.timestamp = JSON.stringify(moment(d.timestamp).subtract(dayOfTheWeek, "days")).replace("\"", "").replace("\"", "")
+                        weekInitial = d.timestamp;
+
+                        console.log(moment(d.timestamp).day())
+
+                        weekNumber = thisWeekNumber
+                    }
+
+                }
 
                 // // Hours
+                // var tempDate = d.timestamp;
                 // tempDate = tempDate.substring(0, 13);
                 // tempDate = tempDate.concat(":00:00.000Z");
-
-                // Days
-                tempDate = tempDate.substring(0, 10);
-                tempDate = tempDate.concat("T00:00:01.000Z");
-
-                d.timestamp = tempDate;
 
                 d.values = 1;
 
@@ -370,6 +401,7 @@ function grandPlotter(pageIDin) {
 
             var data = d3.nest()
                 .key(function(d) {
+                    console.log(d.timestamp + " " + moment(d.timestamp).day())
                     return d.timestamp;
                 })
                 .rollup(function(d) {
@@ -378,62 +410,124 @@ function grandPlotter(pageIDin) {
                     });
                 }).entries(dataSource);
 
+            // console.log(data)
+
             // Attempting to fix the Zero Date problem
 
-            // BEWARE BEWARE BEWARE!
-            // Countless hours have been spent trying to get this part to work. 
-            // TLDR; On MediaWiki APIs, time runs backwards!
+            if (timeDuration == "day") {
 
-            var previousDateActual = "";
-            var theDayMisnomerPlus;
+                // BEWARE BEWARE BEWARE!
+                // Countless hours have been spent trying to get this part to work. 
+                // TLDR; On MediaWiki APIs, time runs backwards!
 
-            data.forEach(function(d, i) {
+                var previousDateActual = "";
+                var theDayMisnomerPlus;
 
-                var theDayMisnomerMinus = moment(d.key).add(1, 'days')
+                data.forEach(function(d, i) {
 
-                var theDay = moment(d.key)
+                    var theDayMisnomerMinus = moment(d.key).add(1, 'days')
 
-                var previousDate = moment(previousDateActual)
+                    var theDay = moment(d.key)
 
-                if (JSON.stringify(theDayMisnomerMinus) != JSON.stringify(previousDate)) {
+                    var previousDate = moment(previousDateActual)
 
-                    // tempIn is just of temporary string conversions.
-                    var tempIn = JSON.stringify(theDayMisnomerMinus).replace("\"", "").replace("\"", "")
-                        // console.log(tempIn)
+                    if (JSON.stringify(theDayMisnomerMinus) != JSON.stringify(previousDate)) {
 
-                    // Adding the new Zeroed entry at relevant location so as to avoid sorting.
-                    data.splice(i, 1, {
-                        key: tempIn,
-                        values: 0
-                    })
-
-                } else {}
-
-                // START: At all costs, this needs to be in front before -> theDayMisnomerPlus = moment(d.key).subtract(1, 'days')
-                if (i != 0) {
-                    if (JSON.stringify(theDayMisnomerPlus) != JSON.stringify(d.key)) {
-
-                        // tempIn is just of temporary string conversions. '"' need to be removed.å
-                        var tempIn = JSON.stringify(theDayMisnomerPlus).replace("\"", "").replace("\"", "")
+                        // tempIn is just of temporary string conversions.
+                        var tempIn = JSON.stringify(theDayMisnomerMinus).replace("\"", "").replace("\"", "")
+                            // console.log(tempIn)
 
                         // Adding the new Zeroed entry at relevant location so as to avoid sorting.
-                        data.splice(i - 1, 1, {
+                        data.splice(i, 1, {
                             key: tempIn,
                             values: 0
                         })
 
                     } else {}
-                }
 
-                // END
+                    // START: At all costs, this needs to be in front before -> theDayMisnomerPlus = moment(d.key).subtract(1, 'days')
+                    if (i != 0) {
+                        if (JSON.stringify(theDayMisnomerPlus) != JSON.stringify(d.key)) {
 
-                // Checks for the next 
-                theDayMisnomerPlus = moment(d.key).subtract(1, 'days')
+                            // tempIn is just of temporary string conversions. '"' need to be removed.å
+                            var tempIn = JSON.stringify(theDayMisnomerPlus).replace("\"", "").replace("\"", "")
 
-                // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
-                previousDateActual = d.key;
+                            // Adding the new Zeroed entry at relevant location so as to avoid sorting.
+                            data.splice(i - 1, 1, {
+                                key: tempIn,
+                                values: 0
+                            })
 
-            })
+                        } else {}
+                    }
+
+                    // END
+
+                    // Checks for the next 
+                    theDayMisnomerPlus = moment(d.key).subtract(1, 'days')
+
+                    // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
+                    previousDateActual = d.key;
+
+                })
+
+            } else if (timeDuration == "week") {
+
+                // console.log('asdsa')
+
+                // BEWARE BEWARE BEWARE!
+                // Countless hours have been spent trying to get this part to work. 
+                // TLDR; On MediaWiki APIs, time runs backwards!
+
+                var actualPreviousWeekDate;
+                var theoreticalWeekMinusOneDate;
+
+                data.forEach(function(d, i) {
+
+                    // console.log(d.key + " " + moment(d.key).day())
+
+                    var currentWeekDate = d.key
+                    var theoreticalWeekPlusOneDate = moment(d.key).add(1, 'week')
+                        //                    console.log(theoreticalWeekPlusOneDate)
+
+                    // This 'if' part checks the previous entry in the list! i.e. the +1 week date.
+                    if (JSON.stringify(theoreticalWeekPlusOneDate) != JSON.stringify(actualPreviousWeekDate)) {
+
+                        // tempIn is just of temporary string conversions.
+                        var tempIn = JSON.stringify(theoreticalWeekPlusOneDate).replace("\"", "").replace("\"", "")
+
+                        // Adding the new Zeroed entry at relevant location so as to avoid sorting.
+                        data.splice(i, 1, {
+                            key: tempIn,
+                            values: 0
+                        })
+
+                        //                        console.log("theoreticalWeekPlusOneDate")
+                    }
+
+                    if (i != 0) {
+
+                        if (JSON.stringify(theoreticalWeekMinusOneDate) != JSON.stringify(d.key)) {
+
+                            // tempIn is just of temporary string conversions. '"' need to be removed.å
+                            var tempIn = JSON.stringify(theoreticalWeekMinusOneDate).replace("\"", "").replace("\"", "")
+
+                            // Adding the new Zeroed entry at relevant location so as to avoid sorting.
+                            data.splice(i - 1, 1, {
+                                key: tempIn,
+                                values: 0
+                            })
+                        }
+                    }
+
+                    theoreticalWeekMinusOneDate = moment(d.key).subtract(1, 'week')
+
+                    actualPreviousWeekDate = d.key
+
+                })
+            }
+
+            // console.log(data)
 
             x.domain(d3.extent(data, function(d) {
                 return parseDate(d.key);
@@ -500,7 +594,7 @@ function grandPlotter(pageIDin) {
 
         var dataSource = dataSource
 
-        normalPlotter(dataSource, "#one", "none", "size", "size")
+        normalPlotter(dataSource, "#one", "none", "size", "size", "week")
 
         //console.log(dataSource)
 
