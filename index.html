@@ -127,6 +127,16 @@ var updateDisplay = function(queryResult) {
     }
 }
 
+function getImageDimensions(url, callback) {
+    var img = new Image();
+    img.src = url;
+    img.onload = function() {
+        callback(this.width, this.height);
+    }
+}
+
+var thereIs;
+
 /* The search functionality ends */
 
 // grandPlotter("April_2015_Nepal_earthquake")
@@ -269,6 +279,8 @@ function grandPlotter(pageIDin) {
                 //console.log('asd')
                 // var linkAddress = getData("http://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
 
+                // getMeta("https://upload.wikimedia.org/wikipedia/commons/a/ab/China_edcp_location_map.svg");
+
                 linkAddress = data;
 
                 var pageID = Object.keys(linkAddress.query.pages)[0]
@@ -280,10 +292,18 @@ function grandPlotter(pageIDin) {
                     photoUrl = photoUrl.substring(13)
                     photoUrl = photoUrl.substring(0, photoUrl.length - 2);
 
-                    runNow(photoUrl, finaljsonObject)
+                    getImageDimensions(
+                        photoUrl,
+                        function(width, height) {
+                            thereIs = width;
+                            runNow(photoUrl, width, height, finaljsonObject)
+                        }
+                    );
+
                     return finaljsonObject
                 } else {
-                    runNow("assets/defaultImage.jpg", finaljsonObject)
+
+                    runNow("assets/defaultImage.jpg", 1000, 500, finaljsonObject)
                     return finaljsonObject
                 }
 
@@ -292,7 +312,7 @@ function grandPlotter(pageIDin) {
         })
     }
 
-    function runNow(picUrl, dataSource) {
+    function runNow(picUrl, picWidth, picHeight, dataSource) {
 
         function normalPlotter(dataSource, idname, interpolation, parameter, plotParameter, timeDuration) {
 
@@ -365,7 +385,7 @@ function grandPlotter(pageIDin) {
                     tempDate = tempDate.concat("T00:00:01.000Z");
                     d.timestamp = tempDate;
 
-                } 
+                }
 
                 if (timeDuration == "week") {
 
@@ -501,8 +521,6 @@ function grandPlotter(pageIDin) {
                             key: tempIn,
                             values: 0
                         })
-
-                        //                        console.log("theoreticalWeekPlusOneDate")
                     }
 
                     if (i != 0) {
@@ -537,23 +555,49 @@ function grandPlotter(pageIDin) {
             }));
 
             // The opacity rectangle and the image need to be above everything else. Otherwise the graphs and the text would be hidden
+
+            // Image Bleed Stuff
             var imgs = svgFull.selectAll("image").data([0]);
             imgs.enter()
                 .append("svg:image")
                 .attr("xlink:href", function(d) {
+
+                    console.log(picHeight + ' ' + picWidth)
+
                     if (picUrl == undefined) {
                         return "assets/defaultImage.jpg"
                     } else {
                         return picUrl
                     }
                 })
-                // .attr("x", "0")
-                // .attr("y", "0")
-                .attr("width", width + margin.left + margin.right)
-                .attr("overflow-x", "hidden")
-                .attr("overflow-y", "hidden")
-                //.attr("width", "100%")
-                .attr("height", height + margin.top + margin.bottom);
+                .attr("x", function(d) {
+                    if (picHeight / picWidth <= 572 / 1008) {
+                        return (0.5) * ( 572 / picHeight ) * picWidth
+                    } else {
+                        return 0
+                    }
+                })
+                .attr("y", function(d) {
+                    if (picHeight / picWidth <= 572 / 1008) {
+                        return 0
+                    } else {
+                        return (-0.5) * ( 1008 / picWidth ) * picHeight
+                    }
+                })
+                .attr("width", function(d) {
+                    if (picHeight / picWidth <= 572 / 1008) {
+                        return ( 572 / picHeight ) * picWidth
+                    } else {
+                        return 1008
+                    }
+                })
+                .attr("height", function(d) {
+                    if (picHeight / picWidth <= 572 / 1008) {
+                        return 572
+                    } else {
+                        return ( 1008 / picWidth ) * picHeight
+                    }
+                });
 
             if (picUrl != "assets/defaultImage.jpg") {
 
