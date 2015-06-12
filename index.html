@@ -563,10 +563,8 @@ function grandPlotter(pageIDin) {
             imgs.enter()
                 .append("svg:image")
                 .attr("xlink:href", function(d) {
-
-                    console.log(picHeight + ' ' + picWidth)
-
                     if (picUrl == undefined) {
+                        picUrl = "assets/defaultImage.jpg"
                         return "assets/defaultImage.jpg"
                     } else {
                         return picUrl
@@ -574,7 +572,7 @@ function grandPlotter(pageIDin) {
                 })
                 .attr("x", function(d) {
                     if (picUrl != "assets/defaultImage.jpg") {
-                        if (picHeight / picWidth < fullBleedHeight / fullBleedWidth) {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
                             return (((0.5) * (fullBleedHeight / picHeight) * picWidth) - (fullBleedWidth / 2))
                         } else {
                             return 0
@@ -585,10 +583,10 @@ function grandPlotter(pageIDin) {
                 })
                 .attr("y", function(d) {
                     if (picUrl != "assets/defaultImage.jpg") {
-                        if (picHeight / picWidth < fullBleedHeight / fullBleedWidth) {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
                             return 0
                         } else {
-                            return 0
+                            return (((-0.5) * (fullBleedWidth / picWidth) * picHeight) + (fullBleedHeight / 2))
                         }
                     } else {
                         return 0
@@ -616,6 +614,15 @@ function grandPlotter(pageIDin) {
                         return fullBleedHeight
                     }
                 });
+
+            var img = svgFull.selectAll("image").data([0]);
+            img.enter()
+                .append("svg:image")
+                .attr("xlink:href", "assets/wikipediaW.png" )
+                .attr("x", 0 )
+                .attr("y", 0 )
+                .attr("width", 100 )
+                .attr("height", 100 );
 
             if (picUrl != "assets/defaultImage.jpg") {
 
