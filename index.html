@@ -318,15 +318,17 @@ function grandPlotter(pageIDin) {
 
             $('#one').html('');
 
-            // Keep in mind: http://bl.ocks.org/mbostock/3019563
+            var fullBleedWidth = 1008;
+            var fullBleedHeight = 572;
+
             var margin = {
                     top: 20,
                     right: 20,
                     bottom: 30,
                     left: 50
                 },
-                width = 958 - margin.left - margin.right,
-                height = 532 - margin.top - margin.bottom;
+                width = fullBleedWidth - margin.left - margin.right,
+                height = fullBleedHeight - margin.top - margin.bottom;
 
             //var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
             var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%S.%LZ").parse;
@@ -571,31 +573,47 @@ function grandPlotter(pageIDin) {
                     }
                 })
                 .attr("x", function(d) {
-                    if (picHeight / picWidth <= 572 / 1008) {
-                        return (0.5) * ( 572 / picHeight ) * picWidth
+                    if (picUrl != "assets/defaultImage.jpg") {
+                        if (picHeight / picWidth < fullBleedHeight / fullBleedWidth) {
+                            return (((0.5) * (fullBleedHeight / picHeight) * picWidth) - (fullBleedWidth / 2))
+                        } else {
+                            return 0
+                        }
                     } else {
                         return 0
                     }
                 })
                 .attr("y", function(d) {
-                    if (picHeight / picWidth <= 572 / 1008) {
-                        return 0
+                    if (picUrl != "assets/defaultImage.jpg") {
+                        if (picHeight / picWidth < fullBleedHeight / fullBleedWidth) {
+                            return 0
+                        } else {
+                            return 0
+                        }
                     } else {
-                        return (-0.5) * ( 1008 / picWidth ) * picHeight
+                        return 0
                     }
                 })
                 .attr("width", function(d) {
-                    if (picHeight / picWidth <= 572 / 1008) {
-                        return ( 572 / picHeight ) * picWidth
+                    if (picUrl != "assets/defaultImage.jpg") {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                            return (fullBleedHeight / picHeight) * picWidth
+                        } else {
+                            return fullBleedWidth
+                        }
                     } else {
-                        return 1008
+                        return fullBleedWidth
                     }
                 })
                 .attr("height", function(d) {
-                    if (picHeight / picWidth <= 572 / 1008) {
-                        return 572
+                    if (picUrl != "assets/defaultImage.jpg") {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                            return fullBleedHeight
+                        } else {
+                            return (fullBleedWidth / picWidth) * picHeight
+                        }
                     } else {
-                        return ( 1008 / picWidth ) * picHeight
+                        return fullBleedHeight
                     }
                 });
 
