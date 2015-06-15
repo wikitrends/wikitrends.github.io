@@ -589,13 +589,12 @@ function grandPlotter(pageIDin) {
 
                     // 2015-06-08T23:47:06Z
 
-                    var theDayMisnomerMinus = moment(d.key).add(1, 'month')
-                    var theDayMisnomerMinusMonth = (d.key).substr(5, 6)
+                    var theDayMisnomerMonth = (d.key).substr(5, 6)
 
                     var initialPart = (d.key).substr(0, 4)
                     var latterPart = "-01T00:00:01.000Z"
 
-                    var theDayMisnomerMinus = parseInt(theDayMisnomerMinusMonth);
+                    var theDayMisnomerMinus = parseInt(theDayMisnomerMonth);
 
                     if (theDayMisnomerMinus == 12) {
 
@@ -618,6 +617,7 @@ function grandPlotter(pageIDin) {
 
                         // console.log(theDayMisnomerMinus)
                     }
+
 
                     var theDay = moment(d.key)
 
@@ -656,7 +656,38 @@ function grandPlotter(pageIDin) {
                     // END
 
                     // Checks for the next 
+
+                    var theDayMisnomerMonth = (d.key).substr(5, 6)
+
+                    var initialPart = (d.key).substr(0, 4)
+                    var latterPart = "-01T00:00:01.000Z"
+
+                    var theDayMisnomerPlus = parseInt(theDayMisnomerMonth);
+
+                    if (theDayMisnomerPlus == 1) {
+
+                        // Getting year + 1 & month = 01
+                        initialPart = (parseInt(initialPart) - 1).toString()
+                        theDayMisnomerPlus = "12"
+
+                        theDayMisnomerPlus = initialPart + "-" + theDayMisnomerPlus + latterPart;
+                        console.log(theDayMisnomerPlus)
+
+                    } else {
+                        theDayMisnomerPlus = theDayMisnomerPlus - 1;
+                        theDayMisnomerPlus = theDayMisnomerPlus.toString()
+
+                        // To add 0 in front of months. String socery.
+                        if (theDayMisnomerPlus.length == 1) {
+                            theDayMisnomerPlus = initialPart + "-0" + theDayMisnomerPlus + latterPart;
+                        } else {
+                            theDayMisnomerPlus = initialPart + "-" + theDayMisnomerPlus + latterPart;
+                        }
+
+                        // console.log(theDayMisnomerMinus)
+                    }
                     theDayMisnomerPlus = moment(d.key).subtract(1, 'month')
+                    console.log(theDayMisnomerPlus)
 
                     // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
                     previousDateActual = d.key;

@@ -1,0 +1,179 @@
+<html>
+
+<head>
+    <meta charset="utf-8">
+
+
+    <!-- Bootstrap and JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <!-- <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    -->
+
+    <!-- Font Files -->
+    <link href="http://fonts.googleapis.com/css?family=Open+Sans:400,300" rel="stylesheet" type="text/css">
+    <!-- <link href="http://netdna.bootstrapcddn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" type="text/css"> 
+    -->
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,900" rel="stylesheet" type="text/css">
+
+
+    <!-- StyleSheets -->
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- Core D3 files -->
+    <script src="http://d3js.org/d3.v3.js"></script>
+
+    <!-- Extensions or Addons -->
+    <script src="http://cdn.jsdelivr.net/lodash/2.4.1/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+    <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.min.js"></script>
+
+</head>
+
+<body>
+
+    <i class="fa fa-search"></i>
+    <input type="text" name="searchQuery" placeholder="Search">
+
+    <div class="num_results">
+        <p class="num_results">Showing results 1 to 10 of 1285</p>
+    </div>
+    <div id="results_pane">
+        <div class="result_card">
+            <a nohref="" onclick="grandPlotter(10531)">
+                <p>El Niño</p>
+            </a>
+        </div>
+        <div class="result_card">
+            <a nohref="" onclick="grandPlotter(14533)">
+                <p>India</p>
+            </a>
+        </div>
+        <div class="result_card">
+            <a nohref="" onclick="grandPlotter(293270)">
+                <p>Heat wave</p>
+            </a>
+        </div>
+        <div class="result_card">
+            <a nohref="" onclick="grandPlotter(797653)">
+                <p>Climate of India</p>
+            </a>
+        </div>
+        <div class="result_card">
+            <a nohref="" onclick="grandPlotter(3960800)">
+                <p>List of natural disasters by death toll</p>
+            </a>
+        </div>
+        <div class="result_card">
+            <a nohref="" onclick="grandPlotter(11749177)">
+                <p>2007 Asian heat wave</p>
+            </a>
+        </div>
+        <div class="result_card">
+            <a nohref="" onclick="grandPlotter(15111096)">
+                <p>2003 North Indian Ocean cyclone season</p>
+            </a>
+        </div>
+        <div class="result_card">
+            <a nohref="" onclick="grandPlotter(20853041)">
+                <p>2002 India heat wave</p>
+            </a>
+        </div>
+        <div class="result_card">
+            <a nohref="" onclick="grandPlotter(31050128)">
+                <p>Climate of Uttar Pradesh</p>
+            </a>
+        </div>
+        <div class="result_card">
+            <a nohref="" onclick="grandPlotter(46786352)">
+                <p>2015 Indian heat wave</p>
+            </a>
+        </div>
+    </div>
+    <div id="one">
+        <svg id="exportThis" width="958" height="532">
+            <g transform="translate(50,20)">
+                <g transform="translate(-50,-20)">
+
+                    <!-- 1500 width 1615 height -->
+
+                    <image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="http://upload.wikimedia.org/wikipedia/commons/d/dc/India_location_map.svg"   width="958";
+  height="1615" x="0" y="-500"></image>
+                    <rect width="958" fill="black" opacity="0.7" z-index="0" height="700"></rect>
+                </g>
+                <g class="x axis" transform="translate(0,482)">
+                    <g class="tick" transform="translate(67.46998366013072,0)" style="opacity: 1;">
+                        <line y2="6" x2="0"></line>
+                        <text dy=".71em" y="9" x="0" style="text-anchor: middle;">Mon 25</text>
+                    </g>
+                    <g class="tick" transform="translate(171.94057189542485,0)" style="opacity: 1;">
+                        <line y2="6" x2="0"></line>
+                        <text dy=".71em" y="9" x="0" style="text-anchor: middle;">Wed 27</text>
+                    </g>
+                    <g class="tick" transform="translate(276.41116013071894,0)" style="opacity: 1;">
+                        <line y2="6" x2="0"></line>
+                        <text dy=".71em" y="9" x="0" style="text-anchor: middle;">Fri 29</text>
+                    </g>
+                    <g class="tick" transform="translate(380.8817483660131,0)" style="opacity: 1;">
+                        <line y2="6" x2="0"></line>
+                        <text dy=".71em" y="9" x="0" style="text-anchor: middle;">May 31</text>
+                    </g>
+                    <g class="tick" transform="translate(433.11704248366016,0)" style="opacity: 1;">
+                        <line y2="6" x2="0"></line>
+                        <text dy=".71em" y="9" x="0" style="text-anchor: middle;">June</text>
+                    </g>
+                    <g class="tick" transform="translate(537.5876307189543,0)" style="opacity: 1;">
+                        <line y2="6" x2="0"></line>
+                        <text dy=".71em" y="9" x="0" style="text-anchor: middle;">Wed 03</text>
+                    </g>
+                    <g class="tick" transform="translate(642.0582189542483,0)" style="opacity: 1;">
+                        <line y2="6" x2="0"></line>
+                        <text dy=".71em" y="9" x="0" style="text-anchor: middle;">Fri 05</text>
+                    </g>
+                    <g class="tick" transform="translate(746.5288071895425,0)" style="opacity: 1;">
+                        <line y2="6" x2="0"></line>
+                        <text dy=".71em" y="9" x="0" style="text-anchor: middle;">Jun 07</text>
+                    </g>
+                    <g class="tick" transform="translate(850.9993954248366,0)" style="opacity: 1;">
+                        <line y2="6" x2="0"></line>
+                        <text dy=".71em" y="9" x="0" style="text-anchor: middle;">Tue 09</text>
+                    </g>
+                    <path class="domain" d="M0,6V0H888V6"></path>
+                </g>
+                <g class="y axis">
+                    <g class="tick" transform="translate(0,482)" style="opacity: 1;">
+                        <line x2="-6" y2="0"></line>
+                        <text dy=".32em" x="-9" y="0" style="text-anchor: end;">0</text>
+                    </g>
+                    <g class="tick" transform="translate(0,419.35849056603774)" style="opacity: 1;">
+                        <line x2="-6" y2="0"></line>
+                        <text dy=".32em" x="-9" y="0" style="text-anchor: end;">10</text>
+                    </g>
+                    <g class="tick" transform="translate(0,356.7169811320755)" style="opacity: 1;">
+                        <line x2="-6" y2="0"></line>
+                        <text dy=".32em" x="-9" y="0" style="text-anchor: end;">20</text>
+                    </g>
+                    <g class="tick" transform="translate(0,294.07547169811323)" style="opacity: 1;">
+                        <line x2="-6" y2="0"></line>
+                        <text dy=".32em" x="-9" y="0" style="text-anchor: end;">30</text>
+                    </g>
+                    <g class="tick" transform="translate(0,231.43396226415092)" style="opacity: 1;">
+                        <line x2="-6" y2="0"></line>
+                        <text dy=".32em" x="-9" y="0" style="text-anchor: end;">40</text>
+                    </g>
+                    <g class="tick" transform="translate(0,168.79245283018867)" style="opacity: 1;">
+                        <line x2="-6" y2="0"></line>
+                        <text dy=".32em" x="-9" y="0" style="text-anchor: end;">50</text>
+                    </g>
+                    <path class="domain" d="M-6,150H0V482H-6"></path>
+                    <text transform="rotate(-90)" y="6" dy=".71em" style="text-anchor: end;"></text>
+                </g>
+                <path class="upperline" d="M888,482L783.5294117647059,463.20754716981133L731.2941176470588,475.7358490566038L679.0588235294117,400.5660377358491L626.8235294117648,406.8301886792453L574.5882352941177,419.35849056603774L522.3529411764706,362.9811320754717L470.11764705882354,438.1509433962264L417.88235294117646,444.41509433962267L365.6470588235294,362.9811320754717L313.4117647058824,394.3018867924528L261.1764705882353,243.9622641509434L208.94117647058823,206.37735849056602L156.7058823529412,287.811320754717L104.47058823529412,150L52.23529411764706,319.1320754716981L0,438.1509433962264" fill="white" stroke="#3FC380" stroke-width="1px"></path>
+            </g>
+        </svg>
+    </div>
+
+
+</body>
+
+</html>
