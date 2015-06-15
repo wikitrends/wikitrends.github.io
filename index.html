@@ -55,11 +55,11 @@ $(document).ready(function() {
 
 var search = function(query) {
     $.ajax({
-        url: 'http://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=' + query,
+        url: 'https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=' + query,
         type: 'GET',
         dataType: 'jsonp',
         headers: {
-            'Api-User-Agent': 'WikiReader/0.1.0'
+            'Api-User-Agent': 'WikiTrends/0.1.0'
         }
     }).success(function(data, status) {
         updateNumResults(data.query);
@@ -71,7 +71,7 @@ var search = function(query) {
 
 var requestArticleExtracts = function(queryResult) {
     // Request extracts for each of the articles found in the search
-    var extractQuery = 'http://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exsentences=2&exlimit=max&exintro=&explaintext=&titles=';
+    var extractQuery = 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exsentences=2&exlimit=max&exintro=&explaintext=&titles=';
 
     // Add each page title to the query
     var searchResults = queryResult.search;
@@ -86,7 +86,7 @@ var requestArticleExtracts = function(queryResult) {
         type: 'GET',
         dataType: 'jsonp',
         headers: {
-            'Api-User-Agent': 'WikiReader/0.1.0'
+            'Api-User-Agent': 'WikiTrends/0.1.0'
         }
     }).success(function(data, status) {
         updateDisplay(data);
@@ -412,10 +412,14 @@ function grandPlotter(pageIDin) {
 
                 }
 
-                // // Hours
-                // var tempDate = d.timestamp;
-                // tempDate = tempDate.substring(0, 13);
-                // tempDate = tempDate.concat(":00:00.000Z");
+                if (timeDuration == "hour") {
+
+                    var tempDate = d.timestamp;
+                    tempDate = tempDate.substring(0, 13);
+                    tempDate = tempDate.concat(":00:00.000Z");
+                    d.timestamp = tempDate;
+
+                }
 
                 d.values = 1;
 
@@ -618,11 +622,14 @@ function grandPlotter(pageIDin) {
             var img = svgFull.selectAll("image").data([0]);
             img.enter()
                 .append("svg:image")
-                .attr("xlink:href", "assets/wikipediaW.png" )
-                .attr("x", 0 )
-                .attr("y", 0 )
-                .attr("width", 100 )
-                .attr("height", 100 );
+                .attr("xlink:href", function(d) {
+                    console.log('asd')
+                    return "assets/wikipediaW.png"
+                })
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", 100)
+                .attr("height", 100);
 
             if (picUrl != "assets/defaultImage.jpg") {
 
@@ -663,7 +670,7 @@ function grandPlotter(pageIDin) {
 
         var dataSource = dataSource
 
-        normalPlotter(dataSource, "#one", "none", "size", "size", "day")
+        normalPlotter(dataSource, "#one", "none", "size", "size", "hour")
 
         //console.log(dataSource)
 
