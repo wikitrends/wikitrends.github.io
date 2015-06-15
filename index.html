@@ -38,7 +38,9 @@
 
     </div>
     <div id="one"></div>
-
+    <div id="two"></div>
+    <div id="three"></div>
+    <div id="four"></div>
 </body>
 
 <script>
@@ -55,23 +57,23 @@ $(document).ready(function() {
 
 var search = function(query) {
     $.ajax({
-        url: 'https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=' + query,
+        url: 'http://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=' + query,
         type: 'GET',
         dataType: 'jsonp',
         headers: {
-            'Api-User-Agent': 'WikiTrends/0.1.0'
+            'Api-User-Agent': 'WikiReader/0.1.0'
         }
     }).success(function(data, status) {
         updateNumResults(data.query);
         requestArticleExtracts(data.query);
     }).error(function(data, status) {
-        console.log("ERROR! " + status);
+        // console.log("ERROR! " + status);
     });
 };
 
 var requestArticleExtracts = function(queryResult) {
     // Request extracts for each of the articles found in the search
-    var extractQuery = 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exsentences=2&exlimit=max&exintro=&explaintext=&titles=';
+    var extractQuery = 'http://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exsentences=2&exlimit=max&exintro=&explaintext=&titles=';
 
     // Add each page title to the query
     var searchResults = queryResult.search;
@@ -86,7 +88,7 @@ var requestArticleExtracts = function(queryResult) {
         type: 'GET',
         dataType: 'jsonp',
         headers: {
-            'Api-User-Agent': 'WikiTrends/0.1.0'
+            'Api-User-Agent': 'WikiReader/0.1.0'
         }
     }).success(function(data, status) {
         updateDisplay(data);
@@ -137,6 +139,16 @@ function getImageDimensions(url, callback) {
 
 var thereIs;
 
+// Nepal Earthquake
+// grandPlotter('46514718')
+
+// Jurrasic
+// grandPlotter('2615708')
+
+/* The search functionality ends */
+
+// grandPlotter("April_2015_Nepal_earthquake")
+
 /* The search functionality ends */
 
 // grandPlotter("April_2015_Nepal_earthquake")
@@ -158,7 +170,7 @@ function grandPlotter(pageIDin) {
                 .startAngle(0);
 
             var svg = d3.select(config.container).append("svg")
-                .attr("id", config.id)
+                .attr("id", "loader")
                 .attr("width", config.width)
                 .attr("height", config.height)
                 .append("g")
@@ -237,6 +249,7 @@ function grandPlotter(pageIDin) {
 
         getData(url, function(data) {
 
+            // This part runs when the pageEdits function or the getData function is used to get the page edits. Otherwise the 'else' part is used (for the thumbnail dimensions and URL)
             if (url.indexOf("revisions") > -1) {
 
                 jsonObject = data;
@@ -247,8 +260,6 @@ function grandPlotter(pageIDin) {
 
                 // Get last revision ID
                 lastRevID = jsonObject[Object.keys(jsonObject)[Object.keys(jsonObject).length - 1]].revid
-
-                //console.log(lastRevID)
 
                 // This is the length of the useful JSON object
                 //c.log(Object.keys(jsonObject).length)
@@ -264,19 +275,20 @@ function grandPlotter(pageIDin) {
                 // Run this part of the if - else everytime only for the last time when the callback exits.
                 else {
 
+                    finaljsonObject = finaljsonObject.concat(jsonObject)
+                        // Not sure about this little thing over here ^
+
+                    // For the pageImage thingy
                     linkAddress = pageEdits("http://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
 
                     // var pageID = Object.keys(linkAddress.query.pages)[0]
                     // linkAddress = linkAddress.query.pages[pageID].thumbnail
-
-                    // console.log(linkAddress)
 
                     // initialises runNow function which has the d3 stuff. Passes the concated data as the parameter.
 
                 }
 
             } else {
-                //console.log('asd')
                 // var linkAddress = getData("http://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
 
                 // getMeta("https://upload.wikimedia.org/wikipedia/commons/a/ab/China_edcp_location_map.svg");
@@ -284,6 +296,8 @@ function grandPlotter(pageIDin) {
                 linkAddress = data;
 
                 var pageID = Object.keys(linkAddress.query.pages)[0]
+                var pageTitle = linkAddress.query.pages[pageID].title
+
                 linkAddress = linkAddress.query.pages[pageID].thumbnail
 
                 // Extrememly Sorry for this shitfuckery!
@@ -296,14 +310,14 @@ function grandPlotter(pageIDin) {
                         photoUrl,
                         function(width, height) {
                             thereIs = width;
-                            runNow(photoUrl, width, height, finaljsonObject)
+                            runNow(pageTitle, photoUrl, width, height, finaljsonObject)
                         }
                     );
 
                     return finaljsonObject
                 } else {
 
-                    runNow("assets/defaultImage.jpg", 1000, 500, finaljsonObject)
+                    runNow(pageTitle, "assets/defaultImage.jpg", 1000, 500, finaljsonObject)
                     return finaljsonObject
                 }
 
@@ -312,11 +326,12 @@ function grandPlotter(pageIDin) {
         })
     }
 
-    function runNow(picUrl, picWidth, picHeight, dataSource) {
+    function runNow(pageTitle, picUrl, picWidth, picHeight, dataSource) {
 
         function normalPlotter(dataSource, idname, interpolation, parameter, plotParameter, timeDuration) {
 
-            $('#one').html('');
+            $('#loader').html('');
+            $(idname).html('')
 
             var fullBleedWidth = 1008;
             var fullBleedHeight = 572;
@@ -361,9 +376,12 @@ function grandPlotter(pageIDin) {
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                .attr('class', 'svgBase')
+
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             var svgFull = svgBase.append("g")
+                .attr('class', 'svgFull')
                 // .attr("width", width + margin.left + margin.right)
                 // .attr("height", height + margin.top + margin.bottom)
                 .attr("transform", "translate(" + (-1) * margin.left + "," + (-1) * margin.top + ")");
@@ -377,7 +395,7 @@ function grandPlotter(pageIDin) {
 
             dataSource.forEach(function(d) {
 
-                console.log(timeDuration)
+                // console.log(timeDuration)
 
                 if (timeDuration == "day") {
 
@@ -405,21 +423,28 @@ function grandPlotter(pageIDin) {
                         d.timestamp = JSON.stringify(moment(d.timestamp).subtract(dayOfTheWeek, "days")).replace("\"", "").replace("\"", "")
                         weekInitial = d.timestamp;
 
-                        console.log(moment(d.timestamp).day())
+                        // console.log(moment(d.timestamp).day())
 
                         weekNumber = thisWeekNumber
                     }
 
                 }
 
-                if (timeDuration == "hour") {
+                if (timeDuration == "month") {
 
+                    // Month
                     var tempDate = d.timestamp;
-                    tempDate = tempDate.substring(0, 13);
-                    tempDate = tempDate.concat(":00:00.000Z");
+                    tempDate = tempDate.substring(0, 7);
+                    tempDate = tempDate.concat("-01T00:00:01.000Z");
                     d.timestamp = tempDate;
+                    // console.log(d.timestamp)
 
                 }
+
+                // // Hours
+                // var tempDate = d.timestamp;
+                // tempDate = tempDate.substring(0, 13);
+                // tempDate = tempDate.concat(":00:00.000Z");
 
                 d.values = 1;
 
@@ -427,7 +452,7 @@ function grandPlotter(pageIDin) {
 
             var data = d3.nest()
                 .key(function(d) {
-                    console.log(d.timestamp + " " + moment(d.timestamp).day())
+                    // console.log(d.timestamp + " " + moment(d.timestamp).day())
                     return d.timestamp;
                 })
                 .rollup(function(d) {
@@ -514,7 +539,7 @@ function grandPlotter(pageIDin) {
 
                     var currentWeekDate = d.key
                     var theoreticalWeekPlusOneDate = moment(d.key).add(1, 'week')
-                        //                    console.log(theoreticalWeekPlusOneDate)
+                        //                  // console.log(theoreticalWeekPlusOneDate)
 
                     // This 'if' part checks the previous entry in the list! i.e. the +1 week date.
                     if (JSON.stringify(theoreticalWeekPlusOneDate) != JSON.stringify(actualPreviousWeekDate)) {
@@ -549,6 +574,97 @@ function grandPlotter(pageIDin) {
                     actualPreviousWeekDate = d.key
 
                 })
+            } else if (timeDuration == "month") {
+
+                // BEWARE BEWARE BEWARE!
+                // Countless hours have been spent trying to get this part to work. 
+                // TLDR; On MediaWiki APIs, time runs backwards!
+
+                // console.log(d.timestamp)
+
+                var previousDateActual = "";
+                var theDayMisnomerPlus;
+
+                data.forEach(function(d, i) {
+
+                    // 2015-06-08T23:47:06Z
+
+                    var theDayMisnomerMinus = moment(d.key).add(1, 'month')
+                    var theDayMisnomerMinusMonth = (d.key).substr(5, 6)
+
+                    var initialPart = (d.key).substr(0, 4)
+                    var latterPart = "-01T00:00:01.000Z"
+
+                    var theDayMisnomerMinus = parseInt(theDayMisnomerMinusMonth);
+
+                    if (theDayMisnomerMinus == 12) {
+
+                        // Getting year + 1 & month = 01
+                        initialPart = (parseInt(initialPart) + 1).toString()
+                        theDayMisnomerMinus = "01"
+
+                        theDayMisnomerMinus = initialPart + "-" + theDayMisnomerMinus + latterPart;
+
+                    } else {
+                        theDayMisnomerMinus = theDayMisnomerMinus + 1;
+                        theDayMisnomerMinus = theDayMisnomerMinus.toString()
+
+                        // To add 0 in front of months. String socery.
+                        if (theDayMisnomerMinus.length == 1) {
+                            theDayMisnomerMinus = initialPart + "-0" + theDayMisnomerMinus + latterPart;
+                        } else {
+                            theDayMisnomerMinus = initialPart + "-" + theDayMisnomerMinus + latterPart;
+                        }
+
+                        // console.log(theDayMisnomerMinus)
+                    }
+
+                    var theDay = moment(d.key)
+
+                    var previousDate = moment(previousDateActual)
+
+                    if (JSON.stringify(theDayMisnomerMinus) != JSON.stringify(previousDate)) {
+
+                        // tempIn is just of temporary string conversions.
+                        var tempIn = JSON.stringify(theDayMisnomerMinus).replace("\"", "").replace("\"", "")
+                            // console.log(tempIn)
+
+                        // Adding the new Zeroed entry at relevant location so as to avoid sorting.
+                        data.splice(i, 1, {
+                            key: tempIn,
+                            values: 0
+                        })
+
+                    } else {}
+
+                    // START: At all costs, this needs to be in front before -> theDayMisnomerPlus = moment(d.key).subtract(1, 'days')
+                    if (i != 0) {
+                        if (JSON.stringify(theDayMisnomerPlus) != JSON.stringify(d.key)) {
+
+                            // tempIn is just of temporary string conversions. '"' need to be removed.å
+                            var tempIn = JSON.stringify(theDayMisnomerPlus).replace("\"", "").replace("\"", "")
+
+                            // Adding the new Zeroed entry at relevant location so as to avoid sorting.
+                            data.splice(i - 1, 1, {
+                                key: tempIn,
+                                values: 0
+                            })
+
+                        } else {}
+                    }
+
+                    // END
+
+                    // Checks for the next 
+                    theDayMisnomerPlus = moment(d.key).subtract(1, 'month')
+
+                    // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
+                    previousDateActual = d.key;
+
+                })
+
+                //console.log(data)
+
             }
 
             // console.log(data)
@@ -566,6 +682,7 @@ function grandPlotter(pageIDin) {
             var imgs = svgFull.selectAll("image").data([0]);
             imgs.enter()
                 .append("svg:image")
+                .attr('class', "images")
                 .attr("xlink:href", function(d) {
                     if (picUrl == undefined) {
                         picUrl = "assets/defaultImage.jpg"
@@ -619,17 +736,26 @@ function grandPlotter(pageIDin) {
                     }
                 });
 
-            var img = svgFull.selectAll("image").data([0]);
-            img.enter()
+            // Adding Wikipedia Logo
+            d3.select(idname).select('.svgBase')
                 .append("svg:image")
-                .attr("xlink:href", function(d) {
-                    console.log('asd')
-                    return "assets/wikipediaW.png"
-                })
+                .attr("xlink:href", "assets/wikipediaW.png")
                 .attr("x", 0)
                 .attr("y", 0)
-                .attr("width", 100)
-                .attr("height", 100);
+                .attr("width", 70)
+                .attr("height", 70);
+
+            d3.select(idname).select('.svgBase')
+                .append('text')
+                .text(pageTitle)
+                .attr("x", 100)
+                .attr("y", 45)
+                .attr("font-family", "Georgia")
+                .attr("font-size", function(d) {
+                    return "32px"
+                })
+                .attr("fill", "white")
+                .attr('opacity', "0.8");
 
             if (picUrl != "assets/defaultImage.jpg") {
 
@@ -668,9 +794,12 @@ function grandPlotter(pageIDin) {
 
         }
 
-        var dataSource = dataSource
+        normalPlotter(dataSource, "#one", "none", "size", "size", "day")
 
-        normalPlotter(dataSource, "#one", "none", "size", "size", "hour")
+        normalPlotter(dataSource, "#two", "none", "size", "size", "week")
+            // normalPlotter(dataSource, "#three", "none", "size", "size", "hour")
+
+        normalPlotter(dataSource, "#four", "none", "size", "size", "month")
 
         //console.log(dataSource)
 
