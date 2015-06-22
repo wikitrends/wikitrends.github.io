@@ -24,7 +24,7 @@
 
     <!-- Extensions or Addons
         <script src="https://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script> -->
-    <script src="js/wordCloud.js"></script>
+    <script src="js/wordcloud.js"></script>
     <script src="https://cdn.jsdelivr.net/lodash/2.4.1/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.min.js"></script>
@@ -121,7 +121,7 @@ $(document).ready(function() {
 
 var search = function(query) {
     $.ajax({
-        url: 'https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=' + query,
+        url: 'https://pt.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=' + query,
         type: 'GET',
         dataType: 'jsonp',
         headers: {
@@ -137,7 +137,7 @@ var search = function(query) {
 
 var requestArticleExtracts = function(queryResult) {
     // Request extracts for each of the articles found in the search
-    var extractQuery = 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exsentences=2&exlimit=max&exintro=&explaintext=&titles=';
+    var extractQuery = 'https://pt.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exsentences=2&exlimit=max&exintro=&explaintext=&titles=';
 
     // Add each page title to the query
     var searchResults = queryResult.search;
@@ -179,7 +179,7 @@ var updateDisplay = function(queryResult) {
         // I pray for forgiveness.
         // Todo: look for lightweight template libraries
         var htmlToAdd = "<div class='result_card'>";
-        // htmlToAdd += "<a target='_' "  href='https://en.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
+        // htmlToAdd += "<a target='_' "  href='https://pt.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
 
         // Using pages[pId].title doesn't work in API call. Hence use pageID
         htmlToAdd += "<a nohref onClick=\"grandPlotter(" + pages[pId].pageid + ")\">"
@@ -213,7 +213,7 @@ function weeklyPedia(parameter) {
             for (i = 0; i < useFulData.length; i++) {
 
                 var htmlToAdd = "<div class='weeklyPediaCards'>";
-                // htmlToAdd += "<a target='_' "  href='https://en.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
+                // htmlToAdd += "<a target='_' "  href='https://pt.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
 
                 // Using pages[pId].title doesn't work in API call. Hence use pageID
                 htmlToAdd += "<a nohref onClick=\"grandPlotter(" + useFulData[i].page_id + ")\">"
@@ -245,7 +245,7 @@ function weeklyPedia(parameter) {
             for (i = 0; i < useFulData.length; i++) {
 
                 var htmlToAdd = "<div class='weeklyPediaCards'>";
-                // htmlToAdd += "<a target='_' "  href='https://en.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
+                // htmlToAdd += "<a target='_' "  href='https://pt.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
 
                 // Using pages[pId].title doesn't work in API call. Hence use pageID
                 htmlToAdd += "<a nohref onClick=\"grandPlotter(" + useFulData[i].page_id + ")\">"
@@ -309,7 +309,7 @@ var thereIs;
 
 function grandPlotter(pageIDin) {
 
-    var timeLimit = "2015-04-15"
+    // var timeLimit = "2009-02-30"
 
     // $('#one').html('');
 
@@ -401,12 +401,12 @@ function grandPlotter(pageIDin) {
     var jsonObject;
     var lastRevID;
 
-    var linkInitialPageEdits = "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&pageids=" + pageID + "&format=json&callback=?"
+    var linkInitialPageEdits = "https://pt.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&pageids=" + pageID + "&format=json&callback=?"
 
-    var linkSubsequentPageEdits = "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?"
+    var linkSubsequentPageEdits = "https://pt.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?"
 
     // The limit of results returned currently set to 300. Total number of Wikipedias is 277 ( as of 16/6/15 )
-    var linkInitialWordCloud = "https://en.wikipedia.org/w/api.php?action=query&prop=langlinks&format=json&llprop=url%7Clangname%7Cautonym&lllimit=300&iwurl=" + "&pageids=" + pageID + "&format=json&callback=?"
+    var linkInitialWordCloud = "https://pt.wikipedia.org/w/api.php?action=query&prop=langlinks&format=json&llprop=url%7Clangname%7Cautonym&lllimit=300&iwurl=" + "&pageids=" + pageID + "&format=json&callback=?"
 
     function getData(url, callback) {
         return $.ajax({
@@ -455,7 +455,7 @@ function grandPlotter(pageIDin) {
 
                 if (Object.keys(impData).length == 500) {
 
-                    var loudJsonObjectlastRevID = impData[Object.keys(impData)[Object.keys(impData).length - 1]].revid
+                    var wordCloudJsonObjectlastRevID = impData[Object.keys(impData)[Object.keys(impData).length - 1]].revid
 
                     impDataConcated = impDataConcated.concat(impData)
                         // console.log(parameterTwo + "   ,   " + Object.keys(parameterOne).length)
@@ -506,7 +506,7 @@ function grandPlotter(pageIDin) {
 
                         // console.log(langLinksJsonObject)
 
-                        wordCloud("https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
+                        wordCloud("https://pt.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
 
                     }
                     // Since the mediaWiki API doesn't return the 'english' Wikipedia langlink.
@@ -559,7 +559,7 @@ function grandPlotter(pageIDin) {
 
                 if (Object.keys(jsonObject).length == 500) {
 
-                    pageEdits("https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?")
+                    pageEdits("https://pt.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?")
 
                     finaljsonObject = finaljsonObject.concat(jsonObject)
 
@@ -572,7 +572,7 @@ function grandPlotter(pageIDin) {
                         // Not sure about this little thing over here ^
 
                     // For the pageImage thingy
-                    linkAddress = pageEdits("https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
+                    linkAddress = pageEdits("https://pt.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
 
                     // var pageID = Object.keys(linkAddress.query.pages)[0]
                     // linkAddress = linkAddress.query.pages[pageID].thumbnail
@@ -582,7 +582,7 @@ function grandPlotter(pageIDin) {
                 }
 
             } else {
-                // var linkAddress = getData("https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
+                // var linkAddress = getData("https://pt.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
 
                 // getMeta("https://upload.wikimedia.org/wikipedia/commons/a/ab/China_edcp_location_map.svg");
 
@@ -759,25 +759,25 @@ function grandPlotter(pageIDin) {
                 .interpolate(interpolation)
                 .x(function(d) {
 
-                    // return x(parseDate(d.key));
+                    return x(parseDate(d.key));
 
-                    if (timeLimit != "") {
-                        if (moment(d.key).diff(moment(timeLimit)) > 0) {
-                            return x(parseDate(d.key));
-                        } else {
-                            // return x(parseDate(JSON.stringify(moment(timeLimit)).replace("\"", "").replace("\"", "")))
-                        }
-                    }
+                    // if (timeLimit != "") {
+                    //     if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                    //         return x(parseDate(d.key));
+                    //     } else {
+                    //         // return x(parseDate(JSON.stringify(moment(timeLimit)).replace("\"", "").replace("\"", "")))
+                    //     }
+                    // }
                 })
                 .y(function(d) {
 
-                    // return y(d.values);
+                    return y(d.values);
 
-                    if (timeLimit != "") {
-                        if (moment(d.key).diff(moment(timeLimit)) > 0) {
-                            return y(d.values);
-                        } else {}
-                    }
+                    // if (timeLimit != "") {
+                    //     if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                    //         return y(d.values);
+                    //     } else {}
+                    // }
                 });
 
             var svgBase = d3.select("body").select(idname).append("svg")
@@ -1171,25 +1171,25 @@ function grandPlotter(pageIDin) {
             //  console.log(JSON.stringify(finale, undefined, 2))
 
             x.domain(d3.extent(finale, function(d) {
-                if (timeLimit != "") {
-                    if (moment(d.key).diff(moment(timeLimit)) > 0) {
-                        return parseDate(d.key);
-                    } else {
-                        console.log('inHere')
-                        return parseDate(JSON.stringify(moment(timeLimit)).replace("\"", "").replace("\"", ""))
-                    }
-                }
+                // if (timeLimit != "") {
+                //     if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                return parseDate(d.key);
+                // } else {
+                // console.log('inHere')
+                // return parseDate(JSON.stringify(moment(timeLimit)).replace("\"", "").replace("\"", ""))
+                //     }
+                // }
             }))
             y.domain(d3.extent(finale, function(d) {
-                if (timeLimit != "") {
-                    if (moment(d.key).diff(moment(timeLimit)) > 0) {
-                        return d.values;
-                    } else {
-                        console.log(moment(d.key).diff(moment(timeLimit)))
-                        console.log('ere2123')
-                        return 0
-                    }
-                }
+                // if (timeLimit != "") {
+                //     if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                return d.values;
+                // } else {
+                // console.log(moment(d.key).diff(moment(timeLimit)))
+                // console.log('ere2123')
+                // return 0
+                // }
+                // }
             }));
 
             // The opacity rectangle and the image need to be above everything else. Otherwise the graphs and the text would be hidden
@@ -1319,7 +1319,7 @@ function grandPlotter(pageIDin) {
 
         }
 
-        function wordCloudLangLinks(dataSourceLangLinks, idname, wordText, fontSizeLowerBound, fontSizeUpperBound) {
+        function wordCloudLangLinks(dataSourceLangLinks, idname, wordText) {
 
             $('#loader').html('');
             $(idname).html('');
@@ -1328,35 +1328,7 @@ function grandPlotter(pageIDin) {
                 .domain([0, d3.max(dataSourceLangLinks, function(d) {
                     return d.totalEdits
                 })])
-                .range(
-                    [fontSizeLowerBound, fontSizeUpperBound]
-                ); // 95 because 100 was causing stuff to be missing
-
-            var fullBleedWidth = 1008;
-            var fullBleedHeight = 572;
-
-            var margin = {
-                    top: 20,
-                    right: 20,
-                    bottom: 30,
-                    left: 50
-                },
-                width = fullBleedWidth - margin.left - margin.right,
-                height = fullBleedHeight - margin.top - margin.bottom;
-
-            var svgBase = d3.select("body").select(idname).append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .append("g")
-                .attr('class', 'svgBase')
-
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-            var svgFull = svgBase.append("g")
-                .attr('class', 'svgFull')
-                // .attr("width", width + margin.left + margin.right)
-                // .attr("height", height + margin.top + margin.bottom)
-                .attr("transform", "translate(" + (-1) * margin.left + "," + (-1) * margin.top + ")");
+                .range([20, 80]); // 95 because 100 was causing stuff to be missing
 
             // var color = d3.scale.linear()
             //     .domain([100000,5000, 0])
@@ -1364,112 +1336,19 @@ function grandPlotter(pageIDin) {
             //     //.domain([1000, 700, 300, 100, 0])
             //     //.range(["#eee", "#e6e6e6", "#ddd", "#d6d6d6", "#ccc"]);
 
-            var imgs = svgFull.selectAll("image").data([0]);
-            imgs.enter()
-                .append("svg:image")
-                .attr('class', "images")
-                .attr("xlink:href", function(d) {
-                    if (picUrl == undefined) {
-                        picUrl = "assets/defaultImage.jpg"
-                        return "assets/defaultImage.jpg"
-                    } else {
-                        return picUrl
-                    }
-                })
-                .attr("x", function(d) {
-                    if (picUrl != "assets/defaultImage.jpg") {
-                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                            return (((0.5) * (fullBleedHeight / picHeight) * picWidth) - (fullBleedWidth / 2))
-                        } else {
-                            return 0
-                        }
-                    } else {
-                        return 0
-                    }
-                })
-                .attr("y", function(d) {
-                    if (picUrl != "assets/defaultImage.jpg") {
-                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                            return 0
-                        } else {
-                            return (((-0.5) * (fullBleedWidth / picWidth) * picHeight) + (fullBleedHeight / 2))
-                        }
-                    } else {
-                        return 0
-                    }
-                })
-                .attr("width", function(d) {
-                    if (picUrl != "assets/defaultImage.jpg") {
-                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                            return (fullBleedHeight / picHeight) * picWidth
-                        } else {
-                            return fullBleedWidth
-                        }
-                    } else {
-                        return fullBleedWidth
-                    }
-                })
-                .attr("height", function(d) {
-                    if (picUrl != "assets/defaultImage.jpg") {
-                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                            return fullBleedHeight
-                        } else {
-                            return (fullBleedWidth / picWidth) * picHeight
-                        }
-                    } else {
-                        return fullBleedHeight
-                    }
-                });
+            //  console.log(dataSourceLangLinks)
 
-            // Adding Wikipedia Logo
-            d3.select(idname).select('.svgBase')
-                .append("svg:image")
-                .attr("xlink:href", "assets/wikipediaW.png")
-                .attr("x", 0)
-                .attr("y", 0)
-                .attr("width", 70)
-                .attr("height", 70);
-
-            d3.select(idname).select('.svgBase')
-                .append('text')
-                .text(pageTitle)
-                .attr("x", 100)
-                .attr("y", 45)
-                .attr("font-family", "Georgia")
-                .attr("font-size", function(d) {
-                    return "32px"
-                })
-                .attr("fill", "white")
-                .attr('opacity', "0.8");
-
-            if (picUrl != "assets/defaultImage.jpg") {
-
-                var opacityRect = svgFull.append("rect")
-                    .attr("width", width + margin.right + margin.left)
-                    .attr("fill", "black")
-                    .attr("opacity", 0.7)
-                    .attr("z-index", 0)
-                    .attr("height", height + margin.top + margin.bottom);
-
-            }
-
-            var layout = d3.layout.cloud().size([1200, 700])
+            d3.layout.cloud().size([1000, 400])
                 .words(dataSourceLangLinks)
-                .padding(10)
                 .rotate(0)
-                .text(function(d) {
-                    if (wordText == "autonym") {
-                        return d.autonym;
-                    } else {
-                        return d.articleTitle;
-                    }
-                })
                 .fontSize(function(d) {
+                    // console.log(d.autonym + " ! " + d.totalEdits + " ! " + d.langname)
                     return sizeScale(d.totalEdits)
+                        // console.log(draw)
+                        // return d.totalEdits * 0.08;
                 })
                 .on("end", draw)
-
-            layout.start();
+                .start();
 
             // langLinksJsonObject.push({
             //             lang: parameterOne[parameterTwo].lang,
@@ -1480,15 +1359,14 @@ function grandPlotter(pageIDin) {
             //         })
 
             function draw(words) {
-                svgBase.append("g")
-                    .attr("transform", "translate(350,270)")
-                    .attr("width", 1100)
-                    .attr("height", 600)
+                d3.select("body").select(idname).append("svg")
+                    .attr("width", 1000)
+                    .attr("height", 400)
                     .attr("class", "wordcloud")
                     .append("g")
                     // without the transform, words words would get cutoff to the left and top, they would
                     // appear outside of the SVG area
-                    // .attr("transform", "translate(320,200)")
+                    .attr("transform", "translate(320,200)")
                     .selectAll("text")
                     .data(words)
                     .enter().append("text")
@@ -1496,7 +1374,7 @@ function grandPlotter(pageIDin) {
                         return sizeScale(d.totalEdits)
                     })
                     .style("fill", function(d, i) {
-                        return "#eee";
+                        return "#222";
                     })
                     .attr("transform", function(d) {
                         return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
@@ -1723,12 +1601,12 @@ function grandPlotter(pageIDin) {
         }
 
         if (origin == "pageEdits") {
-            // pageEditsPlotter(dataSource, "#one", "none", "size", "size", "day")
-            // pageEditsPlotter(dataSource, "#two", "none", "size", "size", "week")
+            pageEditsPlotter(dataSource, "#one", "none", "size", "size", "day")
+            pageEditsPlotter(dataSource, "#two", "none", "size", "size", "week")
 
         } else if (origin == "wordCloud") {
-            wordCloudLangLinks(langLinksJsonObject, "#three", "autonym", 20, 80)
-            wordCloudLangLinks(langLinksJsonObject, "#four", "articleTitle", 10, 50)
+            wordCloudLangLinks(langLinksJsonObject, "#three", "autonym")
+            wordCloudLangLinks(langLinksJsonObject, "#four", "articleTitle")
         } else if (origin == "pieChart") {
             langPieChartTest(langLinksJsonObject, "#five")
         }
@@ -1739,7 +1617,7 @@ function grandPlotter(pageIDin) {
     }
 
     // This runs the pageEdit graph!
-    // pageEdits(linkInitialPageEdits)
+    pageEdits(linkInitialPageEdits)
 
     // This runs the wordCloud graph!
     wordCloud(linkInitialWordCloud)
