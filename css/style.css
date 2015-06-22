@@ -19,6 +19,8 @@
     stroke-width: 1px;
 }*/
 
+
+
 .bottomline {
     fill: #E26A6A;
     stroke: none;
@@ -26,16 +28,46 @@
 }
 
 #one {
+    margin-top: 20px;
     margin-left: 30px;
-    float: left;
+      width: 100%;
+    margin-bottom: 100px;
 }
 
+.graphHeader {
+    margin-left: 30px;
+}
+.graphDescription {
+    margin-left: 30px;
+}
+
+
 #two {
-    margin-bottom: 100px;
+    margin-left: 30px;
+          width: 100%;
+
+        margin-bottom: 100px;
 }
 
 #three {
-    margin-bottom: 100px;
+    margin-left: 30px;
+      width: 100%;
+        margin-bottom: 100px;
+}
+#five {
+    margin-left: 30px;
+      width: 100%;
+        margin-bottom: 100px;
+}
+#four {
+    margin-left: 30px;
+      width: 100%;
+        margin-bottom: 100px;
+}
+#three {
+    margin-left: 30px;
+      width: 100%;
+        margin-bottom: 100px;
 }
 /* Random Stuff */
 
@@ -197,15 +229,21 @@ input {
     border: 1px solid #fa8734;
     color: #004c75;
     border-radius: 2px;
-    width: 17.5%;
-    padding: 5px;
-    height: 26px;
-    padding-left: 25px;
+    width: 100%;
+    padding: 10px;
+/*    height: 26px;
+*/    padding-left: 25px;
     font-size: 1.25em;
 }
 
 input:focus {
     outline: none;
+}
+
+.controls {
+    float: left; 
+    margin: 20px;
+    width: 20%;
 }
 
 .fa-search {
@@ -214,16 +252,61 @@ input:focus {
     left: 27px;
 }
 
+.suggestedTitles {
+    height: 40px;
+    background-color: #F4B282;
+    color: #eee;
+    border-left: 5px solid #FA7718;
+    margin-bottom: 10px;
+    padding: 5px 25px;
+    text-align: left;
+    margin-bottom: 20px;
+}
+#closeMostEdits {
+    float: right;
+    padding-top: 6px;
+    display: none;
+        color: #222;
+
+}
+#closeMostNewEdits {
+    float: right;
+    padding-top: 6px;
+    display: none;
+    color: #222;
+}
+.suggestedTitles p {
+    margin: 0;
+    float: left;
+    font-family: "Source Sans Pro";
+    line-height: 1.5em;
+}
+
 .num_results {
     color: #004c75;
     font-weight: thin;
     font-size: 10px;
 }
 
+.weeklyPedia {
+    color: #004c75;
+    font-weight: thin;
+    font-size: 10px;
+    margin-bottom: 
+}
+
+#suggestionsPane {
+}
+
+.graphs {
+    width: 70%;
+    float: left;
+}
+
 #results_pane {
     float: left;
-    width: 20%;
-}
+/*    width: 20%;
+*/}
 
 .result_card {
     background-color: #eee;
@@ -254,6 +337,42 @@ input:focus {
 }
 
 .result_card p {
+    /*margin-top: 0.5em;
+  text-indent: 1.5em;*/
+    
+    line-height: 1.5em;
+}
+
+
+.weeklyPediaCards {
+    background-color: #eee;
+    color: #004c75;
+    border-left: 5px solid #e0e0e0;
+    margin-bottom: 10px;
+    padding: 5px 25px;
+    text-align: left;
+}
+
+.weeklyPediaCards:hover {
+    border-left: 5px solid #fa8734;
+    cursor: pointer;
+}
+
+.weeklyPediaCards:last-of-type {
+    margin-bottom: 3em;
+}
+
+.weeklyPediaCards p {
+    margin: 0;
+    font-family: "Source Sans Pro"
+}
+
+.weeklyPediaCards a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.weeklyPediaCards p {
     /*margin-top: 0.5em;
   text-indent: 1.5em;*/
     
@@ -331,4 +450,41 @@ path {
 
 .dot:hover {
     stroke: rgba(68, 127, 255, 0.3);
+}
+
+.legend {
+    border: 1px solid #555555;
+    border-radius: 5px 5px 5px 5px;
+    font-size: 0.8em;
+    margin: 10px;
+    padding: 8px;
+}
+
+.bld {}
+
+.label-text {
+    alignment-baseline: middle;
+    font-size: 12px;
+    font-family: arial, helvetica, "sans-serif";
+    fill: #393939;
+}
+
+.label-line {
+    stroke-width: 1;
+    stroke: #393939;
+}
+
+.label-circle {
+    fill: #393939;
+}
+
+path.slice {
+    stroke-width: 2px;
+}
+
+polyline {
+    opacity: .3;
+    stroke: black;
+    stroke-width: 2px;
+    fill: none;
 }
