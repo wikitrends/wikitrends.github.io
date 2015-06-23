@@ -121,7 +121,7 @@ $(document).ready(function() {
 
 var search = function(query) {
     $.ajax({
-        url: 'https://pt.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=' + query,
+        url: 'https://de.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=' + query,
         type: 'GET',
         dataType: 'jsonp',
         headers: {
@@ -137,7 +137,7 @@ var search = function(query) {
 
 var requestArticleExtracts = function(queryResult) {
     // Request extracts for each of the articles found in the search
-    var extractQuery = 'https://pt.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exsentences=2&exlimit=max&exintro=&explaintext=&titles=';
+    var extractQuery = 'https://de.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exsentences=2&exlimit=max&exintro=&explaintext=&titles=';
 
     // Add each page title to the query
     var searchResults = queryResult.search;
@@ -179,7 +179,7 @@ var updateDisplay = function(queryResult) {
         // I pray for forgiveness.
         // Todo: look for lightweight template libraries
         var htmlToAdd = "<div class='result_card'>";
-        // htmlToAdd += "<a target='_' "  href='https://pt.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
+        // htmlToAdd += "<a target='_' "  href='https://de.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
 
         // Using pages[pId].title doesn't work in API call. Hence use pageID
         htmlToAdd += "<a nohref onClick=\"grandPlotter(" + pages[pId].pageid + ")\">"
@@ -206,14 +206,14 @@ function weeklyPedia(parameter) {
         //         // Messy hack: will work only for California!     
         //         previousFriday = moment().add(7, "hours");
 
-        var url = "http://weekly.hatnote.com/archive/en/" + 20150619 + "/weeklypedia_" + 20150619 + ".json"
+        var url = "http://weekly.hatnote.com/archive/de/" + 20150619 + "/weeklypedia_" + 20150619 + ".json"
         getWeeklyPedia(url, function(data) {
             var useFulData = data.query.results.json.mainspace
 
             for (i = 0; i < useFulData.length; i++) {
 
                 var htmlToAdd = "<div class='weeklyPediaCards'>";
-                // htmlToAdd += "<a target='_' "  href='https://pt.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
+                // htmlToAdd += "<a target='_' "  href='https://de.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
 
                 // Using pages[pId].title doesn't work in API call. Hence use pageID
                 htmlToAdd += "<a nohref onClick=\"grandPlotter(" + useFulData[i].page_id + ")\">"
@@ -237,7 +237,7 @@ function weeklyPedia(parameter) {
     } else {
         // var previousFriday = moment().day(-2);
         // console.log(currentDate)
-        var url = "http://weekly.hatnote.com/archive/en/" + 20150619 + "/weeklypedia_" + 20150619 + ".json"
+        var url = "http://weekly.hatnote.com/archive/de/" + 20150619 + "/weeklypedia_" + 20150619 + ".json"
         getWeeklyPedia(url, function(data) {
             console.log(data)
             var useFulData = data.query.results.json.new_articles
@@ -245,7 +245,7 @@ function weeklyPedia(parameter) {
             for (i = 0; i < useFulData.length; i++) {
 
                 var htmlToAdd = "<div class='weeklyPediaCards'>";
-                // htmlToAdd += "<a target='_' "  href='https://pt.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
+                // htmlToAdd += "<a target='_' "  href='https://de.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
 
                 // Using pages[pId].title doesn't work in API call. Hence use pageID
                 htmlToAdd += "<a nohref onClick=\"grandPlotter(" + useFulData[i].page_id + ")\">"
@@ -401,12 +401,12 @@ function grandPlotter(pageIDin) {
     var jsonObject;
     var lastRevID;
 
-    var linkInitialPageEdits = "https://pt.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&pageids=" + pageID + "&format=json&callback=?"
+    var linkInitialPageEdits = "https://de.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&pageids=" + pageID + "&format=json&callback=?"
 
-    var linkSubsequentPageEdits = "https://pt.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?"
+    var linkSubsequentPageEdits = "https://de.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?"
 
     // The limit of results returned currently set to 300. Total number of Wikipedias is 277 ( as of 16/6/15 )
-    var linkInitialWordCloud = "https://pt.wikipedia.org/w/api.php?action=query&prop=langlinks&format=json&llprop=url%7Clangname%7Cautonym&lllimit=300&iwurl=" + "&pageids=" + pageID + "&format=json&callback=?"
+    var linkInitialWordCloud = "https://de.wikipedia.org/w/api.php?action=query&prop=langlinks&format=json&llprop=url%7Clangname%7Cautonym&lllimit=300&iwurl=" + "&pageids=" + pageID + "&format=json&callback=?"
 
     function getData(url, callback) {
         return $.ajax({
@@ -506,7 +506,7 @@ function grandPlotter(pageIDin) {
 
                         // console.log(langLinksJsonObject)
 
-                        wordCloud("https://pt.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
+                        wordCloud("https://de.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
 
                     }
                     // Since the mediaWiki API doesn't return the 'english' Wikipedia langlink.
@@ -559,7 +559,7 @@ function grandPlotter(pageIDin) {
 
                 if (Object.keys(jsonObject).length == 500) {
 
-                    pageEdits("https://pt.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?")
+                    pageEdits("https://de.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?")
 
                     finaljsonObject = finaljsonObject.concat(jsonObject)
 
@@ -572,7 +572,7 @@ function grandPlotter(pageIDin) {
                         // Not sure about this little thing over here ^
 
                     // For the pageImage thingy
-                    linkAddress = pageEdits("https://pt.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
+                    linkAddress = pageEdits("https://de.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
 
                     // var pageID = Object.keys(linkAddress.query.pages)[0]
                     // linkAddress = linkAddress.query.pages[pageID].thumbnail
@@ -582,7 +582,7 @@ function grandPlotter(pageIDin) {
                 }
 
             } else {
-                // var linkAddress = getData("https://pt.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
+                // var linkAddress = getData("https://de.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
 
                 // getMeta("https://upload.wikimedia.org/wikipedia/commons/a/ab/China_edcp_location_map.svg");
 
