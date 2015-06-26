@@ -717,12 +717,63 @@ function grandPlotter(pageIDin) {
         });
     }
 
+    function getLangLinks(url, callback) {
+        var jsonObjectLangLinks;
+        // The variable which gets passed.
+        // Not sure if this is required!  // It is!
+        var wordCloudJsonObjectlastRevID;
+        //Need to be global because they need to be pushed into finalJsonObjectLangLinks and passed on as arguments for the plotting function. 
+        var articleTitle;
+        var wikiLanguage
+
+        getData(wordCloudUrl, function(data) {
+
+            // This part runs when the pageEdits function or the getData function is used to get the page edits. Otherwise the 'else' part is used (for the thumbnail dimensions and URL)
+            // Langlinks instead of revisions here
+            if (wordCloudUrl.indexOf("langlinks") > -1) {
+
+                jsonObjectLangLinks = data;
+
+                // Clean up Data -- Actually we already have the pageID! Too scared to delete this piece though, it might be that jenga piece which brings down the entire tower!
+                var pageID = Object.keys(jsonObjectLangLinks.query.pages)[0]
+                jsonObjectLangLinks = jsonObjectLangLinks.query.pages[pageID].langlinks
+
+                // console.log(jsonObjectLangLinks)
+
+                for (i = 0; i < Object.keys(jsonObjectLangLinks).length; i++) {
+
+                    wikiLanguage = jsonObjectLangLinks[i].lang
+                    articleTitle = jsonObjectLangLinks[i].url.replace(/.*wiki\//g, "")
+                    var autonym = jsonObjectLangLinks[i].autonym
+                    var langname = jsonObjectLangLinks[i].langname
+
+                    finalJsonObjectLangLinks.push({
+                        lang: wikiLanguage,
+                        articleTitle: articleTitle,
+                        autonym: autonym,
+                        langname: langname,
+                        // totalEdits: pageEditsTotal // --> It'll be added by the getDataExtraParams function
+                        // pageViews: // --> This will be added by the Stats.grok.se function. 
+                    })
+
+                }
+
+                // These need to be the parameters of the first entry of finalJsonObjectLangLinks
+
+                // wikiLanguage = finalJsonObjectLangLinks[0].lang
+                // articleTitle = finalJsonObjectLangLinks[0].articleTitle
+
+                // console.log(wikiLanguage + " asdasdasd " + articleTitle)
+
+                // getDataExtraParams("https://" + wikiLanguage + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&titles=" + articleTitle + "&format=json&callback=?", finalJsonObjectLangLinks, 0, pageID)
+
+            }
+        }) 
+    }
+
     function wordCloud(wordCloudUrl, langLinksJsonObject) {
 
         var jsonObjectLangLinks;
-        var finalWordCloudJsonObject = [];
-        var wordCloudJsonObject;
-        var pageEditsTotal = 0;
         // The variable which gets passed.
         // Not sure if this is required!  // It is!
         var wordCloudJsonObjectlastRevID;
