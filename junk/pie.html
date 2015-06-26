@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    width: 960px;
+    height: 500px;
+    position: relative;
+}
+
+svg {
+    width: 100%;
+    height: 100%;
+}
+
+path.slice {
+    stroke-width: 2px;
+}
+
+polyline {
+    opacity: .3;
+    stroke: black;
+    stroke-width: 2px;
+    fill: none;
+}
+</style>
+
+<body>
+    <button class="randomize">randomize</button>
+
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script>
+
+
+    
+
+   
+    var data = [{
+        "lang": "de",
+        "articleTitle": "ASD",
+        "autonym": "Deutsch",
+        "langname": "German",
+        "totalEdits": 164
+    }, {
+        "lang": "es",
+        "articleTitle": "ASD",
+        "autonym": "español",
+        "langname": "Spanish",
+        "totalEdits": 18
+    }, {
+        "lang": "fa",
+        "articleTitle": "ASD",
+        "autonym": "فارسی",
+        "langname": "Persian",
+        "totalEdits": 10
+    }, {
+        "lang": "fi",
+        "articleTitle": "ASD",
+        "autonym": "suomi",
+        "langname": "Finnish",
+        "totalEdits": 159
+    }, {
+        "lang": "fr",
+        "articleTitle": "ASD",
+        "autonym": "français",
+        "langname": "French",
+        "totalEdits": 2
+    }, {
+        "lang": "it",
+        "articleTitle": "ASD",
+        "autonym": "italiano",
+        "langname": "Italian",
+        "totalEdits": 155
+    }, {
+        "lang": "ja",
+        "articleTitle": "ASD",
+        "autonym": "日本語",
+        "langname": "Japanese",
+        "totalEdits": 23
+    }, {
+        "lang": "ko",
+        "articleTitle": "ASD",
+        "autonym": "한국어",
+        "langname": "Korean",
+        "totalEdits": 3
+    }, {
+        "lang": "no",
+        "articleTitle": "ASD",
+        "autonym": "norsk bokmål",
+        "langname": "Norwegian",
+        "totalEdits": 5
+    }, {
+        "lang": "pl",
+        "articleTitle": "ASD",
+        "autonym": "polski",
+        "langname": "Polish",
+        "totalEdits": 25
+    }, {
+        "lang": "ru",
+        "articleTitle": "ASD",
+        "autonym": "русский",
+        "langname": "Russian",
+        "totalEdits": 19
+    }, {
+        "lang": "tr",
+        "articleTitle": "ASD",
+        "autonym": "Türkçe",
+        "langname": "Turkish",
+        "totalEdits": 23
+    }, {
+        "lang": "zh",
+        "articleTitle": "ASD",
+        "autonym": "中文",
+        "langname": "Chinese",
+        "totalEdits": 7
+    }, {
+        "lang": "en",
+        "articleTitle": "ASD",
+        "autonym": "English",
+        "langname": "English",
+        "totalEdits": 361
+    }]
+
+
+         var colors = ['rgb(141,211,199)','rgb(255,255,179)','rgb(190,186,218)','rgb(251,128,114)','rgb(128,177,211)','rgb(253,180,98)','rgb(179,222,105)','rgb(252,205,229)','rgb(217,217,217)']
+
+    var svg = d3.select("body")
+        .append("svg")
+        .append("g")
+
+    svg.append("g")
+        .attr("class", "slices");
+    svg.append("g")
+        .attr("class", "labels");
+    svg.append("g")
+        .attr("class", "lines");
+
+    var width = 960,
+        height = 450,
+        radius = Math.min(width, height) / 2;
+
+    var pie = d3.layout.pie()
+        .sort(null)
+        .value(function(d) {
+            return d.totalEdits;
+        });
+
+    var arc = d3.svg.arc()
+        .outerRadius(radius * 0.8)
+        .innerRadius(radius * 0.4);
+
+    var outerArc = d3.svg.arc()
+        .innerRadius(radius * 0.9)
+        .outerRadius(radius * 0.9);
+
+    svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    var key = function(d) {
+        return d.data.autonym;
+    };
+
+
+    
+    data.sort(function(x, y) {
+        return d3.descending(x.totalEdits, y.totalEdits);
+    })
+
+    var totalOtherEdits = 0;
+    var newData = []
+
+    data.forEach(function(d, i) {
+
+        // console.log(i + 'sadasd')
+        if (i > 5) {
+            // d.totalEdits = 0;
+            totalOtherEdits = totalOtherEdits + d.totalEdits
+                // console.log(d.totalEdits)
+        } else {
+            newData.push({
+                lang: d.lang,
+                articleTitle: d.articleTitle,
+                autonym: d.autonym,
+                langname: d.langname,
+                totalEdits: d.totalEdits
+            })
+
+        }
+
+        console.log(totalOtherEdits)
+
+    })
+
+    newData.push({
+        lang: "Other",
+        articleTitle: "Other",
+        autonym: "Other",
+        langname: "Other",
+        totalEdits: totalOtherEdits
+    })
+
+
+    // var color = d3.scale.ordinal()
+    //     .domain(["Lorem ipsum", "dolor sit", "amet", "consectetur", "adipisicing", "elit", "sed", "do", "eiusmod", "tempor", "incididunt"])
+    //     .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+    function randomData() {
+        var labels = color.domain();
+        return labels.map(function(label) {
+            return {
+                label: label,
+                value: Math.random()
+            }
+        });
+    }
+
+    change(newData);
+
+    d3.select(".randomize")
+        .on("click", function() {
+            change(randomData());
+        });
+
+
+    // console.log(colors.domain());
+
+
+    function change(data) {
+
+
+
+        /* ------- PIE SLICES -------*/
+        var slice = svg.select(".slices").selectAll("path.slice")
+            .data(pie(data), key);
+
+        slice.enter()
+            .insert("path")
+            .style("fill", function(d, i) {
+                // console.log(colorsa)
+                console.log(colors[i])
+                return colors[i]
+
+            })
+            .attr("class", "slice");
+
+        slice
+            .transition().duration(1000)
+            .attrTween("d", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    return arc(interpolate(t));
+                };
+            })
+
+        slice.exit()
+            .remove();
+
+        /* ------- TEXT LABELS -------*/
+
+        var text = svg.select(".labels").selectAll("text")
+            .data(pie(data), key);
+
+        text.enter()
+            .append("text")
+            .attr("dy", ".35em")
+            .text(function(d) {
+                return d.data.autonym;
+            });
+
+        function midAngle(d) {
+            return d.startAngle + (d.endAngle - d.startAngle) / 2;
+        }
+
+        text.transition().duration(1000)
+            .attrTween("transform", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    var pos = outerArc.centroid(d2);
+                    pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
+                    return "translate(" + pos + ")";
+                };
+            })
+            .styleTween("text-anchor", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    return midAngle(d2) < Math.PI ? "start" : "end";
+                };
+            });
+
+        text.exit()
+            .remove();
+
+        /* ------- SLICE TO TEXT POLYLINES -------*/
+
+        var polyline = svg.select(".lines").selectAll("polyline")
+            .data(pie(data), key);
+
+        polyline.enter()
+            .append("polyline");
+
+        polyline.transition().duration(1000)
+            .attrTween("points", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    var pos = outerArc.centroid(d2);
+                    pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
+                    return [arc.centroid(d2), outerArc.centroid(d2), pos];
+                };
+            });
+
+        polyline.exit()
+            .remove();
+    };
+    </script>
+</body>
