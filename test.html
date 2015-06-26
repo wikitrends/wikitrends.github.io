@@ -461,19 +461,12 @@ function grandPlotter(pageIDin) {
                 var pageID = Object.keys(impData.query.pages)[0]
                 var engTitle = impData.query.pages[pageID].title
                 var impData = impData.query.pages[pageID].revisions
-                    //  console.log(url)
-                    // console.log("asdasdasdasddad")
-                    // console.log(i + " } " + impData + " } " + pageID)
-
-                // console.log(tempTest.responseJSON)
-                // console.log(Object.keys(impData).length)
 
                 if (Object.keys(impData).length == 500) {
 
                     var wordCloudJsonObjectlastRevID = impData[Object.keys(impData)[Object.keys(impData).length - 1]].revid
 
                     impDataConcated = impDataConcated.concat(impData)
-                        // console.log(parameterTwo + "   ,   " + Object.keys(parameterOne).length)
 
                     if (parameterTwo == Object.keys(parameterOne).length) {
 
@@ -1953,7 +1946,6 @@ function grandPlotter(pageIDin) {
                     date: keyWithout_,
                     pageViews: requiredData[key]
                 })
-                console.log(key + " -> " + requiredData[key]);
             }
         }
 
