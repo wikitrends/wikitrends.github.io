@@ -654,7 +654,7 @@ function grandPlotter(pageIDin) {
                     // var pageID = Object.keys(linkAddress.query.pages)[0]
                     // linkAddress = linkAddress.query.pages[pageID].thumbnail
 
-                    // initialises runNow function which has the d3 stuff. Passes the concated data as the parameter.
+                    // initialises wordCloudVizs function which has the d3 stuff. Passes the concated data as the parameter.
 
                 }
 
@@ -684,7 +684,7 @@ function grandPlotter(pageIDin) {
                             pageEditsPlotter(finaljsonObject, "#one", "none", "", "", "day", pageTitle, photoUrl, width, height)
                             pageEditsPlotter(finaljsonObject, "#two", "none", "", "", "week", pageTitle, photoUrl, width, height)
 
-                            // runNow("pageEdits", pageTitle, photoUrl, width, height, finaljsonObject, "", "", "")
+                            // wordCloudVizs("pageEdits", pageTitle, photoUrl, width, height, finaljsonObject, "", "", "")
 
                         }
                     );
@@ -693,9 +693,9 @@ function grandPlotter(pageIDin) {
                     pageEditsPlotter(finaljsonObject, "#one", "none", "", "", "day", pageTitle, "assets/defaultImage.jpg", 1000, 500)
                     pageEditsPlotter(finaljsonObject, "#two", "none", "", "", "week", pageTitle, "assets/defaultImage.jpg", 1000, 500)
 
-                    // function runNow(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount) {
-                    // runNow("pageEdits", pageTitle, "assets/defaultImage.jpg", 1000, 500, finaljsonObject, "", "", "")
-                    // runNow("pageEdits", pageTitle, "assets/defaultImage.jpg", 1000, 500, finaljsonObject, "", "", "")
+                    // function wordCloudVizs(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount) {
+                    // wordCloudVizs("pageEdits", pageTitle, "assets/defaultImage.jpg", 1000, 500, finaljsonObject, "", "", "")
+                    // wordCloudVizs("pageEdits", pageTitle, "assets/defaultImage.jpg", 1000, 500, finaljsonObject, "", "", "")
 
                 }
 
@@ -719,7 +719,6 @@ function grandPlotter(pageIDin) {
 
     function getLangLinks(url, callback) {
         var jsonObjectLangLinks;
-        // The variable which gets passed.
         // Not sure if this is required!  // It is!
         var wordCloudJsonObjectlastRevID;
         //Need to be global because they need to be pushed into finalJsonObjectLangLinks and passed on as arguments for the plotting function. 
@@ -728,13 +727,12 @@ function grandPlotter(pageIDin) {
 
         getData(wordCloudUrl, function(data) {
 
-            // This part runs when the pageEdits function or the getData function is used to get the page edits. Otherwise the 'else' part is used (for the thumbnail dimensions and URL)
             // Langlinks instead of revisions here
             if (wordCloudUrl.indexOf("langlinks") > -1) {
 
                 jsonObjectLangLinks = data;
 
-                // Clean up Data -- Actually we already have the pageID! Too scared to delete this piece though, it might be that jenga piece which brings down the entire tower!
+                //// Clean up Data -- Actually we already have the pageID! Too scared to delete this piece though, it might be that jenga piece which brings down the entire tower!
                 var pageID = Object.keys(jsonObjectLangLinks.query.pages)[0]
                 jsonObjectLangLinks = jsonObjectLangLinks.query.pages[pageID].langlinks
 
@@ -842,8 +840,8 @@ function grandPlotter(pageIDin) {
                         photoUrl,
                         function(width, height) {
                             thereIs = width;
-                            runNow("wordCloud", pageTitle, photoUrl, width, height, "", langLinksJsonObject)
-                            runNow("pieChart", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject)
+                            wordCloudVizs("wordCloud", pageTitle, photoUrl, width, height, "", langLinksJsonObject)
+                            wordCloudVizs("pieChart", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject)
 
                         }
                     );
@@ -853,8 +851,8 @@ function grandPlotter(pageIDin) {
                 // This part runs when there is no image for that article
                 else {
 
-                    runNow("wordCloud", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject)
-                    runNow("pieChart", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject)
+                    wordCloudVizs("wordCloud", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject)
+                    wordCloudVizs("pieChart", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject)
 
                     // return jsonObjectLangLinks
 
@@ -1553,7 +1551,7 @@ function grandPlotter(pageIDin) {
 
     }
 
-    function runNow(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount) {
+    function wordCloudVizs(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount) {
 
         function wordCloudLangLinks(dataSourceLangLinks, idname, wordText, fontSizeLowerBound, fontSizeUpperBound) {
 
