@@ -59,6 +59,11 @@
       width: 100%;
         margin-bottom: 100px;
 }
+#six {
+    margin-left: 30px;
+      width: 100%;
+        margin-bottom: 100px;
+}
 #four {
     margin-left: 30px;
       width: 100%;
@@ -708,4 +713,32 @@ label {
       font-family: 'Noto Serif', 'Merriweather', 'Adelle', Georgia, Times;
   line-height: 32px;
   text-rendering: optimizeLegibility;
+}
+#map {
+        height: 500px;
+        width: 900px;
+        padding: 0;
+        margin: 0;
+    }
+
+    
+button {
+    padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  margin-right: 10px;
+  font-weight: normal;
+  line-height: 1.428571429;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  color: #333;
+  border: 1px solid transparent;
+  border-color: #ccc;
+  margin-left: 100px;
+  margin-bottom: 10px;
+  background-color: white;
 }
