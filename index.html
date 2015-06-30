@@ -16,8 +16,7 @@
 
     <!-- StyleSheets -->
     <link href="css/style.css" rel="stylesheet">
-    <!--     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
- -->
+    <!-- <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
 
     <!-- Core D3 files -->
@@ -77,12 +76,12 @@
     </div>
     <div class="graphs">
 
-
+        
         <h1 style="  margin-top: 100px;" class="graphHeader"> Daily Aggregated Edits </h1>
         <p class="graphDescription">Since the day the article was created. </p>
         <div id="one">
         </div>
-
+<!-- 
         <h1 class="graphHeader"> Weekly Aggregated Edits </h1>
         <p class="graphDescription">Since the day the article was created. </p>
         <div id="two"></div>
@@ -97,11 +96,16 @@
 
         <h1 class="graphHeader"> Pie Chart (By Language)</h1>
         <p class="graphDescription">Since the day the article was created. </p>
-        <div id="five"></div>
+        <div id="five"></div> -->
 
         <h1 class="graphHeader"> PageViews</h1>
         <p class="graphDescription">For the past 90 days (stat.grok.se)</p>
         <div id="seven"></div>
+
+        <h1 class="graphHeader"> PageViews (Interpolated)</h1>
+        <p class="graphDescription">For the past 90 days (stat.grok.se)</p>
+        <div id="eight"></div>
+
 
     </div>
     </div>
@@ -306,6 +310,11 @@ function getImageDimensions(url, callback) {
     img.onload = function() {
         callback(this.width, this.height);
     }
+}
+
+// Puts spaces in the number!
+function numberWithSpaces(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
 //// Have pity on this lonely variable. Find a new home for him. Preferrably somewhere with other variables.
@@ -844,7 +853,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         // console.log(tempCheck)
 
-        getGeoData(dataSource)
+        // getGeoData(dataSource)
 
         $('#loader').html('');
         $(idname).html('')
@@ -872,11 +881,12 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         var xAxis = d3.svg.axis()
             .scale(x)
+            .ticks(5)
             .orient("bottom");
 
         var yAxis = d3.svg.axis()
             .scale(y)
-            .ticks(5)
+            .ticks(4)
             .orient("left");
 
         var knotChecker;
@@ -884,6 +894,8 @@ function grandPlotter(pageIDin, pageTitlein) {
         var upperline = d3.svg.line()
             // .interpolate("bundle")
             .x(function(d, i) {
+
+                // console.log(x(parseDate(d.key)))
 
                 if (timeLimit != null) {
                     if (moment(d.key).diff(moment(timeLimit)) > 0) {
@@ -1461,19 +1473,52 @@ function grandPlotter(pageIDin, pageTitlein) {
                 }
             });
 
+        var totalEdits = 0;
+
+        dataSource.forEach(function(d){
+            totalEdits = totalEdits + parseInt(d.values)
+        })
+
         // Adding Wikipedia Logo
         d3.select(idname).select('.svgBase')
             .append("svg:image")
             .attr("xlink:href", "assets/wikipediaW.png")
-            .attr("x", 0)
+            .attr("x", width - 80)
             .attr("y", 0)
             .attr("width", 70)
             .attr("height", 70);
 
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text("PAGEEDITS")
+            .attr("x", 0)
+            .attr("y", 25)
+            .attr("font-family", "Open Sans")
+            .attr("font-size", function(d) {
+                return "16px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "0.8");
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text(numberWithSpaces(totalEdits))
+            .attr("x", 0)
+            .attr("y", 85)
+            .attr("font-family", "Open Sans")
+            .attr("font-weight", 700)
+            .attr("font-size", function(d) {
+                return "60px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "0.8");
+
         d3.select(idname).select('.svgBase')
             .append('text')
             .text(pageTitle)
-            .attr("x", 100)
+            .attr("text-anchor", "end")
+            .attr("x", width - 100)
             .attr("y", 45)
             .attr("font-family", "Georgia")
             .attr("font-size", function(d) {
@@ -1577,6 +1622,8 @@ function grandPlotter(pageIDin, pageTitlein) {
 
                             console.log('asdasdasd')
                             pageViewsPlotter(arrayData, "#seven", "none", "", "", "day", pageTitle, photoUrl, width, height)
+                            pageViewsPlotter(arrayData, "#eight", "bundle", "", "", "day", pageTitle, photoUrl, width, height)
+
                                 // pageEditsPlotter(finaljsonObject, "#two", "none", "", "", "week", pageTitle, photoUrl, width, height)
 
                             // runNow("pageEdits", pageTitle, photoUrl, width, height, finaljsonObject, "", "", "")
@@ -1585,7 +1632,9 @@ function grandPlotter(pageIDin, pageTitlein) {
                     );
 
                 } else {
-                    pageViewsPlotter(arrayData, "#seven", "seven", "", "", "day", pageTitle, "assets/defaultImage.jpg", 1000, 500)
+                    pageViewsPlotter(arrayData, "#seven", "none", "", "", "day", pageTitle, "assets/defaultImage.jpg", 1000, 500)
+                    pageViewsPlotter(arrayData, "#eight", "bundle", "", "", "day", pageTitle, "assets/defaultImage.jpg", 1000, 500)
+
                         // pageEditsPlotter(finaljsonObject, "#two", "none", "", "", "week", pageTitle, "assets/defaultImage.jpg", 1000, 500)
 
                     // function runNow(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount) {
@@ -1599,31 +1648,10 @@ function grandPlotter(pageIDin, pageTitlein) {
         })
     }
 
-
     function pageViewsPlotter(dataSource, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight) {
 
-        var data = dataSource
-
-        // var previousSize;
-
-        // dataSource.forEach(function(d, i) {
-
-        //     if (i == dataSource.length) {
-        //         d.difference = d.size;
-        //     }
-        //     d.difference = d.size - previousSize;
-
-        //     // console.log(d.)
-        //     // console.log(d.timestamp + '  |  ' + d.difference + '  |  ' + d.size+ '  |  ' + d.user)
-        //     previousSize = d.size;
-        // })
-
-        // // console.log(tempCheck)
-
-        // getGeoData(dataSource)
-
         $('#loader').html('');
-        $(idname).html('')
+        $(idname).html('');
 
         var fullBleedWidth = 1008;
         var fullBleedHeight = 572;
@@ -1641,10 +1669,6 @@ function grandPlotter(pageIDin, pageTitlein) {
         var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
         var parseDate = d3.time.format("%Y-%m-%d").parse;
 
-        // data.forEach(function(d){
-        //     d.date = 
-        // })
-
         var x = d3.time.scale()
             .range([0, width]);
 
@@ -1653,6 +1677,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         var xAxis = d3.svg.axis()
             .scale(x)
+            .ticks(5)
             .orient("bottom");
 
         var yAxis = d3.svg.axis()
@@ -1663,10 +1688,13 @@ function grandPlotter(pageIDin, pageTitlein) {
         // var knotChecker;
 
         var upperline = d3.svg.line()
-            // .interpolate("bundle")
-            .x(function(d, i) {
+            .interpolate(interpolation)
+            .x(function(d) {
 
-                return x(moment(d.date));
+                console.log(x(moment(d.date)))
+                console.log(x(d3.time.format("%Y-%m-%d").parse(d.date)))
+
+                return x(d3.time.format("%Y-%m-%d").parse(d.date))
 
                 // if (timeLimit != null) {
                 //     if (moment(d.date).diff(moment(timeLimit)) > 0) {
@@ -1683,7 +1711,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 // }
 
             })
-            .y(function(d, i) {
+            .y(function(d) {
 
                 // if (timeLimit != null) {
 
@@ -1718,25 +1746,9 @@ function grandPlotter(pageIDin, pageTitlein) {
             // .attr("height", height + margin.top + margin.bottom)
             .attr("transform", "translate(" + (-1) * margin.left + "," + (-1) * margin.top + ")");
 
-        var count = 0;
+        x.domain(d3.extent(dataSource, function(d) {
 
-        var previousParameter = 0;
-        var weekInitial;
-        var weekNumber;
-        var thisWeekNumber;
-
-        var lastDate;
-        var totalCount = 0;
-
-        var finale = []
-
-        console.log(dataSource)
-
-        //  console.log(JSON.stringify(finale, undefined, 2))
-
-        x.domain(d3.extent(finale, function(d) {
-            //  console.log(d.date + '   ' + parseInt(d.pageViews))
-            return moment(d.date);
+            return parseDate(d.date);
 
             // if (timeLimit != null) {
             //     if (moment(d.date).diff(moment(timeLimit)) > 0) {
@@ -1750,7 +1762,8 @@ function grandPlotter(pageIDin, pageTitlein) {
 
             // }
         }))
-        y.domain(d3.extent(finale, function(d) {
+        y.domain(d3.extent(dataSource, function(d) {
+
             return parseInt(d.pageViews);
 
             // if (timeLimit != null) {
@@ -1764,6 +1777,7 @@ function grandPlotter(pageIDin, pageTitlein) {
             // } else {
             //     return parseInt(d.pageViews);
             // }
+
         }));
 
         // The opacity rectangle and the image need to be above everything else. Otherwise the graphs and the text would be hidden
@@ -1830,15 +1844,47 @@ function grandPlotter(pageIDin, pageTitlein) {
         d3.select(idname).select('.svgBase')
             .append("svg:image")
             .attr("xlink:href", "assets/wikipediaW.png")
-            .attr("x", 0)
+            .attr("x", width - 80)
             .attr("y", 0)
             .attr("width", 70)
             .attr("height", 70);
 
+        var totalViews = 0;
+
+        dataSource.forEach(function(d){
+            totalViews = totalViews + parseInt(d.pageViews)
+        })
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text("PAGEVIEWS")
+            .attr("x", 0)
+            .attr("y", 25)
+            .attr("font-family", "Open Sans")
+            .attr("font-size", function(d) {
+                return "16px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "0.8");
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text(numberWithSpaces(totalViews))
+            .attr("x", 0)
+            .attr("y", 85)
+            .attr("font-family", "Open Sans")
+            .attr("font-weight", 700)
+            .attr("font-size", function(d) {
+                return "60px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "0.8");
+
         d3.select(idname).select('.svgBase')
             .append('text')
             .text(pageTitle)
-            .attr("x", 100)
+            .attr("text-anchor", "end")
+            .attr("x", width - 100)
             .attr("y", 45)
             .attr("font-family", "Georgia")
             .attr("font-size", function(d) {
@@ -1882,14 +1928,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             .attr("stroke", "#3FC380")
             .attr("stroke-width", "1px")
 
-        // svgBase.selectAll("circle.line")
-        //     .data(data)
-        //     .enter().append("svg:circle")
-        //     .attr("class", "line")
-        //     .style("fill", "green")
-        //     .attr("cx", upperline.x())
-        //     .attr("cy", upperline.y())
-        //     .attr("r", 3.5);
     }
 
     function runNow(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount) {
@@ -2315,7 +2353,7 @@ function grandPlotter(pageIDin, pageTitlein) {
     }
 
     // This runs the pageEdit graph!
-    // pageEdits(linkInitialPageEdits)
+    pageEdits(linkInitialPageEdits)
 
     // This runs the wordCloud graph!
     // wordCloud(linkInitialWordCloud)
@@ -2326,6 +2364,23 @@ function grandPlotter(pageIDin, pageTitlein) {
     // console.log('')
 
 }
+
+
+var svg = document.querySelector( "svg" );
+var svgData = new XMLSerializer().serializeToString( svg );
+ 
+var canvas = document.createElement( "canvas" );
+var ctx = canvas.getContext( "2d" );
+ 
+var img = document.createElement( "img" );
+img.setAttribute( "src", "data:image/svg+xml;base64," + btoa( svgData ) );
+ 
+img.onload = function() {
+    ctx.drawImage( img, 0, 0 );
+    
+    // Now is done
+    console.log( canvas.toDataURL( "image/png" ) );
+};
 
 // Legend //
 
