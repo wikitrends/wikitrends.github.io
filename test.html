@@ -49,7 +49,6 @@
         </div>
 
 
-
         <div id="suggestionsPane">
 
             <div class="suggestedTitles">
@@ -104,7 +103,6 @@
 </body>
 
 <script>
-
 // The Date Picker thingy. Uses pikaday.js
 var picker = new Pikaday({
     field: document.getElementById('datepicker'),
@@ -226,7 +224,7 @@ function weeklyPedia(parameter) {
 
         //         //moment().day(-2) always returns previous Friday!
         //         var previousFriday = moment().day(-2);
-        //          console.log(previousFriday)
+        //       // console.log(previousFriday)
         //         // Messy hack: will work only for California!     
         //         previousFriday = moment().add(7, "hours");
 
@@ -253,9 +251,9 @@ function weeklyPedia(parameter) {
 
         })
     } else {
-        
+
         //// Need to improve this. The previous friday date is hardcoded in here. Need to make it automatic using the current date.
-        
+
         var url = "http://weekly.hatnote.com/archive/en/" + 20150619 + "/weeklypedia_" + 20150619 + ".json"
         getWeeklyPedia(url, function(data) {
             var useFulData = data.query.results.json.new_articles
@@ -307,13 +305,12 @@ function getImageDimensions(url, callback) {
 var thereIs;
 
 // Nepal Earthquake
-// grandPlotter('46514718')
+grandPlotter('46514718')
 
 // Jurrasic
 // grandPlotter('2615708')
 
 // grandPlotter("April_2015_Nepal_earthquake")
-
 
 // This is the main place where everything works. All the calls the the APIs ( except for the article seach and weeklypedia suggestions ), pretty much everything lies here. 
 
@@ -415,9 +412,7 @@ function grandPlotter(pageIDin) {
 
     var linkSubsequentPageEdits = "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?"
 
-    var linkInitialPageViews = "http://stats.grok.se/json/en/latest90/Indira_Gandhi"
-
-    var linkSubsequentPageEdits = "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?"
+    var linkInitialPageViews = "https://en.wikipedia.org/w/api.php?action=query&prop=langlinks&format=json&llprop=url%7Clangname%7Cautonym&lllimit=300&iwurl=" + "&pageids=" + pageID + "&format=json&callback=?"
 
     // The limit of results returned currently set to 300. Total number of Wikipedias is 277 ( as of 16/6/15 )
     var linkInitialWordCloud = "https://en.wikipedia.org/w/api.php?action=query&prop=langlinks&format=json&llprop=url%7Clangname%7Cautonym&lllimit=300&iwurl=" + "&pageids=" + pageID + "&format=json&callback=?"
@@ -435,7 +430,6 @@ function grandPlotter(pageIDin) {
             success: callback,
         });
     }
-
 
     var impDataConcated = [];
     var langLinksJsonObject = []
@@ -551,25 +545,24 @@ function grandPlotter(pageIDin) {
         for (i = 0; i < editsRawData.length; i++) {
             if ((editsRawData[i].user.match(/\./g) || []).length > 2) {
                 ja = ja + 1;
-                // console.log(editsRawData[i].user)
+                // console.log(editsRawData[i])
                 ipData.push({
                     user: editsRawData[i].user,
-                    timestamp: editsRawData[i].timestamp, 
+                    timestamp: editsRawData[i].timestamp,
                     difference: editsRawData[i].difference
-                    // difference: Math.abs(editsRawData[i].difference)
+                        // difference: Math.abs(editsRawData[i].difference)
                 })
             }
         }
 
         var remainderEntries = ipData.length % 100;
-        console.log(remainderEntries)
-        console.log(ipData.length)
-        console.log(ipData.length - remainderEntries)
-
+        // console.log(remainderEntries)
+        // console.log(ipData.length)
+        // console.log(ipData.length - remainderEntries)
 
         for (j = 0; j < ipData.length - remainderEntries; j = j + 100) {
             var postQuery = "https://dpatel.cartodb.com/api/v2/sql?q=INSERT INTO ipdata (_user, timestamp, difference) VALUES "
-                    
+
             // console.log(ipData[i].difference)
 
             for (i = j; i < j + 100; i++) {
@@ -582,31 +575,31 @@ function grandPlotter(pageIDin) {
                 postQuery = postQuery.concat(postQueryPusher)
             }
 
-            console.log(postQuery)
-                // $.post("postQuery")
+            // console.log(postQuery)
+            // $.post("postQuery")
             $.post(postQuery)
 
         }
 
-            var postQuery = "https://dpatel.cartodb.com/api/v2/sql?q=INSERT INTO ipdata (_user, timestamp, difference) VALUES "
+        var postQuery = "https://dpatel.cartodb.com/api/v2/sql?q=INSERT INTO ipdata (_user, timestamp, difference) VALUES "
 
         for (j = ipData.length - remainderEntries; j < ipData.length; j = j + 1) {
 
             // for (i = j; i < j + 100; i++) {
             //     // For the last one (without comma)
-                if (j == ipData.length - 1) {
-                    var postQueryPusher = "('" + ipData[j].user + "','" + ipData[j].timestamp + "','" + ipData[i].difference +  "') &api_key=697ee572372c5486a41a748d53e2ed2b9da8a47c"
-                } else {
-                    var postQueryPusher = "('" + ipData[j].user + "','" + ipData[j].timestamp + "','" + ipData[i].difference +  "'),"
-                }
-                postQuery = postQuery.concat(postQueryPusher)
-            // }
+            if (j == ipData.length - 1) {
+                var postQueryPusher = "('" + ipData[j].user + "','" + ipData[j].timestamp + "','" + ipData[j].difference + "') &api_key=697ee572372c5486a41a748d53e2ed2b9da8a47c"
+            } else {
+                var postQueryPusher = "('" + ipData[j].user + "','" + ipData[j].timestamp + "','" + ipData[j].difference + "'),"
+            }
+            postQuery = postQuery.concat(postQueryPusher)
+                // }
 
-            console.log(postQuery)
-                // $.post("postQuery")
-            
+            // console.log(postQuery)
+            // $.post("postQuery")
+
         }
-                    $.post(postQuery)
+        $.post(postQuery)
     }
 
     function pageEdits(url) {
@@ -703,75 +696,106 @@ function grandPlotter(pageIDin) {
         })
     }
 
-    function pageViews(url, callback) {
+    function pageViewsSelector(allLanguageLinks, callback) {
+
+        // http://stats.grok.se/json/en/latest90/India
+
+        console.log(allLanguageLinks)
+
+        // var url = "http://stats.grok.se/json/" + allLanguageLinks[] + 
 
         url = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from json where url="' + url + '"') + '&format=json';
-        return $.ajax({
-            type: "GET",
+        
+        
+        
+        // return $.ajax({
+        //     type: "GET",
+        //     url: url,
+        //     success: callback,
+        //     error: function() {
+        //         alert("Error");
+        //     },
+        //     dataType: "json"
+        // });
+    
+    }
+
+    function getLangLinks(url) {
+
+        var tempTest = $.ajax({
+
             url: url,
-            success: callback,
-            error: function() {
-                alert("Error");
+            async: false,
+            dataType: 'json',
+            type: 'GET',
+            headers: {
+                'Api-User-Agent': 'Example/1.0'
             },
-            dataType: "json"
-        });
+            success: function() {
+                // return tempTest
+                console.log(tempTest)
+            }})
     }
 
-    function getLangLinks(url, callback) {
-        var jsonObjectLangLinks;
-        // Not sure if this is required!  // It is!
-        var wordCloudJsonObjectlastRevID;
-        //Need to be global because they need to be pushed into finalJsonObjectLangLinks and passed on as arguments for the plotting function. 
-        var articleTitle;
-        var wikiLanguage
+    //     var jsonObjectLangLinks;
+    //     // Not sure if this is required!  // It is!
+    //     var wordCloudJsonObjectlastRevID;
+    //     //Need to be global because they need to be pushed into finalJsonObjectLangLinks and passed on as arguments for the plotting function. 
+    //     var articleTitle;
+    //     var wikiLanguage
 
-        getData(wordCloudUrl, function(data) {
+    //     getData(url, function(data) {
 
-            // Langlinks instead of revisions here
-            if (wordCloudUrl.indexOf("langlinks") > -1) {
+    //         return data
 
-                jsonObjectLangLinks = data;
+    //         // Langlinks instead of revisions here
+    //         if (url.indexOf("langlinks") > -1) {
 
-                //// Clean up Data -- Actually we already have the pageID! Too scared to delete this piece though, it might be that jenga piece which brings down the entire tower!
-                var pageID = Object.keys(jsonObjectLangLinks.query.pages)[0]
-                jsonObjectLangLinks = jsonObjectLangLinks.query.pages[pageID].langlinks
+    //             jsonObjectLangLinks = data;
 
-                // console.log(jsonObjectLangLinks)
+    //             //// Clean up Data -- Actually we already have the pageID! Too scared to delete this piece though, it might be that jenga piece which brings down the entire tower!
+    //             var pageID = Object.keys(jsonObjectLangLinks.query.pages)[0]
+    //             jsonObjectLangLinks = jsonObjectLangLinks.query.pages[pageID].langlinks
 
-                for (i = 0; i < Object.keys(jsonObjectLangLinks).length; i++) {
+    //             // console.log(jsonObjectLangLinks)
 
-                    wikiLanguage = jsonObjectLangLinks[i].lang
-                    articleTitle = jsonObjectLangLinks[i].url.replace(/.*wiki\//g, "")
-                    var autonym = jsonObjectLangLinks[i].autonym
-                    var langname = jsonObjectLangLinks[i].langname
+    //             for (i = 0; i < Object.keys(jsonObjectLangLinks).length; i++) {
 
-                    finalJsonObjectLangLinks.push({
-                        lang: wikiLanguage,
-                        articleTitle: articleTitle,
-                        autonym: autonym,
-                        langname: langname,
-                        // totalEdits: pageEditsTotal // --> It'll be added by the getDataExtraParams function
-                        // pageViews: // --> This will be added by the Stats.grok.se function. 
-                    })
+    //                 wikiLanguage = jsonObjectLangLinks[i].lang
+    //                 articleTitle = jsonObjectLangLinks[i].url.replace(/.*wiki\//g, "")
+    //                 var autonym = jsonObjectLangLinks[i].autonym
+    //                 var langname = jsonObjectLangLinks[i].langname
 
-                }
+    //                 finalJsonObjectLangLinks.push({
+    //                     lang: wikiLanguage,
+    //                     articleTitle: articleTitle,
+    //                     autonym: autonym,
+    //                     langname: langname,
+    //                     // totalEdits: pageEditsTotal // --> It'll be added by the getDataExtraParams function
+    //                     // pageViews: // --> This will be added by the Stats.grok.se function. 
+    //                 })
 
-                // These need to be the parameters of the first entry of finalJsonObjectLangLinks
+    //             }
 
-                // wikiLanguage = finalJsonObjectLangLinks[0].lang
-                // articleTitle = finalJsonObjectLangLinks[0].articleTitle
+    //             return finalJsonObjectLangLinks
 
-                // console.log(wikiLanguage + " asdasdasd " + articleTitle)
+    //             // These need to be the parameters of the first entry of finalJsonObjectLangLinks
 
-                // getDataExtraParams("https://" + wikiLanguage + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&titles=" + articleTitle + "&format=json&callback=?", finalJsonObjectLangLinks, 0, pageID)
+    //             // wikiLanguage = finalJsonObjectLangLinks[0].lang
+    //             // articleTitle = finalJsonObjectLangLinks[0].articleTitle
 
-            }
-        }) 
-    }
+    //             // console.log(wikiLanguage + " asdasdasd " + articleTitle)
+
+    //             // getDataExtraParams("https://" + wikiLanguage + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&titles=" + articleTitle + "&format=json&callback=?", finalJsonObjectLangLinks, 0, pageID)
+
+    //         }
+    //     })
+    // }
 
     function wordCloud(wordCloudUrl, langLinksJsonObject) {
 
         var jsonObjectLangLinks;
+        console.log(wordCloudUrl)
         // The variable which gets passed.
         // Not sure if this is required!  // It is!
         var wordCloudJsonObjectlastRevID;
@@ -795,6 +819,8 @@ function grandPlotter(pageIDin) {
 
                 for (i = 0; i < Object.keys(jsonObjectLangLinks).length; i++) {
 
+                    console.log(jsonObjectLangLinks)
+
                     wikiLanguage = jsonObjectLangLinks[i].lang
                     articleTitle = jsonObjectLangLinks[i].url.replace(/.*wiki\//g, "")
                     autonym = jsonObjectLangLinks[i].autonym
@@ -807,15 +833,13 @@ function grandPlotter(pageIDin) {
                         langname: langname,
                         // totalEdits: pageEditsTotal // --> It'll be added by the getDataExtraParams function
                     })
-
                 }
 
                 // These need to be the parameters of the first entry of finalJsonObjectLangLinks
-
                 wikiLanguage = finalJsonObjectLangLinks[0].lang
                 articleTitle = finalJsonObjectLangLinks[0].articleTitle
 
-                // console.log(wikiLanguage + " asdasdasd " + articleTitle)
+                pageViews(finalJsonObjectLangLinks)
 
                 getDataExtraParams("https://" + wikiLanguage + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&titles=" + articleTitle + "&format=json&callback=?", finalJsonObjectLangLinks, 0, pageID)
 
@@ -869,16 +893,15 @@ function grandPlotter(pageIDin) {
 
         var previousSize;
 
-        dataSource.forEach(function(d, i){
+        dataSource.forEach(function(d, i) {
 
-            if ( i == dataSource.length ) {
+            if (i == dataSource.length) {
                 d.difference = d.size;
             }
             d.difference = d.size - previousSize;
 
-
             // console.log(d.)
-            console.log(d.timestamp + '  |  ' + d.difference + '  |  ' + d.size+ '  |  ' + d.user)
+            // console.log(d.timestamp + '  |  ' + d.difference + '  |  ' + d.size+ '  |  ' + d.user)
             previousSize = d.size;
         })
 
@@ -928,7 +951,7 @@ function grandPlotter(pageIDin) {
                 if (timeLimit != null) {
                     if (moment(d.key).diff(moment(timeLimit)) > 0) {
                         //     if (d.key.indexOf("T23:00:01.000Z") > -1 || d.key.indexOf("T01:00:01.000Z") > -1) {
-                        //      console.log('wooh' + "   " + d.key)
+                        //   // console.log('wooh' + "   " + d.key)
                         //     } else {
                         return x(parseDate(d.key));
                         // }
@@ -1049,7 +1072,7 @@ function grandPlotter(pageIDin) {
 
         });
 
-        console.log(dataSource)
+        // console.log(dataSource)
 
         // }
 
@@ -1092,12 +1115,12 @@ function grandPlotter(pageIDin) {
                 if (JSON.stringify(dayPlusOne).indexOf("T23:00:01.000Z") > -1) {
                     dayPlusOne = moment(dayPlusOne).add(1, "hour")
 
-                    console.log(JSON.stringify(dayPlusOne))
+                    // console.log(JSON.stringify(dayPlusOne))
                 }
                 if (JSON.stringify(dayPlusOne).indexOf("T01:00:01.000Z") > -1) {
                     dayPlusOne = moment(dayPlusOne).subtract(1, "hour")
 
-                    console.log(JSON.stringify(dayPlusOne))
+                    // console.log(JSON.stringify(dayPlusOne))
                 }
 
                 var theDay = moment(d.key)
@@ -1164,12 +1187,12 @@ function grandPlotter(pageIDin) {
                 if (JSON.stringify(dayMinusOne).indexOf("T23:00:01.000Z") > -1) {
                     dayMinusOne = moment(dayMinusOne).add(1, "hour")
 
-                    console.log('asdasd' + JSON.stringify(dayMinusOne))
+                    // console.log('asdasd' + JSON.stringify(dayMinusOne))
                 }
                 if (JSON.stringify(dayMinusOne).indexOf("T01:00:01.000Z") > -1) {
                     dayMinusOne = moment(dayMinusOne).subtract(1, "hour")
 
-                    console.log('asdasd' + JSON.stringify(dayMinusOne))
+                    // console.log('asdasd' + JSON.stringify(dayMinusOne))
                 }
 
                 // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
@@ -1548,7 +1571,6 @@ function grandPlotter(pageIDin) {
         //     .attr("cx", upperline.x())
         //     .attr("cy", upperline.y())
         //     .attr("r", 3.5);
-
     }
 
     function wordCloudVizs(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount) {
@@ -1971,7 +1993,6 @@ function grandPlotter(pageIDin) {
 
         // pageEditsPlotter(dataSource, "#three", "none", "size", "size", "hour")
         // pageEditsPlotter(dataSource, "#four", "none", "size", "size", "month")
-
     }
 
     // This runs the pageEdit graph!
@@ -1980,42 +2001,44 @@ function grandPlotter(pageIDin) {
     // This runs the wordCloud graph!
     wordCloud(linkInitialWordCloud)
 
-        // This gets the pageview stats from Stats.grok.se
-    pageViews(linkInitialPageViews, function(data) {
+    var tester = getLangLinks(linkInitialPageViews)
+    console.log(getLangLinks(linkInitialPageViews))
 
-        var arrayData = []
-        var requiredData = data.query.results.json.daily_views
-        typeof requiredData;
+    // This gets the pageview stats from Stats.grok.se
+    // pageViews(linkInitialPageViews, function(data) {
 
-        for (var key in requiredData) {
+    //     var arrayData = []
+    //     var requiredData = data.query.results.json.daily_views
+    //     typeof requiredData;
 
-            if (requiredData.hasOwnProperty(key)) {
-                var keyWithout_ = key.replace("_", "2")
-                arrayData.push({
-                    date: keyWithout_,
-                    pageViews: requiredData[key]
-                })
-            }
-        }
+    //     for (var key in requiredData) {
 
-        // Sorts the array as per the dates
-        arrayData.sort(function(a, b) {
-            var c = new Date(a.date);
-            var d = new Date(b.date);
-            return c - d;
-        });
+    //         if (requiredData.hasOwnProperty(key)) {
+    //             var keyWithout_ = key.replace("_", "2")
+    //             arrayData.push({
+    //                 date: keyWithout_,
+    //                 pageViews: requiredData[key]
+    //             })
+    //         }
+    //     }
 
-        console.log(JSON.stringify(arrayData))
-    })
+    //     // Sorts the array as per the dates
+    //     arrayData.sort(function(a, b) {
+    //         var c = new Date(a.date);
+    //         var d = new Date(b.date);
+    //         return c - d;
+    //     });
+
+    //     // console.log(JSON.stringify(arrayData))
+    // })
 
 }
-
 
 // Legend //
 
 ///// = Pretty Difficult.
 //*// = Not that Difficult
-//**// = Ah! That is what I can fix in my sleep. 
-
+//**// = Ah! That is what I can fix in my sleep.
 
 </script>
+
