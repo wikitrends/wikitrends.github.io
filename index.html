@@ -55,14 +55,13 @@
                     <p>Most Edits</p>
                 </a>
                 <a href="#" id="closeMostEdits"><i class="fa fa-times"></i></a>
-
             </div>
+
             <div class="suggestedTitles">
                 <a nohref="" onclick="weeklyPedia('Most New Edits')">
                     <p>Most New Edits</p>
                 </a>
                 <a href="#" id="closeMostNewEdits"><i class="fa fa-times"></i></a>
-
             </div>
 
             <div class="mostEdits"></div>
@@ -77,8 +76,9 @@
     <div class="graphs">
 
 
-        <h1 style="  margin-top: 100px;" class="graphHeader"> Daily Aggregated Edits </h1>
-        <p class="graphDescription">Since the day the article was created. </p>
+        <h1 style=" margin-top: 100px;" class="graphHeader"> Daily Aggregated Edits </h1>
+        <p style="float: left" class="graphDescription">Since the day the article was created. Enter Image URL here (if different from default) --></p>  <input style="margin-left: 30px; margin-top: 15px; float: lef; width: 200px;" type='text' id='imageURL' placeholder='Wikicommons URL' /></input>
+
         <div id="one">
         </div>
 
@@ -91,7 +91,7 @@
         <div id="three"></div>
 
         <h1 class="graphHeader"> WordCloud Graph (Language Name)</h1>
-        <p class="graphDescription">Since the day the article was created. </p>
+        <p class="graphDescription">Since the day the article was created. </p> 
         <div id="four"></div>
 
         <h1 class="graphHeader"> Pie Chart (By Language)</h1>
@@ -180,8 +180,6 @@ $(document).ready(function() {
     $('#elevenB').click(function() {
         cartodb.createVis('eleven', '    https://dpatel.cartodb.com/api/v2/viz/df71869c-2020-11e5-8a62-0e018d66dc29/viz.json');
     })
-
-
 
 });
 
@@ -284,11 +282,9 @@ function precurssor(input, globalia, pageTitle) {
 
     if (globali == 2) {
         console.log(multipleOne + '  ' + multipleTwo)
-            // grandPlotter2([multipleOne], [multipleTwo])
+        // grandPlotter2([multipleOne], [multipleTwo])
 
-    } else {
-
-    }
+    } else {}
 
     grandPlotter(input, pageTitle)
 
@@ -318,7 +314,14 @@ function weeklyPedia(parameter) {
                 // htmlToAdd += "<a target='_' "  href='https://en.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
 
                 // Using pages[pId].title doesn't work in API call. Hence use pageID
-                htmlToAdd += "<a nohref onClick=\"grandPlotter(" + useFulData[i].page_id + ")\">"
+                console.log(useFulData[i].title)
+
+                htmlToAdd += "<a nohref onClick=\"precurssor(" +  useFulData[i].page_id +
+                    "," + globali +
+                    "," + "\'" + useFulData[i].title_s + "\'" +
+                    ")\">"
+
+                // htmlToAdd += "<a nohref onClick=\"grandPlotter(" + useFulData[i].page_id + "\'" + useFulData[i].title + "\'" + ")\">"
                 htmlToAdd += "<p>" + useFulData[i].title_s + "</p>";
 
                 $('#closeMostNewEdits').hide()
@@ -340,7 +343,10 @@ function weeklyPedia(parameter) {
             for (i = 0; i < useFulData.length; i++) {
 
                 var htmlToAdd = "<div class='weeklyPediaCards'>";
-                htmlToAdd += "<a nohref onClick=\"grandPlotter(" + useFulData[i].page_id + ")\">"
+                htmlToAdd += "<a nohref onClick=\"precurssor(" +  useFulData[i].page_id +
+                    "," + globali +
+                    "," + "\'" + useFulData[i].title_s + "\'" +
+                    ")\">"
                 htmlToAdd += "<p>" + useFulData[i].title_s + "</p>";
                 $('#closeMostEdits').hide()
                 $('#closeMostNewEdits').show()
@@ -775,12 +781,32 @@ function grandPlotter(pageIDin, pageTitlein) {
                         // Not sure about this little thing over here ^
 
                     // For the pageImage thingy
+
+                    var userInputImageURL = $('#imageURL').val()
+
+                console.log(userInputImageURL)
+
+                if ( userInputImageURL == null ) {
                     linkAddress = pageEdits("https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
+                } else {
+                    getImageDimensions(
+                        userInputImageURL,
+                        function(width, height) {
+                            thereIs = width;
 
-                    // var pageID = Object.keys(linkAddress.query.pages)[0]
-                    // linkAddress = linkAddress.query.pages[pageID].thumbnail
+                            pageEditsPlotter(finaljsonObject, "#one", "none", "", "", "day", pageTitle, userInputImageURL, width, height)
+                                // pageEditsPlotter(finaljsonObject, "#two", "none", "", "", "week", pageTitle, photoUrl, width, height)
 
-                    // initialises runNow function which has the d3 stuff. Passes the concated data as the parameter.
+                            // runNow("pageEdits", pageTitle, photoUrl, width, height, finaljsonObject, "", "", "")
+
+                        }
+                    );
+                }
+
+                // var pageID = Object.keys(linkAddress.query.pages)[0]
+                // linkAddress = linkAddress.query.pages[pageID].thumbnail
+
+                // initialises runNow function which has the d3 stuff. Passes the concated data as the parameter.
 
                 }
 
@@ -938,13 +964,8 @@ function grandPlotter(pageIDin, pageTitlein) {
                 d.difference = d.size;
             }
             d.difference = d.size - previousSize;
-
-            // console.log(d.)
-            // console.log(d.timestamp + '  |  ' + d.difference + '  |  ' + d.size+ '  |  ' + d.user)
             previousSize = d.size;
         })
-
-        // console.log(tempCheck)
 
         getGeoData(dataSource)
 
@@ -1007,16 +1028,6 @@ function grandPlotter(pageIDin, pageTitlein) {
                     }
                 }
 
-                // if (timeLimit != null) {
-                //     if (moment(d.key).diff(moment(timeLimit)) > 0) {
-                //         return x(parseDate(d.key));
-                //     } else {
-                //         // return x(parseDate(JSON.stringify(moment(timeLimit)).replace("\"", "").replace("\"", "")))
-                //     }
-                // } else {
-                //     return x(parseDate(d.key));
-                // }
-
             })
             .y(function(d, i) {
 
@@ -1035,20 +1046,6 @@ function grandPlotter(pageIDin, pageTitlein) {
                         return y(d.values);
                     } else {}
                 }          
-
-                // if (timeLimit != null) {
-
-                //     if (moment(d.key).diff(moment(timeLimit)) > 0) {
-                //         // if (d.key.indexOf("T23:00:01.000Z") > -1 || d.key.indexOf("T01:00:01.000Z") > -1) {
-                //         //  console.log('wooh' + "   " + d.key)
-
-                //         // } else {
-                //         return y(d.values);
-                //         // }
-                //     } else {}
-                // } else {
-                //     return y(d.values);
-                // }
 
             });
 
@@ -1385,14 +1382,10 @@ function grandPlotter(pageIDin, pageTitlein) {
             // Countless hours have been spent trying to get this part to work. 
             // TLDR; On MediaWiki APIs, time runs backwards!
 
-            // console.log(d.timestamp)
-
             var previousDateActual = "";
             var theDayMisnomerPlus;
 
             data.forEach(function(d, i) {
-
-                // 2015-06-08T23:47:06Z
 
                 var theDayMisnomerMonth = (d.key).substr(5, 6)
 
@@ -1532,18 +1525,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             } 
             else {}
 
-
-            // if (timeLimit != null) {
-            //     if (moment(d.key).diff(moment(timeLimit)) > 0) {
-            //         return parseDate(d.key);
-            //     } else {
-            //         //  console.log('inHere')
-            //         return parseDate(JSON.stringify(moment(timeLimit)).replace("\"", "").replace("\"", ""))
-            //     }
-            // } else {
-            //     return parseDate(d.key);
-
-            // }
         }))
         y.domain(d3.extent(finale, function(d) {
 
@@ -1564,17 +1545,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             } 
             else {}
 
-            // if (timeLimit != null) {
-            //     if (moment(d.key).diff(moment(timeLimit)) > 0) {
-            //         return d.values;
-            //     } else {
-            //         //  console.log(moment(d.key).diff(moment(timeLimit)))
-            //         //  console.log('ere2123')
-            //         return 0
-            //     }
-            // } else {
-            //     return d.values;
-            // }
         }));
 
         // The opacity rectangle and the image need to be above everything else. Otherwise the graphs and the text would be hidden
@@ -2534,12 +2504,11 @@ function grandPlotter(pageIDin, pageTitlein) {
     pageEdits(linkInitialPageEdits)
 
     // This runs the wordCloud graph!ssss
-    wordCloud(linkInitialWordCloud)
+    // wordCloud(linkInitialWordCloud)
 
     // This gets the pageview stats from Stats.grok.se
-    pageViews(linkInitialPageViews)
+    // pageViews(linkInitialPageViews)
 
-    // console.log('')
 }
 
 // grandPlotter(2615708, "Jurrasic World")
@@ -3857,7 +3826,6 @@ function grandPlotter2(graphOne, graphTwo) {
 
     getDataExtraParams(linkInitialPageEdits, 0)
 
-    // console.log(graphOne[1])
 }
 
 // Legend //
@@ -3865,4 +3833,5 @@ function grandPlotter2(graphOne, graphTwo) {
 ///// = Pretty Difficult.
 //*// = Not that Difficult
 //**// = Ah! That is what I can fix in my sleep.
+
 </script>
