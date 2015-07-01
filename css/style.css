@@ -9,7 +9,7 @@
 }
 
 .d3-tip.n:after {
-    top: 100%;
+    top: 95%;
     left: 0;
     z-index: 1000;
 }
@@ -186,12 +186,6 @@ path .fill {
     color: #fff;
 }
 /* Style northward tooltips differently */
-
-.d3-tip.n:after {
-    top: 100%;
-    left: 0;
-    z-index: 1000;
-}
 
 .label {
     font-size: 16px;
@@ -396,7 +390,8 @@ path {
 .axis path,
 .axis line {
     fill: none;
-    stroke: grey;
+      stroke: #898989;
+  opacity: 0.5;
     stroke-width: 1;
     shape-rendering: crispEdges;
 }
@@ -425,7 +420,7 @@ path {
 }
 
 .axis line {
-    stroke: #e7e7e7;
+    stroke: #898989;
     shape-rendering: crispEdges;
 }
 
@@ -593,6 +588,7 @@ http://nicolasgallagher.com/micro-clearfix-hack/
 .pika-prev,
 .is-rtl .pika-next {
     float: left;
+    margin-left: 0px;
     background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAYAAAAsEj5rAAAAUklEQVR42u3VMQoAIBADQf8Pgj+OD9hG2CtONJB2ymQkKe0HbwAP0xucDiQWARITIDEBEnMgMQ8S8+AqBIl6kKgHiXqQqAeJepBo/z38J/U0uAHlaBkBl9I4GwAAAABJRU5ErkJggg==');
     *left: 0;
 }

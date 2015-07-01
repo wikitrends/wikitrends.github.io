@@ -22,8 +22,8 @@
     <!-- Core D3 files -->
     <script src="js/d3.min.js"></script>
 
-    <!-- Extensions or Addons
-        <script src="https://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script> -->
+    <!-- Extensions or Addons -->
+    <script src="js/d3-tip.js"></script>
     <script src="js/wordCloud.js"></script>
     <script src="js/pikaday.js"></script>
     <script src="https://cdn.jsdelivr.net/lodash/2.4.1/lodash.min.js"></script>
@@ -81,7 +81,7 @@
         <p class="graphDescription">Since the day the article was created. </p>
         <div id="one">
         </div>
-        <!-- 
+
         <h1 class="graphHeader"> Weekly Aggregated Edits </h1>
         <p class="graphDescription">Since the day the article was created. </p>
         <div id="two"></div>
@@ -96,7 +96,7 @@
 
         <h1 class="graphHeader"> Pie Chart (By Language)</h1>
         <p class="graphDescription">Since the day the article was created. </p>
-        <div id="five"></div> -->
+        <div id="five"></div>
 
         <h1 class="graphHeader"> PageViews</h1>
         <p class="graphDescription">For the past 90 days (stat.grok.se)</p>
@@ -112,8 +112,9 @@
 </body>
 
 <script>
-
 var multipleOne;
+var multipleTwo;
+var globali = 0;
 
 // The Date Picker thingy. Uses pikaday.js
 var picker = new Pikaday({
@@ -123,6 +124,8 @@ var picker = new Pikaday({
     maxDate: new Date('2020-12-31'),
     yearRange: [2000, 2020]
 });
+
+// event.preventDefault();
 
 /* The Search Functionality Starts */
 
@@ -213,7 +216,12 @@ var updateDisplay = function(queryResult) {
         // Using pages[pId].title doesn't work in API call. Hence use pageID
         // console.log(pages[pId].title)
         var pageDetails = [pages[pId].pageid, pages[pId].title]
-        htmlToAdd += "<a nohref onClick=\"grandPlotter(" + pages[pId].pageid + "," + "\'" + pages[pId].title + "\'" + ")\">"
+        console.log(globali)
+            // htmlToAdd += "<a nohref onClick=\"grandPlotter(" + pages[pId].pageid + "," + "\'" + pages[pId].title + "\'" + ")\">"
+        htmlToAdd += "<a nohref onClick=\"precurssor(" + pages[pId].pageid +
+            "," + globali +
+            "," + "\'" + pages[pId].title + "\'" +
+            ")\">"
 
         //console.log(pages[pId].title)
         //test(pages[pId].title)
@@ -224,10 +232,32 @@ var updateDisplay = function(queryResult) {
         $('#suggestionsPane').find('.mostEdits').html('');
         $('#suggestionsPane').find('.mostNewEdits').html('');
         $('#results_pane').find('.searchResults').append(htmlToAdd);
+
     }
 }
 
 /* Search functionality ends here */
+
+function precurssor(input, globalia, pageTitle) {
+    if (globali == 0) {
+        mulleOne = input;
+    } else {
+        multipleTwo = input;
+    }
+    globali = globalia + 1;
+    console.log(globali)
+
+    if (globali == 2) {
+        console.log(multipleOne + '  ' + multipleTwo)
+            // grandPlotter2([multipleOne], [multipleTwo])
+
+    } else {
+
+    }
+
+    grandPlotter(input, pageTitle)
+
+}
 
 /* WeeklyPedia functionality starts here */
 // Automatic Most Editted and most recently editted pages are fetched and displayed. 
@@ -318,6 +348,22 @@ function getImageDimensions(url, callback) {
 // Puts spaces in the number!
 function numberWithSpaces(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
+function convertImgToBase64(url, heightParam, widthParam, callback, outputFormat) {
+    var img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = function() {
+        var canvas = document.createElement('CANVAS');
+        var ctx = canvas.getContext('2d');
+        canvas.height = this.height;
+        canvas.width = this.width;
+        ctx.drawImage(this, 0, 0);
+        var dataURL = canvas.toDataURL(outputFormat || 'image/png');
+        callback(dataURL);
+        canvas = null;
+    };
+    img.src = url;
 }
 
 //// Have pity on this lonely variable. Find a new home for him. Preferrably somewhere with other variables.
@@ -1385,6 +1431,15 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         console.log(data)
 
+        var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([-10, 0])
+            .html(function(d) {
+                return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+            })
+
+        svgBase.call(tip);
+
         //  console.log(JSON.stringify(finale, undefined, 2))
 
         x.domain(d3.extent(finale, function(d) {
@@ -1563,14 +1618,17 @@ function grandPlotter(pageIDin, pageTitlein) {
             .attr("stroke", "#3FC380")
             .attr("stroke-width", "1px")
 
-        // svgBase.selectAll("circle.line")
-        //     .data(data)
-        //     .enter().append("svg:circle")
-        //     .attr("class", "line")
-        //     .style("fill", "green")
-        //     .attr("cx", upperline.x())
-        //     .attr("cy", upperline.y())
-        //     .attr("r", 3.5);
+        svgBase.selectAll("circle.line")
+            .data(data)
+            .enter().append("svg:circle")
+            .attr("class", "line")
+            .style("fill", "green")
+            .attr("cx", upperline.x())
+            .attr("cy", upperline.y())
+            .attr("r", 12)
+            .attr('opacity', 0)
+            .on('click', tip.show)
+            // .on('mouseout', tip.hide)
     }
 
     //// Think of a way to combine it with getData
@@ -1692,9 +1750,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             .interpolate(interpolation)
             .x(function(d) {
 
-                console.log(x(moment(d.date)))
-                console.log(x(d3.time.format("%Y-%m-%d").parse(d.date)))
-
                 return x(d3.time.format("%Y-%m-%d").parse(d.date))
 
                 // if (timeLimit != null) {
@@ -1716,7 +1771,6 @@ function grandPlotter(pageIDin, pageTitlein) {
 
                 // if (timeLimit != null) {
 
-                console.log()
                 return y(parseInt(d.pageViews))
 
                 //     if (moment(d.date).diff(moment(timeLimit)) > 0) {
@@ -1783,63 +1837,92 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         // The opacity rectangle and the image need to be above everything else. Otherwise the graphs and the text would be hidden
 
-        // Image Bleed Stuff
-        var imgs = svgFull.selectAll("image").data([0]);
-        imgs.enter()
-            .append("svg:image")
-            .attr('class', "images")
-            .attr("xlink:href", function(d) {
-                if (picUrl == undefined) {
-                    picUrl = "assets/defaultImage.jpg"
-                    return "assets/defaultImage.jpg"
-                } else {
-                    return picUrl
-                }
-            })
-            .attr("x", function(d) {
-                if (picUrl != "assets/defaultImage.jpg") {
-                    if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                        return (((0.5) * (fullBleedHeight / picHeight) * picWidth) - (fullBleedWidth / 2))
+        var imageBase64 = "";
+
+                    if (picUrl === undefined) {
+                picUrl = "http://wikitrends.github.io/assets/defaultImage.jpg"
+            } else {}
+
+
+        convertImgToBase64(picUrl, picHeight, picWidth, function(base64Img) {
+
+            imageBase64 = base64Img
+                // return imageBase64
+            console.log(imageBase64)
+
+            // Image Bleed Stuff
+            var imgs = svgFull.selectAll("image").data([0]);
+            imgs.enter()
+                .append("svg:image")
+                .attr('class', "images")
+                .attr("xlink:href", function(d) {
+                    // if (picUrl == undefined) {
+                    //     picUrl = "assets/defaultImage.jpg"
+                    //     return "assets/defaultImage.jpg"
+                    // } else {
+                    console.log(imageBase64)
+                    return imageBase64
+                        // }
+                })
+                .attr("x", function(d) {
+                    console.log(picHeight)
+                    console.log(picWidth)
+                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                            return (((0.5) * (fullBleedHeight / picHeight) * picWidth) - (fullBleedWidth / 2))
+                        } else {
+                            return 0
+                        }
                     } else {
                         return 0
                     }
-                } else {
-                    return 0
-                }
-            })
-            .attr("y", function(d) {
-                if (picUrl != "assets/defaultImage.jpg") {
-                    if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                        return 0
+                })
+                .attr("y", function(d) {
+                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                            return 0
+                        } else {
+                            return (((-0.5) * (fullBleedWidth / picWidth) * picHeight) + (fullBleedHeight / 2))
+                        }
                     } else {
-                        return (((-0.5) * (fullBleedWidth / picWidth) * picHeight) + (fullBleedHeight / 2))
+                        return 0
                     }
-                } else {
-                    return 0
-                }
-            })
-            .attr("width", function(d) {
-                if (picUrl != "assets/defaultImage.jpg") {
-                    if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                        return (fullBleedHeight / picHeight) * picWidth
+                })
+                .attr("width", function(d) {
+                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                            return (fullBleedHeight / picHeight) * picWidth
+                        } else {
+                            return fullBleedWidth
+                        }
                     } else {
                         return fullBleedWidth
                     }
-                } else {
-                    return fullBleedWidth
-                }
-            })
-            .attr("height", function(d) {
-                if (picUrl != "assets/defaultImage.jpg") {
-                    if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                        return fullBleedHeight
+                })
+                .attr("height", function(d) {
+                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                            return fullBleedHeight
+                        } else {
+                            return (fullBleedWidth / picWidth) * picHeight
+                        }
                     } else {
-                        return (fullBleedWidth / picWidth) * picHeight
+                        return fullBleedHeight
                     }
-                } else {
-                    return fullBleedHeight
-                }
-            });
+                });
+
+            if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+
+                var opacityRect = svgFull.append("rect")
+                    .attr("class", "pushThis")
+                    .attr("width", width + margin.right + margin.left)
+                    .attr("fill", "black")
+                    .attr("opacity", 0.7)
+                    .attr("height", height + margin.top + margin.bottom);
+
+            }
+
+        });
 
         // Adding Wikipedia Logo
         d3.select(idname).select('.svgBase')
@@ -1893,17 +1976,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             })
             .attr("fill", "white")
             .attr('opacity', "0.8");
-
-        if (picUrl != "assets/defaultImage.jpg") {
-
-            var opacityRect = svgFull.append("rect")
-                .attr("width", width + margin.right + margin.left)
-                .attr("fill", "black")
-                .attr("opacity", 0.7)
-                .attr("z-index", 0)
-                .attr("height", height + margin.top + margin.bottom);
-
-        }
 
         // .attr("transform", "translate(0," + height + ")") shifts the axis to the bottom part of the G element. 
         svgBase.append("g")
@@ -2357,7 +2429,7 @@ function grandPlotter(pageIDin, pageTitlein) {
     pageEdits(linkInitialPageEdits)
 
     // This runs the wordCloud graph!
-    // wordCloud(linkInitialWordCloud)
+    wordCloud(linkInitialWordCloud)
 
     // This gets the pageview stats from Stats.grok.se
     pageViews(linkInitialPageViews)
@@ -2366,7 +2438,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 }
 
 // grandPlotter(2615708, "Jurrasic World")
-grandPlotter2([46514718], [11056991])
+// grandPlotter2([46514718], [11056991])
 
 function grandPlotter2(graphOne, graphTwo) {
 
@@ -2422,14 +2494,13 @@ function grandPlotter2(graphOne, graphTwo) {
 
                     if (parameterOne == 0) {
                         finaljsonObjectOne = finaljsonObjectOne.concat(jsonObject)
-                          getDataExtraParams("https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + graphOne[0] + "&format=json&callback=?", parameterOne)
+                        getDataExtraParams("https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + graphOne[0] + "&format=json&callback=?", parameterOne)
                     }
 
                     if (parameterOne == 1) {
                         finaljsonObjectTwo = finaljsonObjectTwo.concat(jsonObject)
                         getDataExtraParams("https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + graphTwo[0] + "&format=json&callback=?", parameterOne)
                     }
-
 
                 }
 
@@ -2440,7 +2511,7 @@ function grandPlotter2(graphOne, graphTwo) {
                         finaljsonObjectOne = finaljsonObjectOne.concat(jsonObject)
                         getDataExtraParams("https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&pageids=" + graphTwo[0] + "&format=json&callback=?", 1)
 
-                    console.log(parameterOne)
+                        console.log(parameterOne)
 
                         // console.log(finaljsonObjectOne)
                     }
@@ -2453,10 +2524,7 @@ function grandPlotter2(graphOne, graphTwo) {
 
                     }
 
-
-
                     // For the pageImage thingy
-
 
                     // linkAddress = pageEdits("https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
 
@@ -3653,7 +3721,7 @@ function grandPlotter2(graphOne, graphTwo) {
 
     getDataExtraParams(linkInitialPageEdits, 0)
 
-    console.log(graphOne[1])
+    // console.log(graphOne[1])
 }
 
 // Legend //

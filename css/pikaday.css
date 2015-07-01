@@ -77,6 +77,7 @@ http://nicolasgallagher.com/micro-clearfix-hack/
     display: block;
     cursor: pointer;
     position: relative;
+    margin-left: 0;
     outline: none;
     border: 0;
     padding: 0;
