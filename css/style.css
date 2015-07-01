@@ -596,6 +596,10 @@ http://nicolasgallagher.com/micro-clearfix-hack/
 #nine {
     height: 600px
 }
+#eleven {
+    height: 600px;
+    margin-bottom: 60px
+}
 
 .pika-prev,
 .is-rtl .pika-next {
