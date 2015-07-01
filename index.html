@@ -110,9 +110,14 @@
         <p class="graphDescription">Uses CartoDB</p>
         <div id="nine"></div>
 
-        <h1 class="graphHeader"> Geo-Plot (Edits Timeframe) <button style="margin-left: 80px" id="tenB">Tada!</button></h1>
+        <h1 class="graphHeader"> Geo-Plot (Edits Torque Timeplot) <button style="margin-left: 80px" id="tenB">Tada!</button></h1>
         <p class="graphDescription">Uses CartoDB</p>
         <div id="ten"></div>
+
+        <h1 class="graphHeader"> Geo-Plot (Edits Clustermap) <button style="margin-left: 80px" id="elevenB">Tada!</button></h1>
+        <p class="graphDescription">Uses CartoDB</p>
+        <div id="eleven"></div>
+
     </div>
     </div>
 </body>
@@ -171,6 +176,11 @@ $(document).ready(function() {
     $('#nineB').click(function() {
         cartodb.createVis('nine', 'https://dpatel.cartodb.com/api/v2/viz/771e43ca-1a38-11e5-a03e-0e0c41326911/viz.json');
     })
+
+    $('#elevenB').click(function() {
+        cartodb.createVis('eleven', '    https://dpatel.cartodb.com/api/v2/viz/df71869c-2020-11e5-8a62-0e018d66dc29/viz.json');
+    })
+
 
 
 });
