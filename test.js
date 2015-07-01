@@ -1,5 +1,8 @@
-    function multiplePlotter(objectOne, objectTwo, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight) {
+  function multiplePlotter(objectOne, objectTwo, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight) {
         // var data = objectOne
+
+        console.log(objectOne)
+        console.log(objectTwo)
 
         ////
         var timeLimit = null;
@@ -308,7 +311,9 @@
                 });
             }).entries(objectTwo);
 
-        //  console.log(data)
+
+        
+
 
         // Attempting to fix the Zero Date problem
 
@@ -991,6 +996,42 @@
 
         //  console.log(JSON.stringify(finaleOne, undefined, 2))
 
+        // var maxOneValues = d3.max(finaleOne, function(d) { return +d.values;} );
+        // var maxTwoValues = d3.max(finaleTwo, function(d) { return +d.values;} );
+
+        finaleFinale = finaleOne + finaleTwo;
+        console.log(finaleFinale)
+
+        // if (maxOneValues >= maxTwoValues) {
+          x.domain(d3.extent(finaleOne, function(d) {
+            //  console.log(d.key + '   ' + d.values)
+            if (timeLimit != null) {
+                if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                    return parseDate(d.key);
+                } else {
+                    //  console.log('inHere')
+                    return parseDate(JSON.stringify(moment(timeLimit)).replace("\"", "").replace("\"", ""))
+                }
+            } else {
+                return parseDate(d.key);
+
+            }
+          }))
+          y.domain(d3.extent(finaleOne, function(d) {
+              if (timeLimit != null) {
+                  if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                      return d.values;
+                  } else {
+                      return 0
+                  }
+              } else {
+                  return d.values;
+              }
+          }));
+        // }
+
+
+
         x.domain(d3.extent(finaleOne, function(d) {
             //  console.log(d.key + '   ' + d.values)
             if (timeLimit != null) {
@@ -1010,8 +1051,6 @@
                 if (moment(d.key).diff(moment(timeLimit)) > 0) {
                     return d.values;
                 } else {
-                    //  console.log(moment(d.key).diff(moment(timeLimit)))
-                    //  console.log('ere2123')
                     return 0
                 }
             } else {
@@ -1164,15 +1203,12 @@
             .attr("class", "upperline")
             .attr("d", upperline)
             .attr("fill", "white")
-            .attr("stroke", "#3FC380")
+            .attr("stroke", "#ffffff")
             .attr("stroke-width", "1px")
-
-console.log(finaleOne)
-console.log(finaleTwo)
 
         svgBase.append("path")
             .datum(finaleTwo)
-            .attr("class", "upperlineTwo")
+            .attr("class", "upperline")
             .attr("d", upperlineTwo)
             .attr("fill", "white")
             .attr("stroke", "#3FC380")

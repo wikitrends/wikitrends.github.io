@@ -585,6 +585,18 @@ http://nicolasgallagher.com/micro-clearfix-hack/
     opacity: 1;
 }
 
+.datepicker {
+    width: 35%;
+}
+
+#ten {
+    height: 600px
+}
+
+#nine {
+    height: 600px
+}
+
 .pika-prev,
 .is-rtl .pika-next {
     float: left;

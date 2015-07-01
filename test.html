@@ -16,17 +16,17 @@
 
     <!-- StyleSheets -->
     <link href="css/style.css" rel="stylesheet">
-    <!--     <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
- -->
+    <!-- <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
 
     <!-- Core D3 files -->
     <script src="js/d3.min.js"></script>
 
-    <!-- Extensions or Addons
-        <script src="https://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script> -->
+    <!-- Extensions or Addons -->
+    <script src="js/d3-tip.js"></script>
     <script src="js/wordCloud.js"></script>
     <script src="js/pikaday.js"></script>
+    <script src="js/d3-time.js"></script>
     <script src="https://cdn.jsdelivr.net/lodash/2.4.1/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.min.js"></script>
@@ -97,12 +97,26 @@
 
         <h1 class="graphHeader"> Pie Chart (By Language)</h1>
         <p class="graphDescription">Since the day the article was created. </p>
-        <div id="five">
-        </div>
+        <div id="five"></div>
+
+        <h1 class="graphHeader"> PageViews</h1>
+        <p class="graphDescription">For the past 90 days (stat.grok.se)</p>
+        <div id="seven"></div>
+
+        <h1 class="graphHeader"> PageViews (Interpolated)</h1>
+        <p class="graphDescription">For the past 90 days (stat.grok.se)</p>
+        <div id="eight"></div>
+
+
+    </div>
     </div>
 </body>
 
 <script>
+var multipleOne;
+var multipleTwo;
+var globali = 0;
+
 // The Date Picker thingy. Uses pikaday.js
 var picker = new Pikaday({
     field: document.getElementById('datepicker'),
@@ -111,6 +125,8 @@ var picker = new Pikaday({
     maxDate: new Date('2020-12-31'),
     yearRange: [2000, 2020]
 });
+
+// event.preventDefault();
 
 /* The Search Functionality Starts */
 
@@ -199,7 +215,14 @@ var updateDisplay = function(queryResult) {
         // htmlToAdd += "<a target='_' "  href='https://en.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
 
         // Using pages[pId].title doesn't work in API call. Hence use pageID
-        htmlToAdd += "<a nohref onClick=\"grandPlotter(" + pages[pId].pageid + ")\">"
+        // console.log(pages[pId].title)
+        var pageDetails = [pages[pId].pageid, pages[pId].title]
+        console.log(globali)
+            // htmlToAdd += "<a nohref onClick=\"grandPlotter(" + pages[pId].pageid + "," + "\'" + pages[pId].title + "\'" + ")\">"
+        htmlToAdd += "<a nohref onClick=\"precurssor(" + pages[pId].pageid +
+            "," + globali +
+            "," + "\'" + pages[pId].title + "\'" +
+            ")\">"
 
         //console.log(pages[pId].title)
         //test(pages[pId].title)
@@ -210,10 +233,32 @@ var updateDisplay = function(queryResult) {
         $('#suggestionsPane').find('.mostEdits').html('');
         $('#suggestionsPane').find('.mostNewEdits').html('');
         $('#results_pane').find('.searchResults').append(htmlToAdd);
+
     }
 }
 
 /* Search functionality ends here */
+
+function precurssor(input, globalia, pageTitle) {
+    if (globali == 0) {
+        mulleOne = input;
+    } else {
+        multipleTwo = input;
+    }
+    globali = globalia + 1;
+    console.log(globali)
+
+    if (globali == 2) {
+        console.log(multipleOne + '  ' + multipleTwo)
+            // grandPlotter2([multipleOne], [multipleTwo])
+
+    } else {
+
+    }
+
+    grandPlotter(input, pageTitle)
+
+}
 
 /* WeeklyPedia functionality starts here */
 // Automatic Most Editted and most recently editted pages are fetched and displayed. 
@@ -301,11 +346,31 @@ function getImageDimensions(url, callback) {
     }
 }
 
+// Puts spaces in the number!
+function numberWithSpaces(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
+function convertImgToBase64(url, heightParam, widthParam, callback, outputFormat) {
+    var img = new Image();
+    img.crossOrigin = 'Anonymous';
+    img.onload = function() {
+        var canvas = document.createElement('CANVAS');
+        var ctx = canvas.getContext('2d');
+        canvas.height = this.height;
+        canvas.width = this.width;
+        ctx.drawImage(this, 0, 0);
+        var dataURL = canvas.toDataURL(outputFormat || 'image/png');
+        callback(dataURL);
+        canvas = null;
+    };
+    img.src = url;
+}
+
 //// Have pity on this lonely variable. Find a new home for him. Preferrably somewhere with other variables.
 var thereIs;
 
 // Nepal Earthquake
-grandPlotter('46514718')
 
 // Jurrasic
 // grandPlotter('2615708')
@@ -314,7 +379,9 @@ grandPlotter('46514718')
 
 // This is the main place where everything works. All the calls the the APIs ( except for the article seach and weeklypedia suggestions ), pretty much everything lies here. 
 
-function grandPlotter(pageIDin) {
+function grandPlotter(pageIDin, pageTitlein) {
+
+    console.log(pageTitlein)
 
     //// Adding the upperBound for the timeLimit. Also, consider that the last week / last days edits are always less than the previous ones, since the day is just half completed. 
     var timeLimit = picker.getDate()
@@ -404,6 +471,7 @@ function grandPlotter(pageIDin) {
 
     //// You mad, bro? 
     var pageID = pageIDin;
+    var pageTitle
 
     var jsonObject;
     var lastRevID;
@@ -412,10 +480,10 @@ function grandPlotter(pageIDin) {
 
     var linkSubsequentPageEdits = "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?"
 
-    var linkInitialPageViews = "https://en.wikipedia.org/w/api.php?action=query&prop=langlinks&format=json&llprop=url%7Clangname%7Cautonym&lllimit=300&iwurl=" + "&pageids=" + pageID + "&format=json&callback=?"
-
     // The limit of results returned currently set to 300. Total number of Wikipedias is 277 ( as of 16/6/15 )
     var linkInitialWordCloud = "https://en.wikipedia.org/w/api.php?action=query&prop=langlinks&format=json&llprop=url%7Clangname%7Cautonym&lllimit=300&iwurl=" + "&pageids=" + pageID + "&format=json&callback=?"
+
+    var linkInitialPageViews = "http://stats.grok.se/json/en/latest90/" + encodeURI(pageTitlein)
 
     //**// Variable Name
     // It is used by just the pageEdits function and the graph plotter. 
@@ -428,6 +496,20 @@ function grandPlotter(pageIDin) {
                 'Api-User-Agent': 'Example/1.0'
             },
             success: callback,
+        });
+    }
+
+    function getDataNoCrossOrigin(url, callback) {
+        url = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from json where url="' + url + '"') + '&format=json';
+        console.log(url)
+        return $.ajax({
+            type: "GET",
+            url: url,
+            success: callback,
+            error: function() {
+                alert("Error");
+            },
+            dataType: "json"
         });
     }
 
@@ -455,16 +537,23 @@ function grandPlotter(pageIDin) {
                 var pageID = Object.keys(impData.query.pages)[0]
                 var engTitle = impData.query.pages[pageID].title
                 var impData = impData.query.pages[pageID].revisions
+                    //  console.log(url)
+                    // console.log("asdasdasdasddad")
+                    // console.log(i + " } " + impData + " } " + pageID)
+
+                // console.log(tempTest.responseJSON)
+                // console.log(Object.keys(impData).length)
 
                 if (Object.keys(impData).length == 500) {
 
                     var wordCloudJsonObjectlastRevID = impData[Object.keys(impData)[Object.keys(impData).length - 1]].revid
 
                     impDataConcated = impDataConcated.concat(impData)
+                        // console.log(parameterTwo + "   ,   " + Object.keys(parameterOne).length)
 
                     if (parameterTwo == Object.keys(parameterOne).length) {
 
-                        getDataExtraParams("https://" + "en" + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + wordCloudJsonObjectlastRevID + "&pageids=" + originalWikiID + "&format=json&callback=?", parameterOne, parameterTwo, originalWikiID, callback)
+                        getDataExtraParams("https://" + "en" + ".wikipedia.org/w/api.]php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + wordCloudJsonObjectlastRevID + "&pageids=" + originalWikiID + "&format=json&callback=?", parameterOne, parameterTwo, originalWikiID, callback)
 
                     } else {
 
@@ -545,7 +634,7 @@ function grandPlotter(pageIDin) {
         for (i = 0; i < editsRawData.length; i++) {
             if ((editsRawData[i].user.match(/\./g) || []).length > 2) {
                 ja = ja + 1;
-                // console.log(editsRawData[i])
+                // console.log(editsRawData[i].user)
                 ipData.push({
                     user: editsRawData[i].user,
                     timestamp: editsRawData[i].timestamp,
@@ -647,7 +736,7 @@ function grandPlotter(pageIDin) {
                     // var pageID = Object.keys(linkAddress.query.pages)[0]
                     // linkAddress = linkAddress.query.pages[pageID].thumbnail
 
-                    // initialises wordCloudVizs function which has the d3 stuff. Passes the concated data as the parameter.
+                    // initialises runNow function which has the d3 stuff. Passes the concated data as the parameter.
 
                 }
 
@@ -675,20 +764,20 @@ function grandPlotter(pageIDin) {
                             thereIs = width;
 
                             pageEditsPlotter(finaljsonObject, "#one", "none", "", "", "day", pageTitle, photoUrl, width, height)
-                            pageEditsPlotter(finaljsonObject, "#two", "none", "", "", "week", pageTitle, photoUrl, width, height)
+                                // pageEditsPlotter(finaljsonObject, "#two", "none", "", "", "week", pageTitle, photoUrl, width, height)
 
-                            // wordCloudVizs("pageEdits", pageTitle, photoUrl, width, height, finaljsonObject, "", "", "")
+                            // runNow("pageEdits", pageTitle, photoUrl, width, height, finaljsonObject, "", "", "")
 
                         }
                     );
 
                 } else {
                     pageEditsPlotter(finaljsonObject, "#one", "none", "", "", "day", pageTitle, "assets/defaultImage.jpg", 1000, 500)
-                    pageEditsPlotter(finaljsonObject, "#two", "none", "", "", "week", pageTitle, "assets/defaultImage.jpg", 1000, 500)
+                        // pageEditsPlotter(finaljsonObject, "#two", "none", "", "", "week", pageTitle, "assets/defaultImage.jpg", 1000, 500)
 
-                    // function wordCloudVizs(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount) {
-                    // wordCloudVizs("pageEdits", pageTitle, "assets/defaultImage.jpg", 1000, 500, finaljsonObject, "", "", "")
-                    // wordCloudVizs("pageEdits", pageTitle, "assets/defaultImage.jpg", 1000, 500, finaljsonObject, "", "", "")
+                    // function runNow(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount) {
+                    // runNow("pageEdits", pageTitle, "assets/defaultImage.jpg", 1000, 500, finaljsonObject, "", "", "")
+                    // runNow("pageEdits", pageTitle, "assets/defaultImage.jpg", 1000, 500, finaljsonObject, "", "", "")
 
                 }
 
@@ -696,106 +785,12 @@ function grandPlotter(pageIDin) {
         })
     }
 
-    function pageViewsSelector(allLanguageLinks, callback) {
-
-        // http://stats.grok.se/json/en/latest90/India
-
-        console.log(allLanguageLinks)
-
-        // var url = "http://stats.grok.se/json/" + allLanguageLinks[] + 
-
-        url = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from json where url="' + url + '"') + '&format=json';
-        
-        
-        
-        // return $.ajax({
-        //     type: "GET",
-        //     url: url,
-        //     success: callback,
-        //     error: function() {
-        //         alert("Error");
-        //     },
-        //     dataType: "json"
-        // });
-    
-    }
-
-    function getLangLinks(url) {
-
-        var tempTest = $.ajax({
-
-            url: url,
-            async: false,
-            dataType: 'json',
-            type: 'GET',
-            headers: {
-                'Api-User-Agent': 'Example/1.0'
-            },
-            success: function() {
-                // return tempTest
-                console.log(tempTest)
-            }})
-    }
-
-    //     var jsonObjectLangLinks;
-    //     // Not sure if this is required!  // It is!
-    //     var wordCloudJsonObjectlastRevID;
-    //     //Need to be global because they need to be pushed into finalJsonObjectLangLinks and passed on as arguments for the plotting function. 
-    //     var articleTitle;
-    //     var wikiLanguage
-
-    //     getData(url, function(data) {
-
-    //         return data
-
-    //         // Langlinks instead of revisions here
-    //         if (url.indexOf("langlinks") > -1) {
-
-    //             jsonObjectLangLinks = data;
-
-    //             //// Clean up Data -- Actually we already have the pageID! Too scared to delete this piece though, it might be that jenga piece which brings down the entire tower!
-    //             var pageID = Object.keys(jsonObjectLangLinks.query.pages)[0]
-    //             jsonObjectLangLinks = jsonObjectLangLinks.query.pages[pageID].langlinks
-
-    //             // console.log(jsonObjectLangLinks)
-
-    //             for (i = 0; i < Object.keys(jsonObjectLangLinks).length; i++) {
-
-    //                 wikiLanguage = jsonObjectLangLinks[i].lang
-    //                 articleTitle = jsonObjectLangLinks[i].url.replace(/.*wiki\//g, "")
-    //                 var autonym = jsonObjectLangLinks[i].autonym
-    //                 var langname = jsonObjectLangLinks[i].langname
-
-    //                 finalJsonObjectLangLinks.push({
-    //                     lang: wikiLanguage,
-    //                     articleTitle: articleTitle,
-    //                     autonym: autonym,
-    //                     langname: langname,
-    //                     // totalEdits: pageEditsTotal // --> It'll be added by the getDataExtraParams function
-    //                     // pageViews: // --> This will be added by the Stats.grok.se function. 
-    //                 })
-
-    //             }
-
-    //             return finalJsonObjectLangLinks
-
-    //             // These need to be the parameters of the first entry of finalJsonObjectLangLinks
-
-    //             // wikiLanguage = finalJsonObjectLangLinks[0].lang
-    //             // articleTitle = finalJsonObjectLangLinks[0].articleTitle
-
-    //             // console.log(wikiLanguage + " asdasdasd " + articleTitle)
-
-    //             // getDataExtraParams("https://" + wikiLanguage + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&titles=" + articleTitle + "&format=json&callback=?", finalJsonObjectLangLinks, 0, pageID)
-
-    //         }
-    //     })
-    // }
-
     function wordCloud(wordCloudUrl, langLinksJsonObject) {
 
         var jsonObjectLangLinks;
-        console.log(wordCloudUrl)
+        var finalWordCloudJsonObject = [];
+        var wordCloudJsonObject;
+        var pageEditsTotal = 0;
         // The variable which gets passed.
         // Not sure if this is required!  // It is!
         var wordCloudJsonObjectlastRevID;
@@ -819,8 +814,6 @@ function grandPlotter(pageIDin) {
 
                 for (i = 0; i < Object.keys(jsonObjectLangLinks).length; i++) {
 
-                    console.log(jsonObjectLangLinks)
-
                     wikiLanguage = jsonObjectLangLinks[i].lang
                     articleTitle = jsonObjectLangLinks[i].url.replace(/.*wiki\//g, "")
                     autonym = jsonObjectLangLinks[i].autonym
@@ -833,13 +826,15 @@ function grandPlotter(pageIDin) {
                         langname: langname,
                         // totalEdits: pageEditsTotal // --> It'll be added by the getDataExtraParams function
                     })
+
                 }
 
                 // These need to be the parameters of the first entry of finalJsonObjectLangLinks
+
                 wikiLanguage = finalJsonObjectLangLinks[0].lang
                 articleTitle = finalJsonObjectLangLinks[0].articleTitle
 
-                pageViews(finalJsonObjectLangLinks)
+                // console.log(wikiLanguage + " asdasdasd " + articleTitle)
 
                 getDataExtraParams("https://" + wikiLanguage + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&titles=" + articleTitle + "&format=json&callback=?", finalJsonObjectLangLinks, 0, pageID)
 
@@ -864,8 +859,8 @@ function grandPlotter(pageIDin) {
                         photoUrl,
                         function(width, height) {
                             thereIs = width;
-                            wordCloudVizs("wordCloud", pageTitle, photoUrl, width, height, "", langLinksJsonObject)
-                            wordCloudVizs("pieChart", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject)
+                            runNow("wordCloud", pageTitle, photoUrl, width, height, "", langLinksJsonObject)
+                            runNow("pieChart", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject)
 
                         }
                     );
@@ -875,8 +870,8 @@ function grandPlotter(pageIDin) {
                 // This part runs when there is no image for that article
                 else {
 
-                    wordCloudVizs("wordCloud", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject)
-                    wordCloudVizs("pieChart", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject)
+                    runNow("wordCloud", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject)
+                    runNow("pieChart", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject)
 
                     // return jsonObjectLangLinks
 
@@ -893,21 +888,21 @@ function grandPlotter(pageIDin) {
 
         var previousSize;
 
-        dataSource.forEach(function(d, i) {
+        // dataSource.forEach(function(d, i) {
 
-            if (i == dataSource.length) {
-                d.difference = d.size;
-            }
-            d.difference = d.size - previousSize;
+        //     if (i == dataSource.length) {
+        //         d.difference = d.size;
+        //     }
+        //     d.difference = d.size - previousSize;
 
-            // console.log(d.)
-            // console.log(d.timestamp + '  |  ' + d.difference + '  |  ' + d.size+ '  |  ' + d.user)
-            previousSize = d.size;
-        })
+        //     // console.log(d.)
+        //     // console.log(d.timestamp + '  |  ' + d.difference + '  |  ' + d.size+ '  |  ' + d.user)
+        //     previousSize = d.size;
+        // })
 
         // console.log(tempCheck)
 
-        getGeoData(dataSource)
+        // getGeoData(dataSource)
 
         $('#loader').html('');
         $(idname).html('')
@@ -935,18 +930,21 @@ function grandPlotter(pageIDin) {
 
         var xAxis = d3.svg.axis()
             .scale(x)
+            .ticks(5)
             .orient("bottom");
 
         var yAxis = d3.svg.axis()
             .scale(y)
-            .ticks(5)
+            .ticks(4)
             .orient("left");
 
         var knotChecker;
 
         var upperline = d3.svg.line()
-            .interpolate(interpolation)
+            // .interpolate("bundle")
             .x(function(d, i) {
+
+                // console.log(x(parseDate(d.key)))
 
                 if (timeLimit != null) {
                     if (moment(d.key).diff(moment(timeLimit)) > 0) {
@@ -1136,6 +1134,14 @@ function grandPlotter(pageIDin) {
 
                         // tempIn is just of temporary string conversions. '"' need to be removed.å
                         var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
+                        var smoothner = moment(dayMinusOne).subtract(1, "hour")
+
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+
+                        var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
 
                         finale.push({
                             key: tempIn,
@@ -1155,11 +1161,18 @@ function grandPlotter(pageIDin) {
 
                     if (JSON.stringify(dayPlusOne) != JSON.stringify(previousDate)) {
 
-                        // console.log('Here')
+                        var smoothner = moment(dayPlusOne).add(1, "hour")
 
                         // tempIn is just of temporary string conversions.
                         var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
                             // console.log(tempIn)
+
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+
+                        var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
 
                         finale.push({
                                 key: tempIn,
@@ -1417,6 +1430,17 @@ function grandPlotter(pageIDin) {
 
         }
 
+        console.log(data)
+
+        var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([-10, 0])
+            .html(function(d) {
+                return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+            })
+
+        svgBase.call(tip);
+
         //  console.log(JSON.stringify(finale, undefined, 2))
 
         x.domain(d3.extent(finale, function(d) {
@@ -1507,19 +1531,51 @@ function grandPlotter(pageIDin) {
                 }
             });
 
+        var totalEdits = 0;
+
+        dataSource.forEach(function(d) {
+            totalEdits = totalEdits + parseInt(d.values)
+        })
+
         // Adding Wikipedia Logo
         d3.select(idname).select('.svgBase')
             .append("svg:image")
             .attr("xlink:href", "assets/wikipediaW.png")
-            .attr("x", 0)
+            .attr("x", width - 80)
             .attr("y", 0)
             .attr("width", 70)
             .attr("height", 70);
 
         d3.select(idname).select('.svgBase')
             .append('text')
+            .text("PAGEEDITS")
+            .attr("x", 0)
+            .attr("y", 25)
+            .attr("font-family", "Open Sans")
+            .attr("font-size", function(d) {
+                return "16px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "0.8");
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text(numberWithSpaces(totalEdits))
+            .attr("x", 0)
+            .attr("y", 85)
+            .attr("font-family", "Open Sans")
+            .attr("font-weight", 700)
+            .attr("font-size", function(d) {
+                return "60px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "0.8");
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
             .text(pageTitle)
-            .attr("x", 100)
+            .attr("text-anchor", "end")
+            .attr("x", width - 100)
             .attr("y", 45)
             .attr("font-family", "Georgia")
             .attr("font-size", function(d) {
@@ -1563,17 +1619,20 @@ function grandPlotter(pageIDin) {
             .attr("stroke", "#3FC380")
             .attr("stroke-width", "1px")
 
-        // svgBase.selectAll("circle.line")
-        //     .data(data)
-        //     .enter().append("svg:circle")
-        //     .attr("class", "line")
-        //     .style("fill", "green")
-        //     .attr("cx", upperline.x())
-        //     .attr("cy", upperline.y())
-        //     .attr("r", 3.5);
+        svgBase.selectAll("circle.line")
+            .data(data)
+            .enter().append("svg:circle")
+            .attr("class", "line")
+            .style("fill", "green")
+            .attr("cx", upperline.x())
+            .attr("cy", upperline.y())
+            .attr("r", 12)
+            .attr('opacity', 0)
+            .on('click', tip.show)
+            // .on('mouseout', tip.hide)
     }
 
-    function wordCloudVizs(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount) {
+    function runNow(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount) {
 
         function wordCloudLangLinks(dataSourceLangLinks, idname, wordText, fontSizeLowerBound, fontSizeUpperBound) {
 
@@ -1768,217 +1827,9 @@ function grandPlotter(pageIDin) {
                         }
                     });
             }
-
         }
 
-        function langPieChartTest(dataSourceLangLinks, idname) {
 
-            var data = dataSourceLangLinks;
-
-            $(idname).html('')
-
-            var svg = d3.select("body").select("#five")
-                // .attr("width", 1000)
-                // .attr("height", 800)
-                .append("svg")
-
-            .attr("width", 1000)
-                .attr("height", 500)
-                .append("g")
-
-            var colors = ['rgb(141,211,199)', 'rgb(255,255,179)', 'rgb(190,186,218)', 'rgb(251,128,114)', 'rgb(128,177,211)', 'rgb(253,180,98)', 'rgb(179,222,105)', 'rgb(252,205,229)', 'rgb(217,217,217)']
-
-            // var svg = d3.select("body")
-            //     .append("svg")
-            //     .append("g")
-
-            svg.append("g")
-                .attr("class", "slices");
-            svg.append("g")
-                .attr("class", "labels");
-            svg.append("g")
-                .attr("class", "lines");
-
-            var width = 960,
-                height = 450,
-                radius = Math.min(width, height) / 2;
-
-            var pie = d3.layout.pie()
-                .sort(null)
-                .value(function(d) {
-                    return d.totalEdits;
-                });
-
-            var arc = d3.svg.arc()
-                .outerRadius(radius * 0.8)
-                .innerRadius(radius * 0.4);
-
-            var outerArc = d3.svg.arc()
-                .innerRadius(radius * 0.9)
-                .outerRadius(radius * 0.9);
-
-            svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
-
-            var key = function(d) {
-                return d.data.autonym;
-            };
-
-            data.sort(function(x, y) {
-                return d3.descending(x.totalEdits, y.totalEdits);
-            })
-
-            var totalOtherEdits = 0;
-            var newData = []
-
-            data.forEach(function(d, i) {
-
-                // console.log(i + 'sadasd')
-                if (i > 5) {
-                    // d.totalEdits = 0;
-                    totalOtherEdits = totalOtherEdits + d.totalEdits
-                        // console.log(d.totalEdits)
-                } else {
-                    newData.push({
-                        lang: d.lang,
-                        articleTitle: d.articleTitle,
-                        autonym: d.autonym,
-                        langname: d.langname,
-                        totalEdits: d.totalEdits
-                    })
-
-                }
-
-                //  console.log(totalOtherEdits)
-
-            })
-
-            newData.push({
-                lang: "Other",
-                articleTitle: "Other",
-                autonym: "Other",
-                langname: "Other",
-                totalEdits: totalOtherEdits
-            })
-
-            // var color = d3.scale.ordinal()
-            //     .domain(["Lorem ipsum", "dolor sit", "amet", "consectetur", "adipisicing", "elit", "sed", "do", "eiusmod", "tempor", "incididunt"])
-            //     .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
-
-            // function randomData() {
-            //     var labels = color.domain();
-            //     return labels.map(function(label) {
-            //         return {
-            //             label: label,
-            //             value: Math.random()
-            //         }
-            //     });
-            // }
-
-            change(newData);
-
-            // d3.select(".randomize")
-            //     .on("click", function() {
-            //         change(randomData());
-            //     });
-
-            // console.log(colors.domain());
-
-            function change(data) {
-
-                /* ------- PIE SLICES -------*/
-                var slice = svg.select(".slices").selectAll("path.slice")
-                    .data(pie(data), key);
-
-                slice.enter()
-                    .insert("path")
-                    .style("fill", function(d, i) {
-                        // console.log(colorsa)
-                        //  console.log(newData)
-                        return colors[i]
-
-                    })
-                    .attr("class", "slice");
-
-                slice
-                    .transition().duration(1000)
-                    .attrTween("d", function(d) {
-                        this._current = this._current || d;
-                        var interpolate = d3.interpolate(this._current, d);
-                        this._current = interpolate(0);
-                        return function(t) {
-                            return arc(interpolate(t));
-                        };
-                    })
-
-                slice.exit()
-                    .remove();
-
-                /* ------- TEXT LABELS -------*/
-
-                var text = svg.select(".labels").selectAll("text")
-                    .data(pie(data), key);
-
-                text.enter()
-                    .append("text")
-                    .attr("dy", ".35em")
-                    .text(function(d) {
-                        return d.data.autonym;
-                    });
-
-                function midAngle(d) {
-                    return d.startAngle + (d.endAngle - d.startAngle) / 2;
-                }
-
-                text.transition().duration(1000)
-                    .attrTween("transform", function(d) {
-                        this._current = this._current || d;
-                        var interpolate = d3.interpolate(this._current, d);
-                        this._current = interpolate(0);
-                        return function(t) {
-                            var d2 = interpolate(t);
-                            var pos = outerArc.centroid(d2);
-                            pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
-                            return "translate(" + pos + ")";
-                        };
-                    })
-                    .styleTween("text-anchor", function(d) {
-                        this._current = this._current || d;
-                        var interpolate = d3.interpolate(this._current, d);
-                        this._current = interpolate(0);
-                        return function(t) {
-                            var d2 = interpolate(t);
-                            return midAngle(d2) < Math.PI ? "start" : "end";
-                        };
-                    });
-
-                text.exit()
-                    .remove();
-
-                /* ------- SLICE TO TEXT POLYLINES -------*/
-
-                var polyline = svg.select(".lines").selectAll("polyline")
-                    .data(pie(data), key);
-
-                polyline.enter()
-                    .append("polyline");
-
-                polyline.transition().duration(1000)
-                    .attrTween("points", function(d) {
-                        this._current = this._current || d;
-                        var interpolate = d3.interpolate(this._current, d);
-                        this._current = interpolate(0);
-                        return function(t) {
-                            var d2 = interpolate(t);
-                            var pos = outerArc.centroid(d2);
-                            pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
-                            return [arc.centroid(d2), outerArc.centroid(d2), pos];
-                        };
-                    });
-
-                polyline.exit()
-                    .remove();
-            };
-        }
 
         if (origin == "pageEdits") {
             pageEditsPlotter(dataSource, "#one", "none", "size", "size", "day")
@@ -2001,44 +1852,14 @@ function grandPlotter(pageIDin) {
     // This runs the wordCloud graph!
     wordCloud(linkInitialWordCloud)
 
-    var tester = getLangLinks(linkInitialPageViews)
-    console.log(getLangLinks(linkInitialPageViews))
-
     // This gets the pageview stats from Stats.grok.se
-    // pageViews(linkInitialPageViews, function(data) {
+    // pageViews(linkInitialPageViews)
 
-    //     var arrayData = []
-    //     var requiredData = data.query.results.json.daily_views
-    //     typeof requiredData;
-
-    //     for (var key in requiredData) {
-
-    //         if (requiredData.hasOwnProperty(key)) {
-    //             var keyWithout_ = key.replace("_", "2")
-    //             arrayData.push({
-    //                 date: keyWithout_,
-    //                 pageViews: requiredData[key]
-    //             })
-    //         }
-    //     }
-
-    //     // Sorts the array as per the dates
-    //     arrayData.sort(function(a, b) {
-    //         var c = new Date(a.date);
-    //         var d = new Date(b.date);
-    //         return c - d;
-    //     });
-
-    //     // console.log(JSON.stringify(arrayData))
-    // })
-
+    // console.log('')
 }
 
-// Legend //
 
 ///// = Pretty Difficult.
 //*// = Not that Difficult
 //**// = Ah! That is what I can fix in my sleep.
-
 </script>
-

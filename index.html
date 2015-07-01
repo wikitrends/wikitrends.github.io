@@ -34,15 +34,15 @@
 </head>
 
 <body>
-
     <div class="controls">
 
 
         <input style="margin-bottom: 40px; margin-top: 20px" type='text' name='searchQuery' placeholder='Search' /></input>
 
-        <label for="datepicker">Start Date ( if you want to reset it to article creation date, select today's date )</label>
+        <label for="datepicker">Select Dates</label>
         <br>
-        <input type="text" id="datepicker">
+        <input type="text" class="datepicker" id="datepicker">
+        <input type="text" class="datepicker" style="margin-left: 20px" id="datepickerTwo">
         <div class="weeklyPedia">
             <p class="weeklyPedia">WeeklyPedia</p>
         </div>
@@ -106,12 +106,22 @@
         <p class="graphDescription">For the past 90 days (stat.grok.se)</p>
         <div id="eight"></div>
 
+        <h1 class="graphHeader"> Geo-Plot (Number of Edits) <button style="margin-left: 80px" id="nineB">Tada!</button></h1>
+        <p class="graphDescription">Uses CartoDB</p>
+        <div id="nine"></div>
 
+        <h1 class="graphHeader"> Geo-Plot (Edits Timeframe) <button style="margin-left: 80px" id="tenB">Tada!</button></h1>
+        <p class="graphDescription">Uses CartoDB</p>
+        <div id="ten"></div>
     </div>
     </div>
 </body>
 
 <script>
+
+
+
+
 var multipleOne;
 var multipleTwo;
 var globali = 0;
@@ -119,6 +129,13 @@ var globali = 0;
 // The Date Picker thingy. Uses pikaday.js
 var picker = new Pikaday({
     field: document.getElementById('datepicker'),
+    firstDay: 1,
+    minDate: new Date('2000-01-01'),
+    maxDate: new Date('2020-12-31'),
+    yearRange: [2000, 2020]
+});
+var pickerTwo = new Pikaday({
+    field: document.getElementById('datepickerTwo'),
     firstDay: 1,
     minDate: new Date('2000-01-01'),
     maxDate: new Date('2020-12-31'),
@@ -145,8 +162,16 @@ $(document).ready(function() {
     $("#closeMostNewEdits").click(function() {
         $('#suggestionsPane').find('.mostNewEdits').html('');
         $("#closeMostNewEdits").hide()
-
     });
+
+    $('#tenB').click(function() {
+        cartodb.createVis('ten', 'https://dpatel.cartodb.com/api/v2/viz/7f6c716a-1a1e-11e5-9539-0e4fddd5de28/viz.json');
+    })
+
+    $('#nineB').click(function() {
+        cartodb.createVis('nine', 'https://dpatel.cartodb.com/api/v2/viz/771e43ca-1a38-11e5-a03e-0e0c41326911/viz.json');
+    })
+
 
 });
 
@@ -240,7 +265,7 @@ var updateDisplay = function(queryResult) {
 
 function precurssor(input, globalia, pageTitle) {
     if (globali == 0) {
-        mulleOne = input;
+        multipleOne = input;
     } else {
         multipleTwo = input;
     }
@@ -366,6 +391,14 @@ function convertImgToBase64(url, heightParam, widthParam, callback, outputFormat
     img.src = url;
 }
 
+function searchArray(nameKey, myArray) {
+    for (var i = 0; i < myArray.length; i++) {
+        if (myArray[i].name === nameKey) {
+            return myArray[i];
+        }
+    }
+}
+
 //// Have pity on this lonely variable. Find a new home for him. Preferrably somewhere with other variables.
 var thereIs;
 
@@ -384,6 +417,8 @@ function grandPlotter(pageIDin, pageTitlein) {
 
     //// Adding the upperBound for the timeLimit. Also, consider that the last week / last days edits are always less than the previous ones, since the day is just half completed. 
     var timeLimit = picker.getDate()
+    var timeLimitUpper = pickerTwo.getDate()
+
     if (moment(timeLimit) == moment())
 
     //// Make this spinning fellow better. 
@@ -444,13 +479,13 @@ function grandPlotter(pageIDin, pageTitlein) {
         id: "one"
     });
     myLoader();
-    var myLoader = loader({
-        width: 960,
-        height: 500,
-        container: "#two",
-        id: "one"
-    });
-    myLoader();
+    // var myLoader = loader({
+    //     width: 960,
+    //     height: 500,
+    //     container: "#two",
+    //     id: "one"
+    // });
+    // myLoader();
     var myLoader = loader({
         width: 960,
         height: 500,
@@ -552,7 +587,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 
                     if (parameterTwo == Object.keys(parameterOne).length) {
 
-                        getDataExtraParams("https://" + "en" + ".wikipedia.org/w/api.]php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + wordCloudJsonObjectlastRevID + "&pageids=" + originalWikiID + "&format=json&callback=?", parameterOne, parameterTwo, originalWikiID, callback)
+                        getDataExtraParams("https://" + "en" + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + wordCloudJsonObjectlastRevID + "&pageids=" + originalWikiID + "&format=json&callback=?", parameterOne, parameterTwo, originalWikiID, callback)
 
                     } else {
 
@@ -901,7 +936,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         // console.log(tempCheck)
 
-        // getGeoData(dataSource)
+        getGeoData(dataSource)
 
         $('#loader').html('');
         $(idname).html('')
@@ -939,42 +974,71 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         var knotChecker;
 
+        console.log(timeLimit)
+        console.log(timeLimitUpper)
+
         var upperline = d3.svg.line()
             // .interpolate("bundle")
             .x(function(d, i) {
 
-                // console.log(x(parseDate(d.key)))
-
-                if (timeLimit != null) {
-                    if (moment(d.key).diff(moment(timeLimit)) > 0) {
-                        //     if (d.key.indexOf("T23:00:01.000Z") > -1 || d.key.indexOf("T01:00:01.000Z") > -1) {
-                        //   // console.log('wooh' + "   " + d.key)
-                        //     } else {
-                        return x(parseDate(d.key));
-                        // }
-                    } else {
-                        // return x(parseDate(JSON.stringify(moment(timeLimit)).replace("\"", "").replace("\"", "")))
-                    }
-                } else {
+                if (timeLimit == null && timeLimitUpper == null) {
                     return x(parseDate(d.key));
+                } else if (timeLimit == null && timeLimitUpper != null) {
+                    if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                        return x(parseDate(d.key))
+                    }
+                } else if (timeLimit != null && timeLimitUpper == null) {
+                    if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                        return x(parseDate(d.key))
+                    }
+                } else if (timeLimit != null && timeLimitUpper != null) {
+                    if (moment(d.key).diff(moment(timeLimit)) > 0 && moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                        return x(parseDate(d.key))
+                    }
                 }
+
+                // if (timeLimit != null) {
+                //     if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                //         return x(parseDate(d.key));
+                //     } else {
+                //         // return x(parseDate(JSON.stringify(moment(timeLimit)).replace("\"", "").replace("\"", "")))
+                //     }
+                // } else {
+                //     return x(parseDate(d.key));
+                // }
 
             })
             .y(function(d, i) {
 
-                if (timeLimit != null) {
-
-                    if (moment(d.key).diff(moment(timeLimit)) > 0) {
-                        // if (d.key.indexOf("T23:00:01.000Z") > -1 || d.key.indexOf("T01:00:01.000Z") > -1) {
-                        //  console.log('wooh' + "   " + d.key)
-
-                        // } else {
+                if (timeLimit == null && timeLimitUpper == null) {
                         return y(d.values);
-                        // }
+                } else if (timeLimit == null && timeLimitUpper != null) {
+                    if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                        return y(d.values);
                     } else {}
-                } else {
-                    return y(d.values);
-                }
+                } else if (timeLimit != null && timeLimitUpper == null) {
+                    if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                        return y(d.values);
+                    } else {}
+                } else if (timeLimit != null && timeLimitUpper != null) {
+                    if (moment(d.key).diff(moment(timeLimit)) > 0 && moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                        return y(d.values);
+                    } else {}
+                }          
+
+                // if (timeLimit != null) {
+
+                //     if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                //         // if (d.key.indexOf("T23:00:01.000Z") > -1 || d.key.indexOf("T01:00:01.000Z") > -1) {
+                //         //  console.log('wooh' + "   " + d.key)
+
+                //         // } else {
+                //         return y(d.values);
+                //         // }
+                //     } else {}
+                // } else {
+                //     return y(d.values);
+                // }
 
             });
 
@@ -1066,7 +1130,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             // console.log(d.timestamptrue)
 
             d.values = 1;
-
         });
 
         // console.log(dataSource)
@@ -1211,7 +1274,6 @@ function grandPlotter(pageIDin, pageTitlein) {
                 previousDateActual = d.key;
 
             })
-
         } else if (timeDuration == "week") {
 
             // console.log('asdsa')
@@ -1307,7 +1369,6 @@ function grandPlotter(pageIDin, pageTitlein) {
                 previousDateActual = d.key;
 
             })
-
         } else if (timeDuration == "month") {
 
             // BEWARE BEWARE BEWARE!
@@ -1426,7 +1487,6 @@ function grandPlotter(pageIDin, pageTitlein) {
                 previousDateActual = d.key;
 
             })
-
         }
 
         console.log(data)
@@ -1443,31 +1503,68 @@ function grandPlotter(pageIDin, pageTitlein) {
         //  console.log(JSON.stringify(finale, undefined, 2))
 
         x.domain(d3.extent(finale, function(d) {
-            //  console.log(d.key + '   ' + d.values)
-            if (timeLimit != null) {
-                if (moment(d.key).diff(moment(timeLimit)) > 0) {
-                    return parseDate(d.key);
-                } else {
-                    //  console.log('inHere')
-                    return parseDate(JSON.stringify(moment(timeLimit)).replace("\"", "").replace("\"", ""))
-                }
-            } else {
-                return parseDate(d.key);
 
-            }
+
+            if (timeLimit == null && timeLimitUpper == null) {
+                return parseDate(d.key);
+            } else if (timeLimit == null && timeLimitUpper != null) {
+                if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                return parseDate(d.key);
+                } else {}
+            } else if (timeLimit != null && timeLimitUpper == null) {
+                if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                return parseDate(d.key);
+                } else {}
+            } else if (timeLimit != null && timeLimitUpper != null) {
+                if (moment(d.key).diff(moment(timeLimit)) > 0 && moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                return parseDate(d.key);
+                } else {}
+            } 
+            else {}
+
+
+            // if (timeLimit != null) {
+            //     if (moment(d.key).diff(moment(timeLimit)) > 0) {
+            //         return parseDate(d.key);
+            //     } else {
+            //         //  console.log('inHere')
+            //         return parseDate(JSON.stringify(moment(timeLimit)).replace("\"", "").replace("\"", ""))
+            //     }
+            // } else {
+            //     return parseDate(d.key);
+
+            // }
         }))
         y.domain(d3.extent(finale, function(d) {
-            if (timeLimit != null) {
+
+            if (timeLimit == null && timeLimitUpper == null) {
+                    return d.values;
+            } else if (timeLimit == null && timeLimitUpper != null) {
+                if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                    return d.values;
+                } else {}
+            } else if (timeLimit != null && timeLimitUpper == null) {
                 if (moment(d.key).diff(moment(timeLimit)) > 0) {
                     return d.values;
-                } else {
-                    //  console.log(moment(d.key).diff(moment(timeLimit)))
-                    //  console.log('ere2123')
-                    return 0
-                }
-            } else {
-                return d.values;
-            }
+                } else {}
+            } else if (timeLimit != null && timeLimitUpper != null) {
+                if (moment(d.key).diff(moment(timeLimit)) > 0 && moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                    return d.values;
+                } else {}
+            } 
+            else {}
+
+            // if (timeLimit != null) {
+            //     if (moment(d.key).diff(moment(timeLimit)) > 0) {
+            //         return d.values;
+            //     } else {
+            //         //  console.log(moment(d.key).diff(moment(timeLimit)))
+            //         //  console.log('ere2123')
+            //         return 0
+            //     }
+            // } else {
+            //     return d.values;
+            // }
         }));
 
         // The opacity rectangle and the image need to be above everything else. Otherwise the graphs and the text would be hidden
@@ -1839,10 +1936,9 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         var imageBase64 = "";
 
-                    if (picUrl === undefined) {
-                picUrl = "http://wikitrends.github.io/assets/defaultImage.jpg"
-            } else {}
-
+        if (picUrl === undefined) {
+            picUrl = "http://wikitrends.github.io/assets/defaultImage.jpg"
+        } else {}
 
         convertImgToBase64(picUrl, picHeight, picWidth, function(base64Img) {
 
@@ -2000,7 +2096,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             .attr("fill", "white")
             .attr("stroke", "#3FC380")
             .attr("stroke-width", "1px")
-
     }
 
     function runNow(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount) {
@@ -2428,7 +2523,7 @@ function grandPlotter(pageIDin, pageTitlein) {
     // This runs the pageEdit graph!
     pageEdits(linkInitialPageEdits)
 
-    // This runs the wordCloud graph!
+    // This runs the wordCloud graph!ssss
     wordCloud(linkInitialWordCloud)
 
     // This gets the pageview stats from Stats.grok.se
@@ -2479,6 +2574,8 @@ function grandPlotter2(graphOne, graphTwo) {
                 jsonObject = jsonObject.query.pages[pageID].revisions
 
                 // Get last revision ID
+
+                // console.log(jsonObject)
                 lastRevID = jsonObject[Object.keys(jsonObject)[Object.keys(jsonObject).length - 1]].revid
 
                 //  console.log(lastRevID)
@@ -2540,9 +2637,6 @@ function grandPlotter2(graphOne, graphTwo) {
 
     function multiplePlotter(objectOne, objectTwo, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight) {
         // var data = objectOne
-
-        console.log(objectOne)
-        console.log(objectTwo)
 
         ////
         var timeLimit = null;
@@ -2851,8 +2945,6 @@ function grandPlotter2(graphOne, graphTwo) {
                 });
             }).entries(objectTwo);
 
-        //  console.log(data)
-
         // Attempting to fix the Zero Date problem
 
         var finaleOne = []
@@ -2974,6 +3066,18 @@ function grandPlotter2(graphOne, graphTwo) {
 
                 // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
                 previousDateActual = d.key;
+                console.log(dataOne.length)
+
+                if (i == 0) {
+                    console.log('asdasdasdasdasdasd')
+
+                    if (searchArray("2015-07-01T00:00:01.000Z", dataOne) == "2015-07-01T00:00:01.000Z") {} else {
+                        finaleOne.push({
+                            key: "2015-07-01T00:00:01.000Z",
+                            values: 0
+                        })
+                    }
+                }
 
             })
 
@@ -3310,6 +3414,17 @@ function grandPlotter2(graphOne, graphTwo) {
 
                 // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
                 previousDateActual = d.key;
+                console.log(dataTwo.length)
+                if (i == 0) {
+                    console.log('asdasdasdasdasdasd')
+
+                    if (searchArray("2015-07-01T00:00:01.000Z", dataTwo) == "2015-07-01T00:00:01.000Z") {} else {
+                        finaleTwo.push({
+                            key: "2015-07-01T00:00:01.000Z",
+                            values: 0
+                        })
+                    }
+                }
 
             })
 
@@ -3534,7 +3649,19 @@ function grandPlotter2(graphOne, graphTwo) {
 
         //  console.log(JSON.stringify(finaleOne, undefined, 2))
 
-        x.domain(d3.extent(finaleOne, function(d) {
+        // var maxOneValues = d3.max(finaleOne, function(d) { return +d.values;} );
+        // var maxTwoValues = d3.max(finaleTwo, function(d) { return +d.values;} );
+
+        console.log(finaleOne)
+        console.log(finaleTwo)
+
+        var finaleFinale = []
+
+        finaleFinale = finaleOne.concat(finaleTwo);
+        console.log(finaleFinale)
+
+        // if (maxOneValues >= maxTwoValues) {
+        x.domain(d3.extent(finaleFinale, function(d) {
             //  console.log(d.key + '   ' + d.values)
             if (timeLimit != null) {
                 if (moment(d.key).diff(moment(timeLimit)) > 0) {
@@ -3548,19 +3675,18 @@ function grandPlotter2(graphOne, graphTwo) {
 
             }
         }))
-        y.domain(d3.extent(finaleOne, function(d) {
+        y.domain(d3.extent(finaleFinale, function(d) {
             if (timeLimit != null) {
                 if (moment(d.key).diff(moment(timeLimit)) > 0) {
                     return d.values;
                 } else {
-                    //  console.log(moment(d.key).diff(moment(timeLimit)))
-                    //  console.log('ere2123')
                     return 0
                 }
             } else {
                 return d.values;
             }
         }));
+        // }
 
         // The opacity rectangle and the image need to be above everything else. Otherwise the graphs and the text would be hidden
 
