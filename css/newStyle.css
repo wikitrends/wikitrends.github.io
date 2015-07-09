@@ -3,89 +3,112 @@
 	margin: 0 auto;
 	width: 1000px;
 }*/
+
 .controls {
     width: 25%;
     float: left;
     margin-left: -80px;
-  position: relative;
-  min-height: 1px;
-  padding-right: 15px;
-  padding-left: 15px;
+    position: relative;
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
 }
+
 .navbar-brand img {
-	width: 40px;
+    width: 40px;
 }
+
 .navbar-text {
-	font-size: 24px;
-	line-height: 40px; /* Matching the vertical height with the navbrand */
-	border-left: rgb(199, 199, 199) 1px solid;
+    font-size: 24px;
+    line-height: 40px;
+    /* Matching the vertical height with the navbrand */
+    
+    border-left: rgb(199, 199, 199) 1px solid;
     padding-left: 38px;
 }
+
 .navbar-header.offshift {
-	margin-left: -50px;
+    margin-left: -50px;
 }
+
 body {
-	font-family: "Source Sans Pro";
+    font-family: "Source Sans Pro";
 }
+
 .lang-selector {
-	min-width: 66px;
+    min-width: 66px;
 }
+
 .input-labels {
-	display: block;
-	padding-top: 30px;
-	padding-bottom: 10px;
+    display: block;
+    padding-top: 30px;
+    padding-bottom: 10px;
 }
+
 .input-half-one {
-	padding-left: 0;
-	padding-right: 10px;
+    padding-left: 0;
+    padding-right: 10px;
 }
+
 .input-half-two {
-	padding-left: 10px;
-	padding-right: 0;
+    padding-left: 10px;
+    padding-right: 0;
 }
-.input-button {
-}
+
+.input-button {}
+
 .button-half-one {
-	margin-left: 0;
-	margin-right: 3%;
-	width: 46%;
+    margin-left: 0;
+    margin-right: 3%;
+    width: 46%;
 }
+
 .button-half-two {
-	margin-right: 0;
-	margin-left: 3%;
-	width: 46%;
+    margin-right: 0;
+    margin-left: 3%;
+    width: 46%;
 }
+
 .result_card {
-  padding-top: 10px;
-  border-radius: 2px solid white;
-  border: 1px solid rgba(0, 0, 0, .2);
-  border-radius: 3px;
-  border-left: 6px grey solid;
-  padding: 6px 12px;
-  margin-bottom: 13px;
+    padding-top: 10px;
+    border-radius: 2px solid white;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: 3px;
+    border-left: 6px grey solid;
+    padding: 6px 12px;
+    margin-bottom: 13px;
 }
+
 .result_card:hover {
-	background-color: #e6e6e6;
-  border-left: 6px grey solid;
-  cursor:pointer;
+    background-color: #e6e6e6;
+    border-left: 6px grey solid;
+    cursor: pointer;
 }
+
 .result_card p {
-  color: #222;
-  font-size: 14px;
-  margin: 0;
+    color: #222;
+    font-size: 14px;
+    margin: 0;
 }
+
 .result_card a:hover {
-  text-decoration: none;
+    text-decoration: none;
 }
+
 .num_results {
-  margin-top: -10px;
-  font-weight: 100;
-  font-family: "Roboto Slab"
+    margin-top: -10px;
+    font-weight: 100;
+    font-family: "Roboto Slab"
 }
+
 .graphTitle {
-	  font-family: "Roboto Slab";
-	    font-weight: 400;
+    font-family: "Roboto Slab";
+    font-weight: 400;
 }
+.pngExporter {
+	margin-left: 70px;
+}
+
 
 
 /*!
@@ -103,18 +126,24 @@ body {
     border-bottom-color: #bbb;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-
 /*
 clear child float (pika-lendar), using the famous micro clearfix hack
 http://nicolasgallagher.com/micro-clearfix-hack/
 */
+
 .pika-single:before,
 .pika-single:after {
     content: " ";
     display: table;
 }
-.pika-single:after { clear: both }
-.pika-single { *zoom: 1 }
+
+.pika-single:after {
+    clear: both
+}
+
+.pika-single {
+    *zoom: 1
+}
 
 .pika-single.is-hidden {
     display: none;
@@ -122,7 +151,7 @@ http://nicolasgallagher.com/micro-clearfix-hack/
 
 .pika-single.is-bound {
     position: absolute;
-    box-shadow: 0 5px 15px -5px rgba(0,0,0,.5);
+    box-shadow: 0 5px 15px -5px rgba(0, 0, 0, .5);
 }
 
 .pika-lendar {
@@ -149,6 +178,7 @@ http://nicolasgallagher.com/micro-clearfix-hack/
     font-weight: bold;
     background-color: #fff;
 }
+
 .pika-title select {
     cursor: pointer;
     position: absolute;
@@ -171,6 +201,7 @@ http://nicolasgallagher.com/micro-clearfix-hack/
     width: 20px;
     height: 30px;
     /* hide text using text-indent trick, using width value (it's enough) */
+    
     text-indent: 20px;
     white-space: nowrap;
     overflow: hidden;
@@ -313,9 +344,41 @@ http://nicolasgallagher.com/micro-clearfix-hack/
     box-shadow: none;
     border-radius: 3px;
 }
-
 /* styling for abbr */
+
 .pika-table abbr {
     border-bottom: none;
     cursor: help;
+}
+
+input[type=range]{
+    -webkit-appearance: none;
+    display: block;
+    margin: 20px;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 300px;
+    height: 5px;
+    background: #ddd;
+    border: none;
+    border-radius: 3px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background: goldenrod;
+    margin-top: -4px;
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+input[type=range]:focus::-webkit-slider-runnable-track {
+    background: #ccc;
 }
