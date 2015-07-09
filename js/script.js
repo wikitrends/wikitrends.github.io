@@ -481,7 +481,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 
     function getDataNoCrossOrigin(url, callback) {
         url = 'http://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from json where url="' + url + '"') + '&format=json';
-        // console.log(url)
+        console.log(url)
         return $.ajax({
             type: "GET",
             url: url,
@@ -736,7 +736,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                             function(width, height) {
                                 thereIs = width;
 
-                                pageEditsTester(finaljsonObject, "#one", "none", "", "", "day", pageTitle, photoUrl, width, height)
+                                // pageEditsTester(finaljsonObject, "#one", "none", "", "", "day", pageTitle, photoUrl, width, height)
                                 // pageEditsPlotter(finaljsonObject, "#two", "none", "", "", "week", pageTitle, photoUrl, width, height)
                             pageEditsTester(finaljsonObject, "#two", "none", "", "", "hour", pageTitle, photoUrl, width, height)
 
@@ -780,7 +780,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 
                             // pageEditsPlotter(finaljsonObject, "#one", "none", "", "", "day", pageTitle, photoUrl, width, height)
                             // pageEditsTester(finaljsonObject, "#one", "none", "", "", "day", pageTitle, photoUrl, width, height)
-                            pageEditsTester(finaljsonObject, "#two", "none", "", "", "hour", pageTitle, photoUrl, width, height)
+                            pageEditsTester(finaljsonObject, "#two", "none", "", "", "day", pageTitle, photoUrl, width, height)
 
                             // runNow("pageEdits", pageTitle, photoUrl, width, height, finaljsonObject, "", "", "")
 
@@ -793,7 +793,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                     // pageEditsPlotter(finaljsonObject, "#one", "none", "", "", "day", pageTitle, "assets/defaultImage.jpg", 1000, 500)
                     // pageEditsTester(finaljsonObject, "#one", "none", "", "", "day", pageTitle, "assets/defaultImage.jpg", 1000, 500)
                         // pageEditsPlotter(finaljsonObject, "#two", "none", "", "", "week", pageTitle, "assets/defaultImage.jpg", 1000, 500)
-                    pageEditsTester(finaljsonObject, "#two", "none", "", "", "hour", pageTitle, "assets/defaultImage.jpg", 1000, 500)
+                    pageEditsTester(finaljsonObject, "#two", "none", "", "", "day", pageTitle, "assets/defaultImage.jpg", 1000, 500)
 
                     // function runNow(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount) {
                     // runNow("pageEdits", pageTitle, "assets/defaultImage.jpg", 1000, 500, finaljsonObject, "", "", "")
@@ -1822,7 +1822,8 @@ function grandPlotter(pageIDin, pageTitlein) {
         getDataNoCrossOrigin(url, function(data) {
             var arrayData = []
                 // console.log(url)
-                // console.log(data)
+                console.log(data)
+
             var requiredData = data.query.results.json.daily_views
             typeof requiredData;
 
@@ -1891,364 +1892,6 @@ function grandPlotter(pageIDin, pageTitlein) {
 
             // pageViewsPlotter(arrayData)
         })
-    }
-
-    function pageViewsPlotter(dataSource, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight) {
-
-        $('#loader').html('');
-        $(idname).html('');
-
-        var fullBleedWidth = 1008;
-        var fullBleedHeight = 572;
-
-        var margin = {
-                top: 20,
-                right: 20,
-                bottom: 30,
-                left: 50
-            },
-            width = fullBleedWidth - margin.left - margin.right,
-            height = fullBleedHeight - margin.top - margin.bottom;
-
-        //var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
-        var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
-        var parseDate = d3.time.format("%Y-%m-%d").parse;
-
-        var x = d3.time.scale()
-            .range([0, width]);
-
-        var y = d3.scale.linear()
-            .range([height, 150]);
-
-        var xAxis = d3.svg.axis()
-            .scale(x)
-            .ticks(5)
-            .orient("bottom");
-
-        var yAxis = d3.svg.axis()
-            .scale(y)
-            .ticks(5)
-            .orient("left");
-
-        // var knotChecker;
-
-        var upperline = d3.svg.line()
-            .interpolate(interpolation).tension(0.8)
-            .x(function(d) {
-
-                return x(d3.time.format("%Y-%m-%d").parse(d.date))
-
-                // if (timeLimit != null) {
-                //     if (moment(d.date).diff(moment(timeLimit)) > 0) {
-                //         //     if (d.date.indexOf("T23:00:01.000Z") > -1 || d.date.indexOf("T01:00:01.000Z") > -1) {
-                //         //   // console.log('wooh' + "   " + d.date)
-                //         //     } else {
-                //         return x(parseDate(d.date));
-                //         // }
-                //     } else {
-                //         // return x(parseDate(JSON.stringify(moment(timeLimit)).replace("\"", "").replace("\"", "")))
-                //     }
-                // } else {
-                //     return x(parseDate(d.date));
-                // }
-
-            })
-            .y(function(d) {
-
-                // if (timeLimit != null) {
-
-                return y(parseInt(d.pageViews))
-
-                //     if (moment(d.date).diff(moment(timeLimit)) > 0) {
-                //         // if (d.date.indexOf("T23:00:01.000Z") > -1 || d.date.indexOf("T01:00:01.000Z") > -1) {
-                //         //  console.log('wooh' + "   " + d.date)
-
-                //         // } else {
-                //         return y(parseInt(d.pageViews));
-                //         // }
-                //     } else {}
-                // } else {
-                //     return y(parseInt(d.pageViews));
-                // }
-
-            });
-
-        var svgBase = d3.select("body").select(idname).append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr('class', 'svgBase')
-
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        var svgFull = svgBase.append("g")
-            .attr('class', 'svgFull')
-            // .attr("width", width + margin.left + margin.right)
-            // .attr("height", height + margin.top + margin.bottom)
-            .attr("transform", "translate(" + (-1) * margin.left + "," + (-1) * margin.top + ")");
-
-        x.domain(d3.extent(dataSource, function(d) {
-
-            return parseDate(d.date);
-
-            // if (timeLimit != null) {
-            //     if (moment(d.date).diff(moment(timeLimit)) > 0) {
-            //         return parseDate(d.date);
-            //     } else {
-            //         //  console.log('inHere')
-            //         return parseDate(JSON.stringify(moment(timeLimit)).replace("\"", "").replace("\"", ""))
-            //     }
-            // } else {
-            //     return parseDate(d.date);
-
-            // }
-        }))
-        y.domain(d3.extent(dataSource, function(d) {
-
-            return parseInt(d.pageViews);
-
-            // if (timeLimit != null) {
-            //     if (moment(d.date).diff(moment(timeLimit)) > 0) {
-            //         return parseInt(d.pageViews);
-            //     } else {
-            //         //  console.log(moment(d.date).diff(moment(timeLimit)))
-            //         //  console.log('ere2123')
-            //         return 0
-            //     }
-            // } else {
-            //     return parseInt(d.pageViews);
-            // }
-
-        }));
-
-        // The opacity rectangle and the image need to be above everything else. Otherwise the graphs and the text would be hidden
-
-        var imageBase64 = "";
-
-        if (picUrl === undefined) {
-            picUrl = "http://wikitrends.github.io/assets/defaultImage.jpg"
-        } else {}
-
-        convertImgToBase64(picUrl, picHeight, picWidth, function(base64Img) {
-
-            imageBase64 = base64Img
-                // return imageBase64
-                // console.log(imageBase64)
-
-            // Image Bleed Stuff
-            var imgs = svgFull.selectAll("image").data([0]);
-            imgs.enter()
-                .append("svg:image")
-                .attr('class', "images")
-                .attr('id', "image" + idname.slice(1))
-                .attr("xlink:href", function(d) {
-                    // if (picUrl == undefined) {
-                    //     picUrl = "assets/defaultImage.jpg"
-                    //     return "assets/defaultImage.jpg"
-                    // } else {
-                    // console.log(imageBase64)
-                    return imageBase64
-                        // }
-                })
-                .attr("x", function(d) {
-                    // console.log(picHeight)
-                    // console.log(picWidth)
-                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
-                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                            return (((0.5) * (fullBleedHeight / picHeight) * picWidth) - (fullBleedWidth / 2))
-                        } else {
-                            return 0
-                        }
-                    } else {
-                        return 0
-                    }
-                })
-                .attr("y", function(d) {
-                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
-                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                            return 0
-                        } else {
-                            return (((-0.5) * (fullBleedWidth / picWidth) * picHeight) + (fullBleedHeight / 2))
-                        }
-                    } else {
-                        return 0
-                    }
-                })
-                .attr("width", function(d) {
-                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
-                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                            return (fullBleedHeight / picHeight) * picWidth
-                        } else {
-                            return fullBleedWidth
-                        }
-                    } else {
-                        return fullBleedWidth
-                    }
-                })
-                .attr("height", function(d) {
-                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
-                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                            return fullBleedHeight
-                        } else {
-                            return (fullBleedWidth / picWidth) * picHeight
-                        }
-                    } else {
-                        return fullBleedHeight
-                    }
-                });
-
-            if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
-
-                var opacityRect = svgFull.append("rect")
-                    .attr("id", "rect" + idname.slice(1))
-                    .attr("width", width + margin.right + margin.left)
-                    .attr("fill", "black")
-                    .attr("opacity", 0.7)
-                    .attr("height", height + margin.top + margin.bottom);
-
-            }
-        });
-
-        var totalViews = 0;
-
-        dataSource.forEach(function(d) {
-            totalViews = totalViews + parseInt(d.pageViews)
-        })
-
-        d3.select(idname).select('.svgBase')
-            .append('text')
-            .text("PAGEVIEWS")
-            .attr("x", 0)
-            .attr("y", 25)
-            .attr("font-family", "Open Sans")
-            .attr("font-size", function(d) {
-                return "16px"
-            })
-            .attr("fill", "white")
-            .attr('opacity', "0.8");
-
-        d3.select(idname).select('.svgBase')
-            .append('text')
-            .text(numberWithSpaces(totalViews))
-            .attr("x", 0)
-            .attr("y", 85)
-            .attr("font-family", "Open Sans")
-            .attr("font-weight", 700)
-            .attr("font-size", function(d) {
-                return "60px"
-            })
-            .attr("fill", "white")
-            .attr('opacity', "0.8");
-
-        d3.select(idname).select('.svgBase')
-            .append('text')
-            .text(pageTitle)
-            .attr("text-anchor", "end")
-            .attr("x", width - 100)
-            .attr("y", 45)
-            .attr("font-family", "Georgia")
-            .attr("font-size", function(d) {
-                return "32px"
-            })
-            .attr("fill", "white")
-            .attr('opacity', "0.8");
-
-        // .attr("transform", "translate(0," + height + ")") shifts the axis to the bottom part of the G element. 
-        svgBase.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
-
-        svgBase.append("g")
-            .attr("class", "y axis")
-            .call(yAxis)
-            .append("text")
-            .attr("transform", "rotate(-90)")
-            .attr("y", 6)
-            .attr("dy", ".71em")
-            .style("text-anchor", "end")
-            //.text("Ratings");
-
-        svgBase.append("path")
-            .datum(dataSource)
-            .attr("class", "upperline")
-            .attr("d", upperline)
-            .attr("fill", "white")
-            .attr("stroke", "#3FC380")
-            .attr("stroke-width", "1px")
-
-        d3.select(idname)
-            .selectAll("div")
-            .data([0])
-            .enter()
-            .append("div")
-            .attr("id", function(d) {
-                return "controls" + idname.slice(1)
-            })
-
-        var controlsInsertor = d3.select("#" + "controls" + idname.slice(1))
-            .selectAll("button")
-            .data([0])
-            .enter()
-
-        controlsInsertor.append("input")
-            .attr("type", "range")
-            .attr("min", 1)
-            .attr("max", 100)
-            .style("width", "200px")
-            .attr("id", "opacitySlider" + idname.slice(1))
-
-        controlsInsertor.append("input")
-            .attr("type", "range")
-            .attr("min", -picHeight)
-            .attr("max", picHeight)
-            .style("width", "200px")
-            .attr("id", "imageHeightSlider" + idname.slice(1))
-
-        controlsInsertor.append("input")
-            .attr("type", "range")
-            .attr("min", -picWidth)
-            .attr("max", picWidth)
-            .style("width", "200px")
-            .attr("id", "imageWidthSlider" + idname.slice(1))
-
-        d3.select("#" + "opacitySlider" + idname.slice(1)).on("input", function() {
-            updateOpacity(+this.value);
-        });
-
-        d3.select("#" + "imageHeightSlider" + idname.slice(1)).on("input", function() {
-            updateImageHeight(+this.value);
-        });
-
-        d3.select("#" + "imageWidthSlider" + idname.slice(1)).on("input", function() {
-            updateImageWidth(+this.value);
-        });
-
-        function updateOpacity(ina) {
-            d3.select("#" + "rect" + idname.slice(1))
-                .data([0])
-                .style("opacity", function(d) {
-                    // console.log(ina)
-                    return ina * 0.01
-                })
-        }
-
-        function updateImageHeight(ina) {
-            d3.select("#" + "image" + idname.slice(1))
-                .data([0])
-                .attr("y", function(d) {
-                    return ina
-                })
-        }
-
-        function updateImageWidth(ina) {
-            d3.select("#" + "image" + idname.slice(1))
-                .data([0])
-                .attr("x", function(d) {
-                    // console.log(ina)
-                    return ina
-                })
-        }
     }
 
     function runNow(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount) {
@@ -3196,102 +2839,96 @@ function grandPlotter(pageIDin, pageTitlein) {
                 previousDateActual = d.key;
             })
 
-        // } else if (timeDuration == "week") {
+        } else if (timeDuration == "week") {
 
-        //     // console.log('asdsa')
+            // console.log('asdsa')
 
-        //     // BEWARE BEWARE BEWARE!
-        //     // Countless hours have been spent trying to get this part to work. 
-        //     // TLDR; On MediaWiki APIs, time runs backwards!
+            // BEWARE BEWARE BEWARE!
+            // Countless hours have been spent trying to get this part to work. 
+            // TLDR; On MediaWiki APIs, time runs backwards!
 
-        //     var previousDateActual = "";
-        //     var dayMinusOne;
+            var previousDateActual = "";
+            var dayMinusOne;
 
-        //     data.forEach(function(d, i) {
+            data.forEach(function(d, i) {
 
-        //         var dayPlusOne = moment(d.key).add(1, 'week')
+                var dayPlusOne = moment(d.key).add(1, 'week')
 
-        //         // Daylight Savings (the knot problem)
-        //         if (JSON.stringify(dayPlusOne).indexOf("T23:00:01.000Z") > -1) {
-        //             dayPlusOne = moment(dayPlusOne).add(1, "hour")
-        //         }
-        //         if (JSON.stringify(dayPlusOne).indexOf("T01:00:01.000Z") > -1) {
-        //             dayPlusOne = moment(dayPlusOne).subtract(1, "hour")
-        //         }
+                // Daylight Savings (the knot problem)
+                if (JSON.stringify(dayPlusOne).indexOf("T23:00:01.000Z") > -1) {
+                    dayPlusOne = moment(dayPlusOne).add(1, "hour")
+                }
+                if (JSON.stringify(dayPlusOne).indexOf("T01:00:01.000Z") > -1) {
+                    dayPlusOne = moment(dayPlusOne).subtract(1, "hour")
+                }
 
-        //         var theDay = moment(d.key)
+                var theDay = moment(d.key)
 
-        //         var previousDate = moment(previousDateActual)
+                var previousDate = moment(previousDateActual)
 
-        //         // console.log('Week: ' + JSON.stringify(dayPlusOne) + "  |  " + JSON.stringify(previousDate) + "  |  " + JSON.stringify(dayMinusOne) + "  |  " + JSON.stringify(d.key))
+                // console.log('Week: ' + JSON.stringify(dayPlusOne) + "  |  " + JSON.stringify(previousDate) + "  |  " + JSON.stringify(dayMinusOne) + "  |  " + JSON.stringify(d.key))
 
-        //         // START: At all costs, this needs to be in front of the second part.
+                // START: At all costs, this needs to be in front of the second part.
 
-        //         if (i == 0) {} else {
-        //             if (JSON.stringify(dayMinusOne) != JSON.stringify(d.key)) {
+                if (i == 0) {} else {
+                    if (JSON.stringify(dayMinusOne) != JSON.stringify(d.key)) {
 
-        //                 // tempIn is just of temporary string conversions. '"' need to be removed.å
-        //                 var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
+                        // tempIn is just of temporary string conversions. '"' need to be removed.å
+                        var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
 
-        //                 finale.push({
-        //                     key: tempIn,
-        //                     values: 0
-        //                 })
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+                    } else {
 
-        //                 //  console.log('two  ' + tempIn)
+                    }
+                }
+                // END
 
-        //             } else {
+                if (i != 0) {
 
-        //             }
-        //         }
+                    if (JSON.stringify(dayPlusOne) != JSON.stringify(previousDate)) {
 
-        //         // END
+                        // tempIn is just of temporary string conversions.
+                        var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
+                            // console.log(tempIn)
 
-        //         if (i != 0) {
+                        finale.push({
+                                key: tempIn,
+                                values: 0
+                            })
+                            //  console.log('One  ' + tempIn)
 
-        //             if (JSON.stringify(dayPlusOne) != JSON.stringify(previousDate)) {
+                    } else {
+                        finale.push({
+                            key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
+                            values: d.values
+                        })
+                    }
+                } else {}
 
-        //                 // console.log('Here')
+                finale.push({
+                    key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
+                    values: d.values
+                })
 
-        //                 // tempIn is just of temporary string conversions.
-        //                 var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
-        //                     // console.log(tempIn)
+                // Checks for the next 
+                dayMinusOne = moment(d.key).subtract(1, 'week')
 
-        //                 finale.push({
-        //                         key: tempIn,
-        //                         values: 0
-        //                     })
-        //                     //  console.log('One  ' + tempIn)
+                // Daylight Savings (the knot problem)
+                if (JSON.stringify(dayMinusOne).indexOf("T23:00:01.000Z") > -1) {
+                    dayMinusOne = moment(dayMinusOne).add(1, "hour")
+                }
+                if (JSON.stringify(dayMinusOne).indexOf("T01:00:01.000Z") > -1) {
+                    dayMinusOne = moment(dayMinusOne).subtract(1, "hour")
+                }
 
-        //             } else {
-        //                 finale.push({
-        //                     key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-        //                     values: d.values
-        //                 })
-        //             }
-        //         } else {}
+                // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
+                previousDateActual = d.key;
 
-        //         finale.push({
-        //             key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-        //             values: d.values
-        //         })
-
-        //         // Checks for the next 
-        //         dayMinusOne = moment(d.key).subtract(1, 'week')
-
-        //         // Daylight Savings (the knot problem)
-        //         if (JSON.stringify(dayMinusOne).indexOf("T23:00:01.000Z") > -1) {
-        //             dayMinusOne = moment(dayMinusOne).add(1, "hour")
-        //         }
-        //         if (JSON.stringify(dayMinusOne).indexOf("T01:00:01.000Z") > -1) {
-        //             dayMinusOne = moment(dayMinusOne).subtract(1, "hour")
-        //         }
-
-        //         // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
-        //         previousDateActual = d.key;
-
-        //     })
-        // console.log(finale)
+            })
+        console.log(finale)
 
         } else if (timeDuration == "month") {
 
@@ -3494,9 +3131,9 @@ function grandPlotter(pageIDin, pageTitlein) {
             picUrl = "http://wikitrends.github.io/assets/defaultImage.jpg"
         } else {}
 
-        // convertImgToBase64(picUrl, picHeight, picWidth, function(base64Img) {
+        convertImgToBase64(picUrl, picHeight, picWidth, function(base64Img) {
 
-            // imageBase64 = base64Img
+            imageBase64 = base64Img
 
             console.log(picUrl)
 
@@ -3512,7 +3149,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                     //     return "assets/defaultImage.jpg"
                     // } else {
                     // console.log(imageBase64)
-                    return picUrl
+                    return imageBase64
                         // }
                 })
                 .attr("x", function(d) {
@@ -3572,7 +3209,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                     .attr("height", height + margin.top + margin.bottom);
 
             }
-        // });
+        });
 
         var totalEdits = 0;
 
@@ -3594,12 +3231,10 @@ function grandPlotter(pageIDin, pageTitlein) {
                 if (moment(d.key).diff(moment(timeLimit)) < 0) {} else {
                     if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
                         totalEdits = totalEdits + parseInt(d.values)
-                            // console.log(totalEdits)
+                        // console.log(totalEdits)
                     }
                 }
             }
-
-
         })
 
         convertImgToBase64("assets/wikipediaW.png", picHeight, picWidth, function(base64Img) {
@@ -3615,6 +3250,8 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr("height", 70);
 
         })
+
+
         d3.select(idname).select('.svgBase')
             .append('text')
             .text("PAGEEDITS")
@@ -3781,7 +3418,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             d3.select("#" + "image" + idname.slice(1))
                 .data([0])
                 .attr("x", function(d) {
-                    // console.log(ina)
                     return ina
                 })
         }
@@ -3789,26 +3425,6 @@ function grandPlotter(pageIDin, pageTitlein) {
         d3.select(idname)
             .selectAll("path.domain")
             .remove()
-            // .append("div")
-            // .attr("id", function(d) {
-            //     return "controls" + idname.slice(1)
-            // })
-
-        // d3.select("#svgToPng").on("click", function() {
-        //     var html = d3.select("#testing")
-        //         .attr("version", 1.1)
-        //         .attr("xmlns", "http://www.w3.org/2000/svg")
-        //         .node().parentNode.innerHTML;
-
-        //     html = html.match(/(.*)<\/svg>/g)[0]
-
-        //     var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
-        //     var img = '<img src="' + imgsrc + '">';
-        //     d3.select("#svgdataurl").html(img);
-
-        // });
-
-
 
         d3.select(idname + "PngConvertor").on("click", function() {
             var html = d3.select("#testing")
@@ -3829,7 +3445,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             var image = new Image;
             image.src = imgsrc;
             image.onload = function() {
-
 
                 canvas.height = 572;
                 canvas.width = 1008;
@@ -3852,7 +3467,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             };
         });
 
-
         function binaryblob() {
             var byteString = atob(document.querySelector("canvas").toDataURL().replace(/^data:image\/(png|jpg);base64,/, "")); //wtf is atob?? https://developer.mozilla.org/en-US/docs/Web/API/Window.atob
             var ab = new ArrayBuffer(byteString.length);
@@ -3870,7 +3484,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             var img = '<img src="' + newurl + '">';
             d3.select("#img").html(img);
         }
-
     }
 
     var EOWs;
@@ -5023,6 +4636,615 @@ function grandPlotter(pageIDin, pageTitlein) {
         });
     }
 
+
+    function pageViewsPlotter(dataSource, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight) {
+
+        $('#loader').html('');
+        $(idname).html('');
+
+        var fullBleedWidth = 1008;
+        var fullBleedHeight = 572;
+
+        var margin = {
+                top: 20,
+                right: 20,
+                bottom: 30,
+                left: 50
+            },
+            width = fullBleedWidth - margin.left - margin.right,
+            height = fullBleedHeight - margin.top - margin.bottom;
+
+        //var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
+        var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
+        var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+        var x = d3.time.scale()
+            .range([0, width]);
+
+        var y = d3.scale.linear()
+            .range([height, 150]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .ticks(5)
+            .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .ticks(5)
+            .orient("left");
+
+        // var knotChecker;
+
+        var upperline = d3.svg.line()
+            .interpolate(interpolation).tension(0.8)
+            .x(function(d) {
+
+                return x(d3.time.format("%Y-%m-%d").parse(d.date))
+
+                // if (timeLimit != null) {
+                //     if (moment(d.date).diff(moment(timeLimit)) > 0) {
+                //         //     if (d.date.indexOf("T23:00:01.000Z") > -1 || d.date.indexOf("T01:00:01.000Z") > -1) {
+                //         //   // console.log('wooh' + "   " + d.date)
+                //         //     } else {
+                //         return x(parseDate(d.date));
+                //         // }
+                //     } else {
+                //         // return x(parseDate(JSON.stringify(moment(timeLimit)).replace("\"", "").replace("\"", "")))
+                //     }
+                // } else {
+                //     return x(parseDate(d.date));
+                // }
+
+            })
+            .y(function(d) {
+
+                // if (timeLimit != null) {
+
+                return y(parseInt(d.pageViews))
+
+                //     if (moment(d.date).diff(moment(timeLimit)) > 0) {
+                //         // if (d.date.indexOf("T23:00:01.000Z") > -1 || d.date.indexOf("T01:00:01.000Z") > -1) {
+                //         //  console.log('wooh' + "   " + d.date)
+
+                //         // } else {
+                //         return y(parseInt(d.pageViews));
+                //         // }
+                //     } else {}
+                // } else {
+                //     return y(parseInt(d.pageViews));
+                // }
+
+            });
+
+        var svgBase = d3.select("body").select(idname).append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr('class', 'svgBase')
+
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var svgFull = svgBase.append("g")
+            .attr('class', 'svgFull')
+            // .attr("width", width + margin.left + margin.right)
+            // .attr("height", height + margin.top + margin.bottom)
+            .attr("transform", "translate(" + (-1) * margin.left + "," + (-1) * margin.top + ")");
+
+        x.domain(d3.extent(dataSource, function(d) {
+
+            return parseDate(d.date);
+
+            // if (timeLimit != null) {
+            //     if (moment(d.date).diff(moment(timeLimit)) > 0) {
+            //         return parseDate(d.date);
+            //     } else {
+            //         //  console.log('inHere')
+            //         return parseDate(JSON.stringify(moment(timeLimit)).replace("\"", "").replace("\"", ""))
+            //     }
+            // } else {
+            //     return parseDate(d.date);
+
+            // }
+        }))
+        y.domain(d3.extent(dataSource, function(d) {
+
+            return parseInt(d.pageViews);
+
+            // if (timeLimit != null) {
+            //     if (moment(d.date).diff(moment(timeLimit)) > 0) {
+            //         return parseInt(d.pageViews);
+            //     } else {
+            //         //  console.log(moment(d.date).diff(moment(timeLimit)))
+            //         //  console.log('ere2123')
+            //         return 0
+            //     }
+            // } else {
+            //     return parseInt(d.pageViews);
+            // }
+
+        }));
+
+        // The opacity rectangle and the image need to be above everything else. Otherwise the graphs and the text would be hidden
+
+        var imageBase64 = "";
+
+        if (picUrl === undefined) {
+            picUrl = "http://wikitrends.github.io/assets/defaultImage.jpg"
+        } else {}
+
+        convertImgToBase64(picUrl, picHeight, picWidth, function(base64Img) {
+
+            imageBase64 = base64Img
+                // return imageBase64
+                // console.log(imageBase64)
+
+            // Image Bleed Stuff
+            var imgs = svgFull.selectAll("image").data([0]);
+            imgs.enter()
+                .append("svg:image")
+                .attr('class', "images")
+                .attr('id', "image" + idname.slice(1))
+                .attr("xlink:href", function(d) {
+                    // if (picUrl == undefined) {
+                    //     picUrl = "assets/defaultImage.jpg"
+                    //     return "assets/defaultImage.jpg"
+                    // } else {
+                    // console.log(imageBase64)
+                    return imageBase64
+                        // }
+                })
+                .attr("x", function(d) {
+                    // console.log(picHeight)
+                    // console.log(picWidth)
+                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                            return (((0.5) * (fullBleedHeight / picHeight) * picWidth) - (fullBleedWidth / 2))
+                        } else {
+                            return 0
+                        }
+                    } else {
+                        return 0
+                    }
+                })
+                .attr("y", function(d) {
+                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                            return 0
+                        } else {
+                            return (((-0.5) * (fullBleedWidth / picWidth) * picHeight) + (fullBleedHeight / 2))
+                        }
+                    } else {
+                        return 0
+                    }
+                })
+                .attr("width", function(d) {
+                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                            return (fullBleedHeight / picHeight) * picWidth
+                        } else {
+                            return fullBleedWidth
+                        }
+                    } else {
+                        return fullBleedWidth
+                    }
+                })
+                .attr("height", function(d) {
+                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                            return fullBleedHeight
+                        } else {
+                            return (fullBleedWidth / picWidth) * picHeight
+                        }
+                    } else {
+                        return fullBleedHeight
+                    }
+                });
+
+            if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+
+                var opacityRect = svgFull.append("rect")
+                    .attr("id", "rect" + idname.slice(1))
+                    .attr("width", width + margin.right + margin.left)
+                    .attr("fill", "black")
+                    .attr("opacity", 0.7)
+                    .attr("height", height + margin.top + margin.bottom);
+
+            }
+        });
+
+        var totalViews = 0;
+
+        dataSource.forEach(function(d) {
+            totalViews = totalViews + parseInt(d.pageViews)
+            console.log(d.pageViews)
+        })
+
+        convertImgToBase64("assets/wikipediaW.png", picHeight, picWidth, function(base64Img) {
+            imageBase64 = base64Img
+
+            // Adding Wikipedia Logo
+            d3.select(idname).select('.svgBase')
+                .append("svg:image")
+                .attr("xlink:href", imageBase64)
+                .attr("x", width - 80)
+                .attr("y", 0)
+                .attr("width", 70)
+                .attr("height", 70);
+
+        })
+
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text("PAGE VIEWS")
+            .attr("x", 0)
+            .attr("y", 25)
+            .attr("font-family", "Open Sans")
+            .attr("font-size", function(d) {
+                return "16px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "0.8");
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text(numberWithSpaces(totalViews))
+            .attr("x", 0)
+            .attr("y", 85)
+            .attr("font-family", "Open Sans")
+            .attr("font-weight", 700)
+            .attr("font-size", function(d) {
+                return "60px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "0.8");
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text(pageTitle)
+            .attr("text-anchor", "end")
+            .attr("x", width - 100)
+            .attr("y", 45)
+            .attr("font-family", "Georgia")
+            .attr("font-size", function(d) {
+                return "32px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "0.8");
+
+        // d3.selectAll("path.domain").remove();
+
+        // .attr("transform", "translate(0," + height + ")") shifts the axis to the bottom part of the G element. 
+        svgBase.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+            .selectAll("text")
+            .style("fill", "#999")
+            .style("font-family", "Source Sans Pro")
+            .style("font-weight", "100")
+            .style("font-size", "16px");
+
+        svgBase.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .selectAll("text")
+            // .attr("transform", "rotate(-90)")
+            .attr("dx", 1)
+            .attr("dy", -9)
+            .style("text-anchor", "start")
+            .style("fill", "#999")
+            .style("font-family", "Source Sans Pro")
+            .style("font-weight", "100")
+            .style("font-size", "16px")
+            // .selectAll("line")
+            //     .style("stroke-width", "30px")
+            //     .style("stroke", "white")
+
+        svgBase.selectAll('.axis line, .axis path')
+            .style({
+                'stroke': '#ddd',
+                'fill': 'none',
+                'stroke-width': '0.7px',
+                "opacity": "0.4"
+            });
+        // .attr("dx", 1)
+        // .attr("dy", -9)
+        //.text("Ratings");
+
+        svgBase.append("path")
+            .datum(dataSource)
+            .attr("class", "upperline")
+            .attr("d", upperline)
+            .attr("fill", "none")
+            .attr("stroke", "rgb(94, 255, 176)")
+            .attr("stroke-width", "3px")
+
+        svgBase.selectAll("circle.line")
+            .data(dataSource)
+            .enter().append("svg:circle")
+            .attr("class", "line")
+            .style("fill", "green")
+            .attr("cx", upperline.x())
+            .attr("cy", upperline.y())
+            .attr("r", 12)
+            .attr('opacity', 0)
+            .on('click', tip.show)
+            // .on('mouseout', tip.hide)
+
+        d3.select(idname)
+            .selectAll("div")
+            .data([0])
+            .enter()
+            .append("div")
+            .attr("id", function(d) {
+                return "controls" + idname.slice(1)
+            })
+
+        var controlsInsertor = d3.select("#" + "controls" + idname.slice(1))
+            .selectAll("button")
+            .data([0])
+            .enter()
+
+        controlsInsertor.append("input")
+            .attr("type", "range")
+            .attr("min", 1)
+            .attr("max", 100)
+            .style("width", "200px")
+            .attr("id", "opacitySlider" + idname.slice(1))
+
+        controlsInsertor.append("input")
+            .attr("type", "range")
+            .attr("min", -picHeight)
+            .attr("max", picHeight)
+            .style("width", "200px")
+            .attr("id", "imageHeightSlider" + idname.slice(1))
+
+        controlsInsertor.append("input")
+            .attr("type", "range")
+            .attr("min", -picWidth)
+            .attr("max", picWidth)
+            .style("width", "200px")
+            .attr("id", "imageWidthSlider" + idname.slice(1))
+
+        d3.select("#" + "opacitySlider" + idname.slice(1)).on("input", function() {
+            updateOpacity(+this.value);
+        });
+
+        d3.select("#" + "imageHeightSlider" + idname.slice(1)).on("input", function() {
+            updateImageHeight(+this.value);
+        });
+
+        d3.select("#" + "imageWidthSlider" + idname.slice(1)).on("input", function() {
+            updateImageWidth(+this.value);
+        });
+
+        function updateOpacity(ina) {
+            d3.select("#" + "rect" + idname.slice(1))
+                .data([0])
+                .style("opacity", function(d) {
+                    console.log(ina)
+                    return ina * 0.01
+                })
+        }
+
+        function updateImageHeight(ina) {
+            d3.select("#" + "image" + idname.slice(1))
+                .data([0])
+                .attr("y", function(d) {
+                    return ina
+                })
+        }
+
+        function updateImageWidth(ina) {
+            d3.select("#" + "image" + idname.slice(1))
+                .data([0])
+                .attr("x", function(d) {
+                    return ina
+                })
+        }
+
+        d3.select(idname)
+            .selectAll("path.domain")
+            .remove()
+
+        d3.select(idname + "PngConvertor").on("click", function() {
+            var html = d3.select("#testing")
+                .attr("version", 1.1)
+                .attr("xmlns", "http://www.w3.org/2000/svg")
+                .node().parentNode.innerHTML;
+
+            html = html.match(/(.*)<\/svg>/g)[0]
+
+            //console.log(html);
+            var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
+            var img = '<img src="' + imgsrc + '">';
+            d3.select("#svgdataurl").html(img);
+
+            var canvas = document.querySelector("canvas"),
+                context = canvas.getContext("2d");
+
+            var image = new Image;
+            image.src = imgsrc;
+            image.onload = function() {
+
+                canvas.height = 572;
+                canvas.width = 1008;
+
+                context.drawImage(image, 0, 0);
+
+                // context.drawImage(image, -48, -72);
+
+                //save and serve it as an actual filename
+                binaryblob();
+
+                var a = document.createElement("a");
+                a.download = "sample.png";
+                a.href = canvas.toDataURL("image/png");
+
+                var pngimg = '<img src="' + a.href + '">';
+                d3.select("#pngdataurl").html(pngimg);
+
+                a.click();
+            };
+        });
+
+        function binaryblob() {
+            var byteString = atob(document.querySelector("canvas").toDataURL().replace(/^data:image\/(png|jpg);base64,/, "")); //wtf is atob?? https://developer.mozilla.org/en-US/docs/Web/API/Window.atob
+            var ab = new ArrayBuffer(byteString.length);
+            var ia = new Uint8Array(ab);
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            var dataView = new DataView(ab);
+            var blob = new Blob([dataView], {
+                type: "image/png"
+            });
+            var DOMURL = self.URL || self.webkitURL || self;
+            var newurl = DOMURL.createObjectURL(blob);
+
+            var img = '<img src="' + newurl + '">';
+            d3.select("#img").html(img);
+        }
+
+        // d3.select(idname).select('.svgBase')
+        //     .append('text')
+        //     .text("PAGEVIEWS")
+        //     .attr("x", 0)
+        //     .attr("y", 25)
+        //     .attr("font-family", "Open Sans")
+        //     .attr("font-size", function(d) {
+        //         return "16px"
+        //     })
+        //     .attr("fill", "white")
+        //     .attr('opacity', "0.8");
+
+        // d3.select(idname).select('.svgBase')
+        //     .append('text')
+        //     .text(numberWithSpaces(totalViews))
+        //     .attr("x", 0)
+        //     .attr("y", 85)
+        //     .attr("font-family", "Open Sans")
+        //     .attr("font-weight", 700)
+        //     .attr("font-size", function(d) {
+        //         return "60px"
+        //     })
+        //     .attr("fill", "white")
+        //     .attr('opacity', "0.8");
+
+        // d3.select(idname).select('.svgBase')
+        //     .append('text')
+        //     .text(pageTitle)
+        //     .attr("text-anchor", "end")
+        //     .attr("x", width - 100)
+        //     .attr("y", 45)
+        //     .attr("font-family", "Georgia")
+        //     .attr("font-size", function(d) {
+        //         return "32px"
+        //     })
+        //     .attr("fill", "white")
+        //     .attr('opacity', "0.8");
+
+        // // .attr("transform", "translate(0," + height + ")") shifts the axis to the bottom part of the G element. 
+        // svgBase.append("g")
+        //     .attr("class", "x axis")
+        //     .attr("transform", "translate(0," + height + ")")
+        //     .call(xAxis);
+
+        // svgBase.append("g")
+        //     .attr("class", "y axis")
+        //     .call(yAxis)
+        //     .append("text")
+        //     .attr("transform", "rotate(-90)")
+        //     .attr("y", 6)
+        //     .attr("dy", ".71em")
+        //     .style("text-anchor", "end")
+        //     //.text("Ratings");
+
+        // svgBase.append("path")
+        //     .datum(dataSource)
+        //     .attr("class", "upperline")
+        //     .attr("d", upperline)
+        //     .attr("fill", "white")
+        //     .attr("stroke", "#3FC380")
+        //     .attr("stroke-width", "1px")
+
+        // d3.select(idname)
+        //     .selectAll("div")
+        //     .data([0])
+        //     .enter()
+        //     .append("div")
+        //     .attr("id", function(d) {
+        //         return "controls" + idname.slice(1)
+        //     })
+
+        // var controlsInsertor = d3.select("#" + "controls" + idname.slice(1))
+        //     .selectAll("button")
+        //     .data([0])
+        //     .enter()
+
+        // controlsInsertor.append("input")
+        //     .attr("type", "range")
+        //     .attr("min", 1)
+        //     .attr("max", 100)
+        //     .style("width", "200px")
+        //     .attr("id", "opacitySlider" + idname.slice(1))
+
+        // controlsInsertor.append("input")
+        //     .attr("type", "range")
+        //     .attr("min", -picHeight)
+        //     .attr("max", picHeight)
+        //     .style("width", "200px")
+        //     .attr("id", "imageHeightSlider" + idname.slice(1))
+
+        // controlsInsertor.append("input")
+        //     .attr("type", "range")
+        //     .attr("min", -picWidth)
+        //     .attr("max", picWidth)
+        //     .style("width", "200px")
+        //     .attr("id", "imageWidthSlider" + idname.slice(1))
+
+        // d3.select("#" + "opacitySlider" + idname.slice(1)).on("input", function() {
+        //     updateOpacity(+this.value);
+        // });
+
+        // d3.select("#" + "imageHeightSlider" + idname.slice(1)).on("input", function() {
+        //     updateImageHeight(+this.value);
+        // });
+
+        // d3.select("#" + "imageWidthSlider" + idname.slice(1)).on("input", function() {
+        //     updateImageWidth(+this.value);
+        // });
+
+        // function updateOpacity(ina) {
+        //     d3.select("#" + "rect" + idname.slice(1))
+        //         .data([0])
+        //         .style("opacity", function(d) {
+        //             // console.log(ina)
+        //             return ina * 0.01
+        //         })
+        // }
+
+        // function updateImageHeight(ina) {
+        //     d3.select("#" + "image" + idname.slice(1))
+        //         .data([0])
+        //         .attr("y", function(d) {
+        //             return ina
+        //         })
+        // }
+
+        // function updateImageWidth(ina) {
+        //     d3.select("#" + "image" + idname.slice(1))
+        //         .data([0])
+        //         .attr("x", function(d) {
+        //             // console.log(ina)
+        //             return ina
+        //         })
+        // }
+    }
+
+
     // This runs the pageEdit graph!
     pageEdits(linkInitialPageEdits)
 
@@ -5030,7 +5252,7 @@ function grandPlotter(pageIDin, pageTitlein) {
     // wordCloud(linkInitialWordCloud)
 
     // This gets the pageview stats from Stats.grok.se
-    // pageViews(linkInitialPageViews)
+    pageViews(linkInitialPageViews)
 
     // featuredArticle(linkInitialFeaturedArticle)
 
