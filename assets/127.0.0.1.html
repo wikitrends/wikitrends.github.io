@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<!-- saved from url=(0022)http://127.0.0.1:8080/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="utf-8">
+
+
+    <!-- Bootstrap and JQuery -->
+    <script src="./127.0.0.1_files/jquery.min.js"></script>
+    <script src="./127.0.0.1_files/bootstrap.min.js"></script>
+
+
+    <!-- Font Files -->
+    <link href="./127.0.0.1_files/css" rel="stylesheet" type="text/css">
+    <!-- <link href="https://netdna.bootstrapcddn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" type="text/css"> 
+    -->
+    <link href="./127.0.0.1_files/css(1)" rel="stylesheet" type="text/css">
+
+
+    <!-- StyleSheets -->
+    <link href="http://127.0.0.1:8080/css/style.css" rel="stylesheet">
+    <!-- <link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+
+    <!-- Core D3 files -->
+    <script src="./127.0.0.1_files/d3.min.js"></script>
+    <script src="./127.0.0.1_files/d3-plus.js"></script>
+
+    <!-- Extensions or Addons -->
+    <script src="./127.0.0.1_files/d3-tip.js"></script>
+    <script src="./127.0.0.1_files/wordCloud.js"></script>
+    <script src="./127.0.0.1_files/pikaday.js"></script>
+    <script src="./127.0.0.1_files/lodash.min.js"></script>
+    <script src="./127.0.0.1_files/moment.min.js"></script>
+    <script type="text/javascript" src="./127.0.0.1_files/lodash.min(1).js"></script>
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css">
+    <script src="./127.0.0.1_files/cartodb.js"></script><style></style>
+    <script src="./127.0.0.1_files/script.js"></script>
+    <script src="./127.0.0.1_files/scriptGrandPlotter.js"></script>
+
+
+</head>
+
+<body>
+    <div class="controls">
+
+
+        <input style="margin-bottom: 40px; margin-top: 20px" type="text" name="searchQuery" placeholder="Search">
+
+        <label for="datepicker">Select Dates</label>
+        <br>
+        <input style="margin-bottom: 40px;" type="text" class="datepicker" placeholder="Start Date" id="datepicker">
+        <input type="text" class="datepicker" style="margin-left: 20px; margin-bottom: 40px;" placeholder="End Date" id="datepickerTwo">
+
+        <label style="float: left">ImageURL (If different from page thumbnail)</label>
+
+        <input style="margin-bottom: 40px;" type="text" id="imageURL" placeholder="Wikicommons URL">
+
+        <div class="weeklyPedia">
+            <p class="weeklyPedia">WeeklyPedia</p>
+        </div>
+
+        <div id="suggestionsPane">
+
+            <div class="suggestedTitles">
+                <a nohref="" onclick="weeklyPedia(&#39;Most Edits&#39;)">
+                    <p>Most Edits</p>
+                </a>
+                <a href="http://127.0.0.1:8080/#" id="closeMostEdits"><i class="fa fa-times"></i></a>
+            </div>
+
+            <div class="suggestedTitles">
+                <a nohref="" onclick="weeklyPedia(&#39;Most New Edits&#39;)">
+                    <p>Most New Edits</p>
+                </a>
+                <a href="http://127.0.0.1:8080/#" id="closeMostNewEdits"><i class="fa fa-times"></i></a>
+            </div>
+
+            <div class="mostEdits"></div>
+            <div class="mostNewEdits"></div>
+
+        </div>
+        <div class="num_results"></div>
+        <div id="results_pane">
+            <div class="searchResults"></div>
+        </div>
+    </div>
+    <div class="graphs">
+
+
+        <h1 style=" margin-top: 100px;" class="graphHeader"> Daily Aggregated Edits </h1>
+        <div id="one"><svg width="1008" height="572"><g class="svgBase" transform="translate(50,20)"><g class="svgFull" transform="translate(-50,-20)"><image class="images" id="imageone" href="https://upload.wikimedia.org/wikipedia/commons/3/3c/Ounas-chambre2.jpg" x="0" y="-386.336" width="1008" height="1344.672"></image><rect id="rectone" width="1008" fill="black" opacity="0.7" z-index="0" height="572"></rect></g><image href="assets/wikipediaW.png" x="858" y="0" width="70" height="70"></image><text x="20" y="200" font-family="Open Sans" font-size="50px" fill="white" opacity="0.8">Unas</text><rect height="400" width="840" y="200px" x="20px" fill="white" opacity="0"></rect><text id="rectResize" x="20" y="220" font-family="Georgia" font-size="30px" fill="white" opacity="0.8" style="line-height: 40px; font-size: 30px;" text-anchor="start" transform="rotate(0, 370, 570)translate(0,-6.6000000000000005)"><tspan x="20px" dx="0px" dy="33px" dominant-baseline="alphabetic" style="baseline-shift: 0%;">was an Ancient Egyptian pharaoh, the ninth and last</tspan><tspan x="20px" dx="0px" dy="33px" dominant-baseline="alphabetic" style="baseline-shift: 0%;">ruler of the Fifth Dynasty during the Old Kingdom</tspan><tspan x="20px" dx="0px" dy="33px" dominant-baseline="alphabetic" style="baseline-shift: 0%;">period. He succeeded Djedkare Isesi, who might have</tspan><tspan x="20px" dx="0px" dy="33px" dominant-baseline="alphabetic" style="baseline-shift: 0%;">been his father, and reigned for 15 to 30 years in the</tspan><tspan x="20px" dx="0px" dy="33px" dominant-baseline="alphabetic" style="baseline-shift: 0%;">mid 24th century BC. During this time Egypt</tspan><tspan x="20px" dx="0px" dy="33px" dominant-baseline="alphabetic" style="baseline-shift: 0%;">maintained trade relations with the Levantine coast and</tspan><tspan x="20px" dx="0px" dy="33px" dominant-baseline="alphabetic" style="baseline-shift: 0%;">Nubia, and may have launched a military campaign in</tspan><tspan x="20px" dx="0px" dy="33px" dominant-baseline="alphabetic" style="baseline-shift: 0%;">southern Canaan.</tspan></text><text text-anchor="end" x="838" y="45" font-family="Georgia" font-size="32px" fill="white" opacity="0.8">Today's Featured Article</text></g></svg><div id="controlsone"><input type="range" min="1" max="100" id="opacitySliderone" style="width: 200px;"><input type="range" min="-667" max="667" id="imageHeightSliderone" style="width: 200px;"><input type="range" min="-500" max="500" id="imageWidthSliderone" style="width: 200px;"></div></div>
+
+<!--         <h1 class="graphHeader"> Weekly Aggregated Edits </h1>
+        <p class="graphDescription">Since the day the article was created. </p>
+        <div id="two"></div>
+ -->
+
+
+        <h1 class="graphHeader"> Today's featured article</h1>
+        <!-- <p class="graphDescription">For the past 90 days (stat.grok.se)</p> -->
+        <div id="twelve"></div>
+
+            <h1 class="graphHeader"> Editors of the Month</h1>
+        <!-- <p class="graphDescription">For the past 90 days (stat.grok.se)</p> -->
+        <div id="thirteen"><svg width="1008" height="572"><g class="svgBase" transform="translate(50,20)"><g class="svgFull" transform="translate(-50,-20)"><image class="images" id="imagethirteen" href="assets/defaultImage.jpg" x="0" y="0" width="1008" height="572"></image></g><image href="assets/wikipediaW.png" x="858" y="0" width="70" height="70"></image><image href="assets/EOWBarnstar.png" x="100" y="240" width="100" height="100"></image><image href="assets/EOWBarnstar.png" x="300" y="240" width="100" height="100"></image><image href="assets/EOWBarnstar.png" x="500" y="240" width="100" height="100"></image><image href="assets/EOWBarnstar.png" x="700" y="240" width="100" height="100"></image><text x="150" y="180" font-family="Georgia" font-size="22" text-anchor="middle" fill="white" opacity="0.8">Robert McClenon</text><text x="350" y="180" font-family="Georgia" font-size="22" text-anchor="middle" fill="white" opacity="0.8">N/A</text><text x="550" y="180" font-family="Georgia" font-size="22" text-anchor="middle" fill="white" opacity="0.8">Jessicapierce</text><text x="750" y="180" font-family="Georgia" font-size="22" text-anchor="middle" fill="white" opacity="0.8">Invertzoo</text><text x="150" y="210" font-family="Open Sans" font-size="16" text-anchor="middle" fill="white" opacity="0.8">July 5,2015</text><text x="350" y="210" font-family="Open Sans" font-size="16" text-anchor="middle" fill="white" opacity="0.8">June 28, 2015</text><text x="550" y="210" font-family="Open Sans" font-size="16" text-anchor="middle" fill="white" opacity="0.8">June 21, 2015</text><text x="750" y="210" font-family="Open Sans" font-size="16" text-anchor="middle" fill="white" opacity="0.8">June 14, 2015</text><text text-anchor="middle" fill="white" opacity="0.8">Conflict resolution</text><text text-anchor="middle" fill="white" opacity="0.8">N/A</text><text text-anchor="middle" fill="white" opacity="0.8">Copyediting, plain and simple]</text><text text-anchor="middle" fill="white" opacity="0.8">Passionate, Polite and Persistent]</text></g></svg></div>
+
+<!-- 
+        <h1 class="graphHeader"> WordCloud Graph (Page Titles)</h1>
+        <p class="graphDescription">Since the day the article was created. </p>
+        <div id="three"></div>
+
+        <h1 class="graphHeader"> WordCloud Graph (Language Name)</h1>
+        <p class="graphDescription">Since the day the article was created. </p>
+        <div id="four"></div>
+
+        <h1 class="graphHeader"> Pie Chart (By Language)</h1>
+        <p class="graphDescription">Since the day the article was created. </p>
+        <div id="five"></div>
+ -->
+        <h1 class="graphHeader"> PageViews</h1>
+        <p class="graphDescription">For the past 90 days (stat.grok.se)</p>
+        <div id="seven"></div>
+
+        <h1 class="graphHeader"> PageViews (Interpolated)</h1>
+        <p class="graphDescription">For the past 90 days (stat.grok.se)</p>
+        <div id="eight"></div>
+
+
+        <h1 class="graphHeader"> Geo-Plot (Number of Edits) <button style="margin-left: 80px" id="nineB">Tada!</button></h1>
+        <p class="graphDescription">Uses CartoDB</p>
+        <div id="nine"></div>
+
+        <h1 class="graphHeader"> Geo-Plot (Edits Torque Timeplot) <button style="margin-left: 80px" id="tenB">Tada!</button></h1>
+        <p class="graphDescription">Uses CartoDB</p>
+        <div id="ten"></div>
+
+        <h1 class="graphHeader"> Geo-Plot (Edits Clustermap) <button style="margin-left: 80px" id="elevenB">Tada!</button></h1>
+        <p class="graphDescription">Uses CartoDB</p>
+        <div id="eleven"></div>
+
+    </div>
+    
+
+
+<script>
+
+// This has to be here. Otherwise the datepicker UI wouldn't load!
+
+// The Date Picker thingy. Uses pikaday.js
+var picker = new Pikaday({
+    field: document.getElementById('datepicker'),
+    firstDay: 1,
+    minDate: new Date('2000-01-01'),
+    maxDate: new Date('2020-12-31'),
+    yearRange: [2000, 2020]
+});
+var pickerTwo = new Pikaday({
+    field: document.getElementById('datepickerTwo'),
+    firstDay: 1,
+    minDate: new Date('2000-01-01'),
+    maxDate: new Date('2020-12-31'),
+    yearRange: [2000, 2020]
+});
+
+
+</script><div class="pika-single is-hidden is-bound" style="position: static; left: auto; top: auto;"></div><div class="pika-single is-hidden is-bound" style="position: static; left: auto; top: auto;"></div>
+</body></html>
