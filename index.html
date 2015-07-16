@@ -9,7 +9,7 @@
 
 
     <!-- Font Files -->
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,500,600,700' rel='stylesheet' type='text/css'>
 
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:100,200,300,400,700,900' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700,300,100' rel='stylesheet' type='text/css'>
@@ -33,7 +33,13 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.min.js"></script>
     <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
     <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
+    
+    
     <script src="js/script.js"></script>
+    
+    <!-- 
+    <script src="test.js"></script>
+ -->
     <script src="js/scriptGrandPlotter.js"></script>
 
 </head>
@@ -161,10 +167,16 @@
             <div class="graphs">
 
 
-                <h1 class="graphTitle" class="graphHeader"> Weekly Aggregated Edits   <button class="btn btn-default input-button pngExporter" id="onePngConvertor">Woohoo!</button></h1>
+                <h1 class="graphTitle" class="graphHeader"> Weekly Aggregated Edits 
+                    <a id="onePop" href="#" data-toggle="popover"><i class="fa fa-info-circle"></i></a> 
+                    <button class="btn btn-default input-button pngExporter" id="onePngConvertor">Woohoo!</button></h1>
                 <div id="one"></div>
 
-                <h1 class="graphTitle" class="graphHeader"> Daily Aggregated Edits <button class="btn btn-default input-button pngExporter" id="twoPngConvertor">Woohoo!</button></h1>
+                <h1 class="graphTitle" class="graphHeader"> Daily Aggregated Edits 
+                    <a id="twoPop" href="#" data-toggle="popover" title="Popover Header"><i class="fa fa-info-circle"></i></a> 
+                    <button class="btn btn-default input-button pngExporter" id="twoPngConvertor">Woohoo!</button></h1>
+
+
                 <p class="graphDescription">Since the day the article was created. </p>
                 <div id="two"></div>
 
@@ -172,6 +184,9 @@
                 <p class="graphDescription">Since the day the article was created. </p>
                 <div id="three"></div>
 
+
+<!-- <a id="four" href="#" data-toggle="popover" title="Popover Header">Toggle popover</a>
+ -->
 
                 <h1 class="graphTitle" class="graphHeader"> Today's featured article</h1>
                 <!-- <p class="graphDescription">For the past 90 days (stat.grok.se)</p> -->
@@ -187,7 +202,6 @@
 
                 <div id="fifteen"></div>
 
-
                 <h1 class="graphTitle" class="graphHeader"> WordCloud Graph (Page Titles)</h1>
                 <p class="graphDescription">Since the day the article was created. </p>
                 <div id="three"></div>
@@ -199,6 +213,7 @@
                 <h1 class="graphTitle" class="graphHeader"> Pie Chart (By Language)</h1>
                 <p class="graphDescription">Since the day the article was created. </p>
                 <div id="five"></div>
+
 
                 <h1 class="graphTitle" class="graphHeader"> PageViews</h1>
                 <p class="graphDescription">For the past 90 days (stat.grok.se)</p>
@@ -236,6 +251,22 @@
 </body>
 
 <script>
+
+$(document).ready(function(){
+
+    $('#onePop').popover({title: "INFO", content: "Some important points to be noted: </br> - This visualization contains the edits only from the English Wikipedia. The edits are aggregated weekly.", html: true, placement: "right"}); 
+    $('#twoPop').popover({title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>", content: "Blabla <br> <h2>Cool stuff!</h2>", html: true, placement: "right"}); 
+    $('#threePop').popover({title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>", content: "Blabla <br> <h2>Cool stuff!</h2>", html: true, placement: "right"}); 
+    $('#fourPop').popover({title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>", content: "Blabla <br> <h2>Cool stuff!</h2>", html: true, placement: "right"}); 
+    $('#fivePop').popover({title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>", content: "Blabla <br> <h2>Cool stuff!</h2>", html: true, placement: "right"});     
+    $('#sixPop').popover({title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>", content: "Blabla <br> <h2>Cool stuff!</h2>", html: true, placement: "right"});     
+    $('#sevenPop').popover({title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>", content: "Blabla <br> <h2>Cool stuff!</h2>", html: true, placement: "right"}); 
+    $('#eightPop').popover({title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>", content: "Blabla <br> <h2>Cool stuff!</h2>", html: true, placement: "right"}); 
+    $('#ninePop').popover({title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>", content: "Blabla <br> <h2>Cool stuff!</h2>", html: true, placement: "right"}); 
+    $('#tenPop').popover({title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>", content: "Blabla <br> <h2>Cool stuff!</h2>", html: true, placement: "right"}); 
+
+});
+
 // This has to be here. Otherwise the datepicker UI wouldn't load!
 
 // The Date Picker thingy. Uses pikaday.js
