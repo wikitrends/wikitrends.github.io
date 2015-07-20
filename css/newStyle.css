@@ -1,7 +1,7 @@
 /*.navbar-header {
-	float: none;
-	margin: 0 auto;
-	width: 1000px;
+    float: none;
+    margin: 0 auto;
+    width: 1000px;
 }*/
 
 .controls {
@@ -22,7 +22,6 @@
     font-size: 24px;
     line-height: 40px;
     /* Matching the vertical height with the navbrand */
-    
     border-left: rgb(199, 199, 199) 1px solid;
     padding-left: 38px;
 }
@@ -40,7 +39,6 @@ body {
 }
 
 .input-labels {
-    display: block;
     padding-top: 30px;
     padding-bottom: 10px;
 }
@@ -103,12 +101,15 @@ body {
 
 .graphTitle {
     font-family: "Roboto Slab";
-    font-weight: 400;
-}
-.pngExporter {
-	margin-left: 70px;
+    font-weight: 500;
+    font-size: 24px;
+    margin-left: -10px;
+margin-bottom: 20px;
 }
 
+.graphsControls {
+    margin-bottom: 50px;
+}
 
 
 /*!
@@ -126,6 +127,8 @@ body {
     border-bottom-color: #bbb;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+
+
 /*
 clear child float (pika-lendar), using the famous micro clearfix hack
 http://nicolasgallagher.com/micro-clearfix-hack/
@@ -201,7 +204,6 @@ http://nicolasgallagher.com/micro-clearfix-hack/
     width: 20px;
     height: 30px;
     /* hide text using text-indent trick, using width value (it's enough) */
-    
     text-indent: 20px;
     white-space: nowrap;
     overflow: hidden;
@@ -344,6 +346,8 @@ http://nicolasgallagher.com/micro-clearfix-hack/
     box-shadow: none;
     border-radius: 3px;
 }
+
+
 /* styling for abbr */
 
 .pika-table abbr {
@@ -351,18 +355,20 @@ http://nicolasgallagher.com/micro-clearfix-hack/
     cursor: help;
 }
 
-input[type=range]{
+input[type=range] {
     -webkit-appearance: none;
     display: block;
-    margin: 20px;
+    display: block;
+    float: left;
+    margin: 15px 0px 0px 0px;
 }
 
 input[type=range]::-webkit-slider-runnable-track {
     width: 300px;
-    height: 5px;
+    height: 4px;
     background: #ddd;
     border: none;
-    border-radius: 3px;
+    border-radius: 2px;
 }
 
 input[type=range]::-webkit-slider-thumb {
@@ -371,8 +377,8 @@ input[type=range]::-webkit-slider-thumb {
     height: 16px;
     width: 16px;
     border-radius: 50%;
-    background: goldenrod;
-    margin-top: -4px;
+    background: #333;
+    margin-top: -6px;
 }
 
 input[type=range]:focus {
@@ -381,4 +387,57 @@ input[type=range]:focus {
 
 input[type=range]:focus::-webkit-slider-runnable-track {
     background: #ccc;
+}
+
+.btn-primary {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+}
+
+.btn-primary:hover {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad;
+}
+
+.btn-primary.active {
+    border-color: #444;
+    background-color: #444;
+    color: #fff;
+}
+
+.btn-primary.active:hover {
+    border-color: #444;
+    background-color: #444;
+    color: #fff;
+}
+
+.input-labels-graph {
+    display: block;
+}
+
+.graphsControls {
+    float: left;
+    margin-top: 10px;
+    display: block;
+    margin-right: 30px;
+}
+
+.graphSectionHeader {
+    font-family: "Roboto Slab";
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 36px;
+    margin-left: -10px;
+}
+
+.sliderSections {
+    float: left;
+    margin-right: 40px;
+    height: 89px;
+    width: 200px;
+}
+
+
 }

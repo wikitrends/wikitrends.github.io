@@ -287,7 +287,7 @@ function weeklyPedia(parameter) {
                 }
 
             } else {
-                console.log(useFulData)
+                //console.log(useFulData)
             }
 
         })
@@ -347,6 +347,17 @@ function searchArray(nameKey, myArray) {
             return myArray[i];
         }
     }
+}
+
+function clone(obj){
+    if(obj == null || typeof(obj) != 'object')
+        return obj;
+
+    var temp = new obj.constructor(); 
+    for(var key in obj)
+        temp[key] = clone(obj[key]);
+
+    return temp;
 }
 
 //// Have pity on this lonely variable. Find a new home for him. Preferrably somewhere with other variables.
@@ -418,38 +429,37 @@ function grandPlotter(pageIDin, pageTitlein) {
                         d3.select(this).call(transition);
                     });
             }
-
         };
     }
 
-    // var myLoader = loader({
-    //     width: 960,
-    //     height: 500,
-    //     container: "#one",
-    //     id: "one"
-    // });
-    // myLoader();
-    // var myLoader = loader({
-    //     width: 960,
-    //     height: 500,
-    //     container: "#two",
-    //     id: "one"
-    // });
-    // myLoader();
-    // var myLoader = loader({
-    //     width: 960,
-    //     height: 500,
-    //     container: "#three",
-    //     id: "one"
-    // });
-    // myLoader();
-    // var myLoader = loader({
-    //     width: 960,
-    //     height: 500,
-    //     container: "#four",
-    //     id: "one"
-    // });
-    // myLoader();
+    var myLoader = loader({
+        width: 960,
+        height: 500,
+        container: "#one",
+        id: "one"
+    });
+    myLoader();
+    var myLoader = loader({
+        width: 960,
+        height: 500,
+        container: "#two",
+        id: "one"
+    });
+    myLoader();
+    var myLoader = loader({
+        width: 960,
+        height: 500,
+        container: "#three",
+        id: "one"
+    });
+    myLoader();
+    var myLoader = loader({
+        width: 960,
+        height: 500,
+        container: "#four",
+        id: "one"
+    });
+    myLoader();
 
     /* Loader Section ends */
 
@@ -459,6 +469,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 
     var jsonObject;
     var lastRevID;
+    var objectTwo = []
 
     var linkInitialPageEdits = "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&pageids=" + pageID + "&format=json&callback=?"
 
@@ -524,8 +535,8 @@ function grandPlotter(pageIDin, pageTitlein) {
                 var i = parameterTwo
                 impData = tempTest.responseJSON
                 if (parameterTwo == 2) {
-                    console.log(parameterOne)
-                    console.log(tempTest.responseJSON)
+                    //console.log(parameterOne)
+                    //console.log(tempTest.responseJSON)
                 }
 
                 var pageID = Object.keys(impData.query.pages)[0]
@@ -586,11 +597,11 @@ function grandPlotter(pageIDin, pageTitlein) {
 
                         // console.log(langLinksJsonObject)
 
-                        console.log(fullOnData)
+                        //console.log(fullOnData)
 
                         var userInputImageURL = $('#imageURL').val()
 
-                        console.log(userInputImageURL)
+                        //console.log(userInputImageURL)
 
                         if (userInputImageURL == "") {
                             // console.log('asdasd')
@@ -601,14 +612,14 @@ function grandPlotter(pageIDin, pageTitlein) {
                                 function(width, height) {
                                     thereIs = width;
 
-                                    console.log(pageTitle)
+                                    //console.log(pageTitle)
 
-                                pageEditsTester(fullOnData, "#four", "none", "", "", "day", engTitleengTitle, userInputImageURL, width, height, "cover")
-                                pageEditsTester(fullOnData, "#five", "none", "", "", "hour", engTitle, userInputImageURL, width, height, "cover")
+                                    pageEditsTester(fullOnData, "#four", "none", "", "", "day", engTitleengTitle, userInputImageURL, width, height, "cover")
+                                    pageEditsTester(fullOnData, "#five", "none", "", "", "hour", engTitle, userInputImageURL, width, height, "cover")
 
-                                pageEditsTester(fullOnData, "#two", "none", "", "", "day", engTitle, userInputImageURL, width, height)
-                                pageEditsTester(fullOnData, "#three", "none", "", "", "hour", engTitle, userInputImageURL, width, height)
-                                pageEditsTester(fullOnData, "#one", "none", "", "", "week", engTitle, userInputImageURL, width, height)
+                                    pageEditsTester(fullOnData, "#two", "none", "", "", "day", engTitle, userInputImageURL, width, height)
+                                    pageEditsTester(fullOnData, "#three", "none", "", "", "hour", engTitle, userInputImageURL, width, height)
+                                    pageEditsTester(fullOnData, "#one", "none", "", "", "week", engTitle, userInputImageURL, width, height)
 
                                 }
                             );
@@ -636,6 +647,8 @@ function grandPlotter(pageIDin, pageTitlein) {
     }
 
     var finaljsonObject = [];
+    var finaljsonObjectNeverChange = [];
+
     var linkAddress;
 
     function getGeoData(editsRawData) {
@@ -649,7 +662,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         var ipData = []
 
-        console.log(editsRawData.length)
+        //console.log(editsRawData.length)
 
         for (i = 0; i < editsRawData.length; i++) {
             if (editsRawData[i].user) {
@@ -677,7 +690,6 @@ function grandPlotter(pageIDin, pageTitlein) {
         for (j = 0; j < ipData.length - remainderEntries; j = j + 100) {
 
             var postQuery = "https://wikimedia.cartodb.com/api/v2/sql?q=INSERT INTO datasource (_user, timestamp, difference) VALUES "
-
 
 
             // console.log(ipData[i].difference)
@@ -767,7 +779,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 
                     var userInputImageURL = $('#imageURL').val()
 
-                    console.log(userInputImageURL)
+                    //console.log(userInputImageURL)
 
                     if (userInputImageURL == "") {
                         // console.log('asdasd')
@@ -778,7 +790,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                             function(width, height) {
                                 thereIs = width;
 
-                                console.log(pageTitle)
+                                //console.log(pageTitle)
 
 
                                 // pageEditsTester(finaljsonObject, "#one", "none", "", "", "day", pageTitle, photoUrl, width, height)
@@ -805,6 +817,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 // getMeta("https://upload.wikimedia.org/wikipedia/commons/a/ab/China_edcp_location_map.svg");
 
                 linkAddress = data;
+                finaljsonObjectNeverChange = finaljsonObject;
 
                 var pageID = Object.keys(linkAddress.query.pages)[0]
                 var pageTitle = linkAddress.query.pages[pageID].title
@@ -822,12 +835,13 @@ function grandPlotter(pageIDin, pageTitlein) {
                         function(width, height) {
 
                             thereIs = width;
-                                                            pageEditsTester(finaljsonObject, "#four", "none", "", "", "hour", pageTitle, userInputImageURL, width, height, "cover")
+                            // pageEditsTester(finaljsonObject, "#four", "none", "", "", "hour", pageTitle, userInputImageURL, width, height, "cover")
 
+                            initializer(finaljsonObject, pageTitle, photoUrl, width, height)
 
-                            pageEditsTester(finaljsonObject, "#three", "none", "", "", "hour", pageTitle, photoUrl, width, height)
-                            pageEditsTester(finaljsonObject, "#two", "none", "", "", "day", pageTitle, photoUrl, width, height, "cover")
-                            pageEditsTester(finaljsonObject, "#one", "none", "", "", "week", pageTitle, photoUrl, width, height)
+                            // pageEditsTester(finaljsonObject, "#three", "none", "", "", "hour", pageTitle, photoUrl, width, height)
+                            // pageEditsTester(finaljsonObject, "#two", "none", "", "", "day", pageTitle, photoUrl, width, height, "cover")
+                            // pageEditsTester(finaljsonObject, "#one", "none", "", "", "week", pageTitle, photoUrl, width, height)
 
                             // pageEditsSize(finaljsonObject, "#three", "none", "", "", "hour", pageTitle, photoUrl, width, height)
 
@@ -839,6 +853,9 @@ function grandPlotter(pageIDin, pageTitlein) {
 
                 } else {
                     // console.log('asdasd')
+
+
+                    // initializer(finaljsonObject, pageTitle, "assets/defaultImage.jpg", 1000, 500)
 
                     // pageEditsPlotter(finaljsonObject, "#one", "none", "", "", "day", pageTitle, "assets/defaultImage.jpg", 1000, 500)
                     // pageEditsTester(finaljsonObject, "#one", "none", "", "", "day", pageTitle, "assets/defaultImage.jpg", 1000, 500)
@@ -855,6 +872,14 @@ function grandPlotter(pageIDin, pageTitlein) {
 
             }
         })
+    }
+
+    function initializer(object, pageTitle, url, width, height) {
+
+        pageEditsTester(object, "#three", "none", "", "", "hour", pageTitle, url, width, height,"stretch", "lineChart")
+        pageEditsTester(object, "#two", "none", "", "", "day", pageTitle, url, width, height,"stretch", "lineChart")
+        // pageEditsTester(objectTwo, "#one", "none", "", "", "week", pageTitle, url, width, height, "stretch", "lineChart")
+
     }
 
     function wordCloud(wordCloudUrl, langLinksJsonObject) {
@@ -922,7 +947,6 @@ function grandPlotter(pageIDin, pageTitlein) {
                 linkAddress = linkAddress.query.pages[pageID].thumbnail
 
 
-
                 // Extrememly Sorry for this shitfuckery!
                 var photoUrl = JSON.stringify(linkAddress)
                 if (photoUrl != undefined) {
@@ -933,7 +957,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                         photoUrl,
                         function(width, height) {
                             thereIs = width;
-                                                        pageEditsTester(fullOnData, "#five", "none", "", "", "hour", pageTitle, photoUrl, width, height, "cover")
+                            pageEditsTester(fullOnData, "#five", "none", "", "", "hour", pageTitle, photoUrl, width, height, "cover")
 
                             pageEditsTester(fullOnData, "#four", "none", "", "", "day", pageTitle, photoUrl, width, height, "cover")
 
@@ -1181,7 +1205,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 
             }
 
-            console.log(JSON.stringify(dataSourceLangLinks))
+            //console.log(JSON.stringify(dataSourceLangLinks))
 
             var layout = d3.layout.cloud().size([930, 420])
                 .words(dataSourceLangLinks)
@@ -1544,20 +1568,29 @@ function grandPlotter(pageIDin, pageTitlein) {
         })
     }
 
-    function pageEditsTester(dataSource, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight, graphStyle) {
 
-        dataSource.sort(function(a, b) {
+    function pageEditsTester(dataSource, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight, graphStyle, chartType, neverChange) {
+
+        var dataTemp = clone(dataSource)
+
+        // console.log(typeof dataTemp)
+
+
+        d3.select(idname + "Controls").selectAll("*")
+            .remove()
+
+        dataTemp.sort(function(a, b) {
             var c = new Date(a.timestamp);
             var d = new Date(b.timestamp);
             return d - c;
         });
 
-        console.log(dataSource)
-
         var editors = []
         var editorsCount = 0;
 
-        dataSource.forEach(function(d, i) {
+        var pristineData = dataTemp
+
+        dataTemp.forEach(function(d, i) {
 
             var user = d.user
 
@@ -1570,25 +1603,24 @@ function grandPlotter(pageIDin, pageTitlein) {
             }
         })
 
-        var data = dataSource
-        var dataNew = dataSource
+        var data = dataTemp
 
-        dataSource.forEach(function(d, i) {
+        dataTemp.forEach(function(d, i) {
 
-            if (i == dataSource.length - 1) {
+            if (i == dataTemp.length - 1) {
                 d.difference = d.size;
             } else {
-                d.difference = d.size - dataSource[i + 1].size;
+                d.difference = d.size - dataTemp[i + 1].size;
             }
         })
 
-        // getGeoData(dataSource)
+        // getGeoData(dataTemp)
 
         var totalEdits = 0;
         var totalEditors;
         var brokenDownDataSource = []
 
-        dataSource.forEach(function(d) {
+        dataTemp.forEach(function(d) {
 
             if (timeLimit == null && timeLimitUpper == null) {
                 totalEdits = totalEdits + 1
@@ -1633,7 +1665,6 @@ function grandPlotter(pageIDin, pageTitlein) {
         }
 
         var totalEditors = Object.keys(distances).length
-
 
         $('#loader').html('');
         $(idname).html('')
@@ -1683,15 +1714,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             .interpolate("bundle")
             .x(function(d, i) {
 
-                // if (i == 0) {
-                //     if (timeLimitUpper != null) {
-                //         return x(parseDate(timeLimitUpper));
-                //     } else {
-                //         console.log(JSON.stringify(moment()))
-                //         return x(parseDate(JSON.stringify(moment())));
-                //     }
-                // } else {}
-
                 if (timeLimit == null && timeLimitUpper == null) {
                     return x(parseDate(d.key));
                 } else if (timeLimit == null && timeLimitUpper != null) {
@@ -1715,18 +1737,8 @@ function grandPlotter(pageIDin, pageTitlein) {
                         }
                     }
                 }
-
             })
             .y(function(d, i) {
-
-                // if (i == 0) {
-                //     if (timeLimitUpper != null) {
-                //         return y(0)
-                //     } else {
-                //         console.log('0')
-                //         return y(0)
-                //     }
-                // } else {}
 
                 if (timeLimit == null && timeLimitUpper == null) {
                     return y(d.values);
@@ -1754,7 +1766,6 @@ function grandPlotter(pageIDin, pageTitlein) {
                         }
                     }
                 }
-
             });
 
         var svgBase = d3.select("body").select(idname).append("svg")
@@ -1782,7 +1793,9 @@ function grandPlotter(pageIDin, pageTitlein) {
         var lastDate;
         var totalCount = 0;
 
-        dataSource.forEach(function(d) {
+        var newData = dataTemp
+
+        newData.forEach(function(d) {
 
             var trueTime = d.timestamp
 
@@ -1845,6 +1858,9 @@ function grandPlotter(pageIDin, pageTitlein) {
             d.values = 1;
         });
 
+        // console.log(datasource)
+        // console.log(newData)
+
         var data = d3.nest()
             .key(function(d) {
                 return d.timestamp;
@@ -1853,12 +1869,12 @@ function grandPlotter(pageIDin, pageTitlein) {
                 return d3.sum(d, function(d) {
                     return d.values;
                 });
-            }).entries(dataSource);
+            }).entries(newData);
 
         // Attempting to fix the Zero Date problem
         var finale = []
 
-        console.log(finale)
+        //console.log(finale)
 
         if (timeDuration == "hour") {
 
@@ -1898,7 +1914,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                         })
 
 
-                         console.log('two  ' + tempIn)
+                        //console.log('two  ' + tempIn)
 
                     } else {
 
@@ -1915,8 +1931,8 @@ function grandPlotter(pageIDin, pageTitlein) {
 
                         // tempIn is just of temporary string conversions.
                         var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
-                            
-                        console.log(tempIn)
+
+                        //console.log(tempIn)
 
                         finale.push({
                             key: tempIn,
@@ -1951,7 +1967,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                     // console.log(data.length)
 
                 // if ( i == data.length - 1 ) {
-                //     console.log('sadas')
+                // //console.log('sadas')
                 //     finale.push({
                 //         key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
                 //         values: 0
@@ -1959,7 +1975,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 // } 
                 // // d.key = momen
                 // if ( i == 0 ) {
-                //     console.log(JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", ""))
+                // //console.log(JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", ""))
 
                 //     finale.push({
                 //         key: JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", ""),
@@ -2434,16 +2450,16 @@ function grandPlotter(pageIDin, pageTitlein) {
                     .attr("opacity", 0.7)
                     .attr("height", height + margin.top + margin.bottom);
 
-                if (graphStyle == "cover") {
+                // if (graphStyle == "cover") {
 
                     var opacityRect = svgFull.append("rect")
-                        .attr("id", "rect" + idname.slice(1))
+                        .attr("id", "rectCover" + idname.slice(1))
                         .attr("width", width + margin.right + margin.left)
                         .attr("fill", "#f9f9f9")
-                        .attr("opacity", 1)
+                        .attr("opacity", 0)
                         .attr("y", 155)
                         .attr("height", height + margin.top + margin.bottom - 155);
-                }
+                // }
 
             }
         });
@@ -2535,11 +2551,12 @@ function grandPlotter(pageIDin, pageTitlein) {
             .attr("y", 54)
             .attr("font-family", "Georgia")
             .attr("font-size", function(d) {
-                console.log(pageTitle + picUrl)
+                //console.log(pageTitle + picUrl)
                 return "29px"
             })
             .attr("fill", "white")
             .attr('opacity', "1");
+
 
         // .attr("transform", "translate(0," + height + ")") shifts the axis to the bottom part of the G element. 
         svgBase.append("g")
@@ -2577,7 +2594,6 @@ function grandPlotter(pageIDin, pageTitlein) {
                     'stroke-width': '0.8px',
                     "opacity": "0.5"
                 });
-
         } else {
             svgBase.selectAll('.axis line, .axis path')
                 .style({
@@ -2588,19 +2604,116 @@ function grandPlotter(pageIDin, pageTitlein) {
                 });
         }
 
-        var drag = d3.behavior.drag()  
-            .on('dragstart', function() { 
+        var drag = d3.behavior.drag()
+            .on('dragstart', function() {
                 rectangle.style('fill', 'red');
             })
-            .on('drag', function() { 
+            .on('drag', function() {
                 rectangle.attr('x', d3.mouse(this)[0])
-                .attr('y', d3.mouse(this)[1]); 
+                    .attr('y', d3.mouse(this)[1]);
 
             })
-            .on('dragend', function() { 
-                rectangle.style('fill', 'black'); 
+            .on('dragend', function() {
+                rectangle.style('fill', 'black');
             });
 
+        if (chartType == "barChart") {
+
+            var a = moment(x.domain()[1]);
+            var b = moment(x.domain()[0]);
+
+            var difference = a.diff(b, timeDuration)
+
+            svgBase.selectAll(".bar")
+                .data(finale)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("x", function(d, i) {
+
+                    if (timeLimit == null && timeLimitUpper == null) {
+                        return x(parseDate(d.key)) - ((width) / difference) / 2
+                    } else if (timeLimit == null && timeLimitUpper != null) {
+                        if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                            return x(parseDate(d.key)) - ((width) / difference) / 2
+                        }
+                        return x(timeLimitUpper)
+                    } else if (timeLimit != null && timeLimitUpper == null) {
+                        if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                            return x(parseDate(d.key)) - ((width) / difference) / 2
+                        }
+                        return x(timeLimit)
+                    } else if (timeLimit != null && timeLimitUpper != null) {
+                        if (moment(d.key).diff(moment(timeLimit)) < 0) {
+                            return x(timeLimit)
+                        } else {
+                            if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                                return x(parseDate(d.key)) - ((width) / difference) / 2
+                            } else {
+                                return x(timeLimitUpper)
+                            }
+                        }
+                    }
+
+                    // console.log(d.key)
+                    // console.log(parseDate(d.key))
+                    // console.log(x(parseDate(d.key)))
+
+                    // return x(parseDate(d.key)) - ((width) / difference)/2
+
+                })
+                .attr("width", function() {
+
+                    // var barWidth = width / difference 
+                    // if ( barWidth < 5 ) {
+                    //     return 3
+                    // }
+                    // return ( width / difference )
+                    return (width / difference) - ((width / difference) / 5)
+                })
+                .attr("y", function(d) {
+                    return y(d.values)
+                })
+                .attr("height", function(d) {
+
+                    if (timeLimit == null && timeLimitUpper == null) {
+                        return height - y(d.values)
+                    } else if (timeLimit == null && timeLimitUpper != null) {
+                        if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                            return height - y(d.values)
+                        } else {
+                            return height - y(0)
+                        }
+                    } else if (timeLimit != null && timeLimitUpper == null) {
+                        if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                            return height - y(d.values)
+                        } else {
+                            return height - y(0)
+                        }
+                    } else if (timeLimit != null && timeLimitUpper != null) {
+
+                        if (moment(d.key).diff(moment(timeLimit)) < 0) {
+                            return y(0)
+                        } else {
+                            if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                                return height - y(d.values)
+                            } else {
+                                return height - y(0)
+                            }
+                        }
+                    }
+
+                    // return height - y(d.values)
+
+                })
+                .attr("opacity", function(d) {
+                    return 0.5
+                })
+                .attr("shape-rendering", "crispEdges")
+                .attr("fill", function(d) {
+                    return "#2196F3"
+                })
+        } else {
         svgBase.append("path")
             .datum(finale)
             .attr("class", "upperline")
@@ -2608,15 +2721,13 @@ function grandPlotter(pageIDin, pageTitlein) {
             .attr("fill", "none")
             .attr("stroke", function() {
                 if (graphStyle == "cover") {
-                    return "#2196F3"
+                    return "#e74c3c"
                 } else {
                     return "rgb(94, 255, 176)"
                 }
             })
             .attr("stroke-width", "3px")
-
-            
-        .append('text')
+            .append('text')
             .text("Page Edits")
             .attr("x", function(d) {
                 var length = numberWithSpaces(totalEditors).length
@@ -2631,6 +2742,8 @@ function grandPlotter(pageIDin, pageTitlein) {
             .attr("font-weight", "500")
             .attr("fill", "#DCDCDC")
             .attr('opacity', "1");
+        }
+
 
         var rectangle = svgBase.append("rect")
             // .attr("x", d3.mouse(this)[0])
@@ -2648,7 +2761,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             .attr("opacity", 0.7)
             .attr("height", 100)
             .call(drag);
-                            
 
         svgBase.selectAll("circle.line")
             .data(data)
@@ -2659,21 +2771,9 @@ function grandPlotter(pageIDin, pageTitlein) {
             .attr("cy", upperline.y())
             .attr("r", 12)
             .attr('opacity', 0)
-            .on("click", function(d) {
-            })
+            .on("click", function(d) {})
 
-        // var circle = box.selectAll('.draggableCircle')  
-        //         .data([{ x: (boxWidth / 2), y: (boxHeight / 2), r: 25 }])
-        //         .enter()
-        //         .append('svg:circle')
-        //         .attr('class', 'draggableCircle')
-        //         .attr('cx', function(d) { return d.x; })
-        //         .attr('cy', function(d) { return d.y; })
-        //         .attr('r', function(d) { return d.r; })
-        //         .call(drag)
-        //         .style('fill', 'black');
-
-        d3.select(idname)
+        d3.select(idname + "Controls")
             .selectAll("div")
             .data([0])
             .enter()
@@ -2682,31 +2782,120 @@ function grandPlotter(pageIDin, pageTitlein) {
                 return "controls" + idname.slice(1)
             })
 
-        var controlsInsertor = d3.select("#" + "controls" + idname.slice(1))
-            .selectAll("button")
-            .data([0])
-            .enter()
+        var controlsInsertor = d3.select("#" + idname.slice(1) + "Controls")
 
-        controlsInsertor.append("input")
-            .attr("type", "range")
-            .attr("min", 1)
-            .attr("max", 100)
-            .style("width", "200px")
-            .attr("id", "opacitySlider" + idname.slice(1))
+        controlsInsertor
+            .each(function(d) {
+                d3.select(this).append("div")
+                    .attr("class", "sliderSections")
+                    .each(function(d) {
+                        d3.select(this).append("label")
+                            .attr("class", "input-labels-graph")
+                            .text('CHART TYPE')
+                        d3.select(this).append("div")
+                            .attr("class", "btn-group")
+                            .attr("data-toggle", "buttons")
+                            .html(function(d) {
+                                return "<label id='lineChart" + idname.slice(1) + "'class='btn btn-primary active'><input type='radio' name='options' autocomplete='off' checked=''>Line Chart</label><label  id='barChart" + idname.slice(1) + "' class='btn btn-primary'><input type='radio' name='options' autocomplete='off' checked=''>Bar Chart</label>"
+                            })
+                    });
 
-        controlsInsertor.append("input")
-            .attr("type", "range")
-            .attr("min", -picHeight)
-            .attr("max", picHeight)
-            .style("width", "200px")
-            .attr("id", "imageHeightSlider" + idname.slice(1))
+                d3.select(this).append("div")
+                    .attr("class", "sliderSections")
+                    .each(function(d) {
+                        d3.select(this).append("label")
+                            .attr("class", "input-labels-graph")
+                            .text('CHART TYPE')
+                        d3.select(this).append("div")
+                            .attr("class", "btn-group")
+                            .attr("data-toggle", "buttons")
+                            .html(function(d) {
+                                return "<label class='btn btn-primary active'  id='cover" + idname.slice(1) + "' ><input type='radio' name='options' autocomplete='off' checked=''>Cover</label><label class='btn btn-primary' id='stretch" + idname.slice(1) + "'><input type='radio' name='options' autocomplete='off' checked=''>Stretch</label>"
+                            })
+                    });
 
-        controlsInsertor.append("input")
-            .attr("type", "range")
-            .attr("min", -picWidth)
-            .attr("max", picWidth)
-            .style("width", "200px")
-            .attr("id", "imageWidthSlider" + idname.slice(1))
+                d3.select(this).append("div")
+                    .attr("class", "sliderSections")
+                    .each(function(d) {
+                        d3.select(this).append("label")
+                            .attr("class", "input-labels-graph")
+                            .text('CHART TYPE')
+                        d3.select(this).append("div")
+                            .attr("class", "btn-group")
+                            .attr("data-toggle", "buttons")
+                            .html(function(d) {
+                                return "<button class='btn btn-default input-button pngExporter' id='" + idname.slice(1) + "PngConvertor'>Woohoo!</button>"
+                            })
+
+                    });
+
+                d3.select(this).append("div")
+                    .attr("class", "sliderSections")
+                    .each(function(d) {
+                        d3.select(this).append("label")
+                            .attr("class", "input-labels-graph")
+                            .text('OPACITY')
+                        d3.select(this).append("input")
+                            .attr("type", "range")
+                            .attr("min", 20)
+                            .attr("max", 100)
+                            .style("width", "180px")
+                            .attr("id", "opacitySlider" + idname.slice(1))
+                    });
+
+                d3.select(this).append("div")
+                    .attr("class", "sliderSections")
+                    .each(function(d) {
+                        d3.select(this).append("label")
+                            .attr("class", "input-labels-graph")
+                            .text('WIDTH')
+                        d3.select(this).append("input")
+                            .attr("type", "range")
+                            .attr("min", -picWidth)
+                            .attr("max", picWidth)
+                            .style("width", "180px")
+                            .attr("id", "imageWidthSlider" + idname.slice(1))
+                    });
+
+                d3.select(this).append("div")
+                    .attr("class", "sliderSections")
+                    .each(function(d) {
+                        d3.select(this).append("label")
+                            .attr("class", "input-labels-graph")
+                            .text('HEIGHT')
+                        d3.select(this).append("input")
+                            .attr("type", "range")
+                            .attr("min", -picHeight)
+                            .attr("max", picHeight)
+                            .style("width", "180px")
+                            .attr("id", "imageHeightSlider" + idname.slice(1))
+                    });
+            })
+
+        // controlsInsertor.append("label")
+        //     .attr("class", "input-labels-graph")
+        //     .text('asdasd')
+
+        // controlsInsertor.append("input")
+        // .attr("type", "range")
+        // .attr("min", -picHeight)
+        // .attr("max", picHeight)
+        // .style("width", "200px")
+        // .attr("id", "imageHeightSlider" + idname.slice(1))
+
+        // controlsInsertor.append("label")
+        //     .attr("class", "input-labels-graph")
+        //     .text('asdasd')
+
+        // controlsInsertor.append("input")
+        //     .attr("type", "range")
+        //     .attr("min", -picWidth)
+        //     .attr("max", picWidth)
+        //     .style("width", "200px")
+        //     .attr("id", "imageWidthSlider" + idname.slice(1))
+
+        console.log(idname + ' ' + chartType)
+        // console.log(finale)
 
         d3.select("#" + "opacitySlider" + idname.slice(1)).on("input", function() {
             updateOpacity(+this.value);
@@ -2718,6 +2907,173 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         d3.select("#" + "imageWidthSlider" + idname.slice(1)).on("input", function() {
             updateImageWidth(+this.value);
+        });
+
+        d3.select("#lineChart" + idname.slice(1)).on("click", function() {
+
+            svgBase.selectAll(".bar")
+                .remove()
+
+            svgBase.append("path")
+            .datum(finale)
+            .attr("class", "upperline")
+            .attr("d", upperline)
+            .attr("fill", "none")
+            .attr("stroke", function() {
+                if (graphStyle == "cover") {
+                    return "#e74c3c"
+                } else {
+                    return "rgb(94, 255, 176)"
+                }
+            })
+            .attr("stroke-width", "3px")
+            .append('text')
+            .text("Page Edits")
+            .attr("x", function(d) {
+                var length = numberWithSpaces(totalEditors).length
+                var lengthTwo = numberWithSpaces(totalEdits).length
+                return width - (24 * length) - 90 - (24 * lengthTwo) + 5
+            })
+            .attr("y", 40)
+            .attr("font-family", "Helvetica Neue")
+            .attr("font-size", function(d) {
+                return "12.33px"
+            })
+            .attr("font-weight", "500")
+            .attr("fill", "#DCDCDC")
+            .attr('opacity', "1");
+        });
+
+        d3.select("#barChart" + idname.slice(1)).on("click", function() {
+            
+            svgBase.selectAll(".upperline")
+                .remove()
+
+            var a = moment(x.domain()[1]);
+            var b = moment(x.domain()[0]);
+
+            var difference = a.diff(b, timeDuration)
+
+            console.log(difference)
+
+            console.log(finale)
+
+            svgBase.selectAll(".bar")
+                .data(finale)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("x", function(d, i) {
+
+                    if (timeLimit == null && timeLimitUpper == null) {
+                        return x(parseDate(d.key)) - ((width) / difference) / 2
+                    } else if (timeLimit == null && timeLimitUpper != null) {
+                        if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                            return x(parseDate(d.key)) - ((width) / difference) / 2
+                        }
+                        return x(timeLimitUpper)
+                    } else if (timeLimit != null && timeLimitUpper == null) {
+                        if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                            return x(parseDate(d.key)) - ((width) / difference) / 2
+                        }
+                        return x(timeLimit)
+                    } else if (timeLimit != null && timeLimitUpper != null) {
+                        if (moment(d.key).diff(moment(timeLimit)) < 0) {
+                            return x(timeLimit)
+                        } else {
+                            if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                                return x(parseDate(d.key)) - ((width) / difference) / 2
+                            } else {
+                                return x(timeLimitUpper)
+                            }
+                        }
+                    }
+
+                    // console.log(d.key)
+                    // console.log(parseDate(d.key))
+                    // console.log(x(parseDate(d.key)))
+
+                    // return x(parseDate(d.key)) - ((width) / difference)/2
+
+                })
+                .attr("width", function() {
+
+                    return (width / difference) - ((width / difference) / 5)
+                })
+                .attr("y", function(d) {
+                    return y(d.values)
+                })
+                .attr("height", function(d) {
+
+                    if (timeLimit == null && timeLimitUpper == null) {
+                        return height - y(d.values)
+                    } else if (timeLimit == null && timeLimitUpper != null) {
+                        if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                            return height - y(d.values)
+                        } else {
+                            return height - y(0)
+                        }
+                    } else if (timeLimit != null && timeLimitUpper == null) {
+                        if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                            return height - y(d.values)
+                        } else {
+                            return height - y(0)
+                        }
+                    } else if (timeLimit != null && timeLimitUpper != null) {
+
+                        if (moment(d.key).diff(moment(timeLimit)) < 0) {
+                            return y(0)
+                        } else {
+                            if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                                return height - y(d.values)
+                            } else {
+                                return height - y(0)
+                            }
+                        }
+                    }
+
+                    // return height - y(d.values)
+
+                })
+                .attr("opacity", function(d) {
+                    return 1
+                })
+                .attr("shape-rendering", "crispEdges")
+                .attr("fill", function(d) {
+                    return "#2196F3"
+                })
+        });
+
+        d3.select("#stretch" + idname.slice(1)).on("click", function() {
+
+            svgBase.selectAll('.axis line, .axis path')
+                .style({
+                    'stroke': '#ddd',
+                    'fill': 'none',
+                    'stroke-width': '0.7px',
+                    "opacity": "0.4"
+                });
+
+            svgBase.select("#rectCover" + idname.slice(1))
+                .style({
+                    "opacity": "0"
+            });
+        });
+
+        d3.select("#cover" + idname.slice(1)).on("click", function() {
+
+            svgBase.selectAll('.axis line, .axis path')
+                .style({
+                    'stroke': '#E3E3E3',
+                    'fill': 'none',
+                    'stroke-width': '0.8px',
+                    "opacity": "0.5"
+                });
+
+            svgBase.select("#rectCover" + idname.slice(1))
+                .style({
+                    "opacity": "1"
+                });
         });
 
         function updateOpacity(ina) {
@@ -2748,6 +3104,25 @@ function grandPlotter(pageIDin, pageTitlein) {
         d3.select(idname)
             .selectAll("path.domain")
             .remove()
+
+        d3.select("#imageRefresher").on("click", function() {
+
+            timeLimit = picker.getDate()
+            timeLimitUpper = pickerTwo.getDate()
+
+            var userInputImageURL = $('#imageURL').val()
+
+            getImageDimensions(
+                userInputImageURL,
+                function(width, height) {
+
+                    thereIs = width;
+
+                    initializer(dataTemp, pageTitle, userInputImageURL, width, height)
+
+                }
+            );
+        })
 
         d3.select(idname + "PngConvertor").on("click", function() {
             var html = d3.select(idname).select("svg")
@@ -2806,7 +3181,15 @@ function grandPlotter(pageIDin, pageTitlein) {
             var img = '<img src="' + newurl + '">';
             d3.select("#img").html(img);
         }
+
+        d3.select("#dateRefresher").on("click", function() {
+            timeLimit = picker.getDate()
+            timeLimitUpper = pickerTwo.getDate()
+            initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight)
+        })
+
     }
+
 
     var EOWs;
     var reasonsEOWs;
@@ -4306,7 +4689,7 @@ function grandPlotter(pageIDin, pageTitlein) {
             .enter()
             .append("div")
             .attr("id", function(d) {
-                console.log('why')
+                //console.log('why')
                 return "controls" + idname.slice(1)
             })
 
@@ -4589,7 +4972,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 editorsCount = editorsCount + 1;
                 editors.push(user)
                 d.editorsCount = editorsCount
-                console.log(editorsCount)
+                    //console.log(editorsCount)
             }
 
             if (i == dataSource.length - 1) {
@@ -4600,10 +4983,10 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         })
 
-        console.log(editors)
+        //console.log(editors)
 
 
-        console.log(dataSource.length)
+        //console.log(dataSource.length)
 
         var totalEdits = 0;
 
@@ -4659,7 +5042,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         var totalEditors = Object.keys(distances).length
 
-        // getGeoData(dataSource)
+        getGeoData(dataSource)
 
         $('#loader').html('');
         $(idname).html('')
@@ -4866,7 +5249,6 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         // Attempting to fix the Zero Date problem
         var finale = data
-
 
 
         if (timeDuration == "hour") {
@@ -5500,7 +5882,7 @@ function grandPlotter(pageIDin, pageTitlein) {
             .text("Editors")
             .attr("x", function(d) {
                 var length = numberWithSpaces(totalEditors).length
-                console.log(width - (24 * length) - 45)
+                    //console.log(width - (24 * length) - 45)
                 return width - (24 * length) - 45 + 5
             })
             .attr("y", 25)
@@ -5536,9 +5918,9 @@ function grandPlotter(pageIDin, pageTitlein) {
             .attr("y", 39)
             .attr("font-family", "Georgia")
             .attr("font-size", function(d) {
-                console.log(this.getBBox().width)
+                //console.log(this.getBBox().width)
 
-                console.log(pageTitle + picUrl)
+                //console.log(pageTitle + picUrl)
                 return "29px"
             })
             .attr("fill", "white")
@@ -5734,13 +6116,13 @@ function grandPlotter(pageIDin, pageTitlein) {
     }
 
     // This runs the pageEdit graph!
-    // pageEdits(linkInitialPageEdits)
+    pageEdits(linkInitialPageEdits)
 
     // This runs the wordCloud graph!ssss
-    wordCloud(linkInitialWordCloud)
+    // wordCloud(linkInitialWordCloud)
 
     // This gets the pageview stats from Stats.grok.se
-    pageViews(linkInitialPageViews)
+    // pageViews(linkInitialPageViews)
 
     // featuredArticle(linkInitialFeaturedArticle)
 
