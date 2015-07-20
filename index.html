@@ -152,13 +152,13 @@
                         <label class="input-labels-graph">ATTRIBUTION</label>
                         
                         <div class="btn-group" data-toggle="buttons">
-                            <label class="btn btn-primary active">
-                                <input type="radio" name="options" id="CCSA" autocomplete="off" checked>CC BY
+                            <label  id="CCSA" class="btn btn-primary active">
+                                <input type="radio" name="options" autocomplete="off" checked>CC BY
                             </label>
-                            <label class="btn btn-primary">
-                                <input type="radio" name="options" id="CCBYSA" autocomplete="off">CC BY SA
+                            <label  id="CCBYSA" class="btn btn-primary">
+                                <input type="radio" name="options" autocomplete="off">CC BY SA
                             </label>
-                            <label class="btn btn-primary">
+                            <label id="CCSANC" class="btn btn-primary">
                                 <input type="radio" name="options" id="CCSANC" autocomplete="off">CC SA NC
                             </label>
                         </div>
@@ -187,11 +187,18 @@
                 </div>
 
                 <div class="col-md-12">
+                    <h1 class="graphTitle" class="graphHeader"> Hourly Aggregated Edits 
+                    <a id="threePop" href="#" data-toggle="popover" title="Popover Header"><i class="fa fa-info-circle"></i></a></h1>
+                    <div id="threeControls"></div>
+                    <div class="graphPlace" id="three"></div>
+                </div>
+<!-- 
+                <div class="col-md-12">
                     <h1 class="graphTitle" class="graphHeader"> Hourly Aggregated Edits <button class="btn btn-default input-button pngExporter" id="threePngConvertor">Woohoo!</button></h1>
                     <p class="graphDescription">Since the day the article was created. </p>
                     <div class="graphPlace" id="three"></div>
                 </div>
-
+ -->
                 <h1 class="graphTitle" class="graphHeader"> Today's featured article</h1>
                 <!-- <p class="graphDescription">For the past 90 days (stat.grok.se)</p> -->
                 <div id="twelve"></div>

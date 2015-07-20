@@ -837,7 +837,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                             thereIs = width;
                             // pageEditsTester(finaljsonObject, "#four", "none", "", "", "hour", pageTitle, userInputImageURL, width, height, "cover")
 
-                            initializer(finaljsonObject, pageTitle, photoUrl, width, height)
+                            initializer(finaljsonObject, pageTitle, photoUrl, width, height, "CCBYSA")
 
                             // pageEditsTester(finaljsonObject, "#three", "none", "", "", "hour", pageTitle, photoUrl, width, height)
                             // pageEditsTester(finaljsonObject, "#two", "none", "", "", "day", pageTitle, photoUrl, width, height, "cover")
@@ -874,11 +874,11 @@ function grandPlotter(pageIDin, pageTitlein) {
         })
     }
 
-    function initializer(object, pageTitle, url, width, height) {
+    function initializer(object, pageTitle, url, width, height, atribution) {
 
-        pageEditsTester(object, "#three", "none", "", "", "hour", pageTitle, url, width, height,"stretch", "lineChart")
-        pageEditsTester(object, "#two", "none", "", "", "day", pageTitle, url, width, height,"stretch", "lineChart")
-        // pageEditsTester(objectTwo, "#one", "none", "", "", "week", pageTitle, url, width, height, "stretch", "lineChart")
+        pageEditsTester(object, "#three", "none", "", "", "hour", pageTitle, url, width, height,"stretch", "lineChart", atribution)
+        pageEditsTester(object, "#two", "none", "", "", "day", pageTitle, url, width, height,"stretch", "lineChart", atribution)
+        pageEditsTester(object, "#one", "none", "", "", "week", pageTitle, url, width, height, "stretch", "lineChart", atribution)
 
     }
 
@@ -1569,7 +1569,7 @@ function grandPlotter(pageIDin, pageTitlein) {
     }
 
 
-    function pageEditsTester(dataSource, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight, graphStyle, chartType, neverChange) {
+    function pageEditsTester(dataSource, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight, graphStyle, chartType, atribution) {
 
         var dataTemp = clone(dataSource)
 
@@ -2477,6 +2477,23 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr("height", 80);
         })
 
+        convertImgToBase64("assets/" + atribution + ".png", picHeight, picWidth, function(base64Img) {
+            imageBase64 = base64Img
+
+            // Adding Wikipedia Logo
+            d3.select(idname).select('.svgBase')
+                .append("svg:image")
+                .attr("xlink:href", imageBase64)
+                .attr("x", 100)
+                .attr("y", 65)
+                .attr("width", function(){
+                    if (atribution == "CCSA") {
+                        return 38.2417582418
+                    } else {return 57.6923076923}
+                })
+                .attr("height", 20);
+        })
+
         d3.select(idname).select('.svgBase')
             .append('text')
             .text("Page Edits")
@@ -2744,7 +2761,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             .attr('opacity', "1");
         }
 
-
         var rectangle = svgBase.append("rect")
             // .attr("x", d3.mouse(this)[0])
             // .attr("y", d3.mouse(this)[1])
@@ -2754,13 +2770,13 @@ function grandPlotter(pageIDin, pageTitlein) {
             .attr("height", 100)
             .call(drag);
 
-        var text = svgBase.append("rect")
-            .attr("id", "rect" + idname.slice(1))
-            .attr("width", 100)
-            .attr("fill", "black")
-            .attr("opacity", 0.7)
-            .attr("height", 100)
-            .call(drag);
+        // var text = svgBase.append("rect")
+        //     .attr("id", "rect" + idname.slice(1))
+        //     .attr("width", 100)
+        //     .attr("fill", "black")
+        //     .attr("opacity", 0.7)
+        //     .attr("height", 100)
+        //     .call(drag);
 
         svgBase.selectAll("circle.line")
             .data(data)
@@ -3101,6 +3117,29 @@ function grandPlotter(pageIDin, pageTitlein) {
                 })
         }
 
+        d3.select("#CCSA").on("click", function() {
+            timeLimit = picker.getDate()
+            console.log('asdasd')
+            timeLimitUpper = pickerTwo.getDate()
+            initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight, "CCSA")
+        })
+
+        d3.select("#CCBYSA").on("click", function() {
+            timeLimit = picker.getDate()
+                        console.log('asdasd')
+
+            timeLimitUpper = pickerTwo.getDate()
+            initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight, "CCBYSA")
+        })
+
+        d3.select("#CCSANC").on("click", function() {
+            timeLimit = picker.getDate()
+                        console.log('asdasd')
+
+            timeLimitUpper = pickerTwo.getDate()
+            initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight, "CCSANC")
+        })
+
         d3.select(idname)
             .selectAll("path.domain")
             .remove()
@@ -3185,7 +3224,7 @@ function grandPlotter(pageIDin, pageTitlein) {
         d3.select("#dateRefresher").on("click", function() {
             timeLimit = picker.getDate()
             timeLimitUpper = pickerTwo.getDate()
-            initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight)
+            initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight, "CCBYSA")
         })
 
     }
@@ -6119,18 +6158,18 @@ function grandPlotter(pageIDin, pageTitlein) {
     pageEdits(linkInitialPageEdits)
 
     // This runs the wordCloud graph!ssss
-    // wordCloud(linkInitialWordCloud)
+    wordCloud(linkInitialWordCloud)
 
     // This gets the pageview stats from Stats.grok.se
-    // pageViews(linkInitialPageViews)
+    pageViews(linkInitialPageViews)
 
-    // featuredArticle(linkInitialFeaturedArticle)
+    featuredArticle(linkInitialFeaturedArticle)
 
-    // editorOfTheWeek(linkInitialEditorOfTheWeek)
+    editorOfTheWeek(linkInitialEditorOfTheWeek)
 
-    // monthlyStats("#fourteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_new_editors_count.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
+    monthlyStats("#fourteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_new_editors_count.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
 
-    // monthlyStatsMobileDesktop("#fifteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests.csv", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests_mobile.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
+    monthlyStatsMobileDesktop("#fifteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests.csv", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests_mobile.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
 
 
 }
