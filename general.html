@@ -27,12 +27,11 @@
     <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
     <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
 
-    <script src="js/script.js"></script>
+    <script src="js/generalJS.js"></script>
 
     <!-- 
-    <script src="test.js"></script>
-    <script src="js/scriptGrandPlotter.js"></script>
-    -->   
+    <script src="test.js"></script>s
+ -->
 </head>
 
 <body>
@@ -45,8 +44,8 @@
                 <p class="navbar-text">Wikipedia Visualizer</p>
             </div>
             <ul class="nav navbar-nav navbar-right">
-              <li><a class="navbar-text borderless" href="index.html"><span class="span-underline">Event</span></a></li>
-              <li><a class="navbar-text borderless" href="general.html">General</a></li>
+              <li><a class="navbar-text borderless" href="index.html">Event</a></li>
+              <li><a class="navbar-text borderless" href="general.html"><span class="span-underline">General</span></a></li>
               <li><a class="navbar-text borderless" href="compare.html">Compare</a></li>
             </ul>
         </div>
@@ -79,23 +78,23 @@
                     <button class="btn btn-default input-button button-half-one" id="dateRefresher" type="submit"><i style="margin-left: -6px;" class="fa fa-arrow-right"></i></button>
                 </div>
             </div>
-            <label class="input-labels">IMAGEURL</label>
+            <!-- <label class="input-labels">IMAGEURL</label>
             <div class="input-group col-md-12">
-                <!-- /btn-group -->
                 <div class="col-md-10 input-half-one">
                     <input type='text' class="form-control" id='imageURL' placeholder='Wikicommons URL' /></input>
                 </div>
-                <!-- 
+                
                 <div class="col-md-5 input-half-two">
                     <input type="text" class="datepicker form-control" placeholder='End Date' id="datepickerTwo">
-                </div> -->
+                </div>
                 <div class="col-md-2 input-half-two">
                     <button class="btn btn-default input-button button-half-one" id="imageRefresher" type="submit"><i style="  margin-left: -6px;" class="fa fa-arrow-right"></i></button>
                 </div>
-            </div>
+            </div> -->
+            <!-- 
             <label class="input-labels">POPULAR ARTICLES (EDITS)</label>
             <button class="btn btn-default input-button button-half-one" onclick="weeklyPedia('Most Edits')" type="submit">All Articles</button>
-            <button class="btn btn-default input-button button-half-two" onclick="weeklyPedia('Most New Edits')" type="submit">New Articles</button>
+            <button class="btn btn-default input-button button-half-two" onclick="weeklyPedia('Most New Edits')" type="submit">New Articles</button> -->
             <!-- 
             <label class="input-labels">POPULAR ARTICLES (PAGEVIEWS)</label>
             <button class="btn btn-default col-md-12 input-button" type="submit">Most Popular Articles &nbsp; ( Weekly )</button>
@@ -148,10 +147,9 @@
         </div>
         <div class="col-md-9">
 
-
             <div class="graphs">
 
-                <div class="col-md-12">
+                <!-- <div class="col-md-12">
                     <h1 class="graphSectionHeader"> Line Charts</h1>
                     <div class="graphsControls">
                         <label class="input-labels-graph">ATTRIBUTION</label>
@@ -177,6 +175,8 @@
 
 
 
+
+
                 <div class="col-md-12">
                     <h1 class="graphTitle" class="graphHeader"> Weekly Aggregated Edits 
                     <a id="onePop" href="#" data-toggle="popover"><i class="fa fa-info-circle"></i></a></h1>
@@ -196,7 +196,7 @@
                     <a id="threePop" href="#" data-toggle="popover" title="Popover Header"><i class="fa fa-info-circle"></i></a></h1>
                     <div id="threeControls"></div>
                     <div class="graphPlace" id="three"></div>
-                </div>
+                </div> -->
                 <!-- 
                 <div class="col-md-12">
                     <h1 class="graphTitle" class="graphHeader"> Hourly Aggregated Edits <button class="btn btn-default input-button pngExporter" id="threePngConvertor">Woohoo!</button></h1>
@@ -206,11 +206,13 @@
                 -->
 
                 <div class="col-md-12">
-                    <h1 class="graphTitle" class="graphHeader"> WordCloud
+                    <h1 class="graphTitle" class="graphHeader"> Editors of the Week (Past Month)
                     <a id="fourPop" href="#" data-toggle="popover" title="Popover Header"><i class="fa fa-info-circle"></i></a></h1>
                     <div id="fourControls"></div>
                     <div class="graphPlace" id="four"></div>
                 </div>
+
+                
 
 
                 <h1 class="graphTitle" class="graphHeader"> Today's featured article</h1>

@@ -13,11 +13,18 @@
     padding-right: 15px;
     padding-left: 15px;
 }
-
+.span-underline {
+    border-bottom: black 1px solid;
+    padding-bottom: 5px;
+}
 .navbar-brand img {
     width: 40px;
 }
-
+.scrollable-menu {
+    height: auto;
+    max-height: 180px;
+    overflow-x: hidden;
+}
 .navbar-text {
     font-size: 24px;
     line-height: 40px;
@@ -25,7 +32,9 @@
     border-left: rgb(199, 199, 199) 1px solid;
     padding-left: 38px;
 }
-
+.borderless {
+    border-left: rgb(199, 199, 199) 0px solid;
+}
 .navbar-header.offshift {
     margin-left: -50px;
 }
@@ -437,7 +446,4 @@ input[type=range]:focus::-webkit-slider-runnable-track {
     margin-right: 40px;
     height: 89px;
     width: 200px;
-}
-
-
 }

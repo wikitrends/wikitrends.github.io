@@ -28,30 +28,17 @@ $(document).ready(function() {
     var currFFZoom = 1;
     var currIEZoom = 100;
 
-    // $('#plusBtn').on('click',function(){
-    //     // if ($.browser.mozilla){
-    //     //     var step = 0.02;
-    //     //     currFFZoom += step; 
-    //     //     $('body').css('MozTransform','scale(' + currFFZoom + ')');
-    //     // } else {
-    //         var step = 2;
-    //         currIEZoom += step;
-    //         $('body').css('zoom', ' ' + currIEZoom + '%');
-    //     // }
-    // });
-
-    // $('#minusBtn').on('click',function(){
-    // if ($.browser.mozilla){
-    //     var step = 0.02;
-    //     currFFZoom -= step;                 
-    //     $('body').css('MozTransform','scale(' + currFFZoom + ')');
-
-    // } else {
     var step = 10;
     currIEZoom -= step;
     $('body').css('zoom', ' ' + currIEZoom + '%');
-    // }
-    // });
+
+    $(".lang-selector li a").click(function(){
+        console.log('asd')
+        $(this).parents(".input-group-btn").find('.btn').html($(this).text() + "<span class='caret'></span>");
+        $(this).parents(".input-group-btn").find('.btn').val($(this).text() + "<span class='caret'></span>");
+    });
+
+
     $('input[name=searchQuery][type=text]').bind('change paste keyup', function() {
         var query = $('input[name=searchQuery]').val();
         if (query.length >= 3) search(query);
@@ -142,8 +129,6 @@ var updateDisplay = function(queryResult) {
     $('#results_pane').find('.searchResults').html('');
 
     for (var pId in pages) {
-        // I pray for forgiveness.
-        // Todo: look for lightweight template libraries
         var htmlToAdd = "<div class='result_card'>";
         // htmlToAdd += "<a target='_' "  href='https://en.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
 
@@ -220,17 +205,17 @@ function precurssor(input, globalia, pageTitle) {
 /* WeeklyPedia functionality starts here */
 // Automatic Most Editted and most recently editted pages are fetched and displayed. 
 function weeklyPedia(parameter) {
+    var lastFriday = moment().startOf('week').subtract(2, 'days')
+    lastFriday = JSON.stringify(lastFriday).slice(1,11).replace(/-/g, "")
+
+
+    var textCheck = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
+
+    console.log(textCheck.replace("<span class='caret'></span>", "").toLowerCase());
+
     if (parameter == 'Most Edits') {
 
-        //// Need to improve this. The previous friday date is hardcoded in here. Need to make it automatic using the current date.
-
-        //         //moment().day(-2) always returns previous Friday!
-        //         var previousFriday = moment().day(-2);
-        //       // console.log(previousFriday)
-        //         // Messy hack: will work only for California!     
-        //         previousFriday = moment().add(7, "hours");
-
-        var url = "http://weekly.hatnote.com/archive/en/" + 20150710 + "/weeklypedia_" + 20150710 + ".json"
+        var url = "http://weekly.hatnote.com/archive/en/" + lastFriday + "/weeklypedia_" + lastFriday + ".json"
 
         getWeeklyPedia(url, function(data) {
             var useFulData = data.query.results.json.mainspace
@@ -261,14 +246,10 @@ function weeklyPedia(parameter) {
         })
     } else {
 
-        //// Need to improve this. The previous friday date is hardcoded in here. Need to make it automatic using the current date.
-
-        var url = "http://weekly.hatnote.com/archive/en/" + 20150710 + "/weeklypedia_" + 20150710 + ".json"
+        var url = "http://weekly.hatnote.com/archive/en/" + lastFriday + "/weeklypedia_" + lastFriday + ".json"
         getWeeklyPedia(url, function(data) {
             if (data.query.results) {
                 var useFulData = data.query.results.json.new_articles
-
-                // console.log(useFulData)
 
                 for (i = 0; i < useFulData.length; i++) {
 
@@ -374,9 +355,6 @@ var thereIs;
 
 function grandPlotter(pageIDin, pageTitlein) {
 
-    // console.log(pageTitlein)
-
-    //// Adding the upperBound for the timeLimit. Also, consider that the last week / last days edits are always less than the previous ones, since the day is just half completed. 
     var timeLimit = picker.getDate()
     var timeLimitUpper = pickerTwo.getDate()
 
@@ -6621,21 +6599,21 @@ function grandPlotter(pageIDin, pageTitlein) {
     }
 
     // This runs the pageEdit graph!
-    pageEdits(linkInitialPageEdits)
+    // pageEdits(linkInitialPageEdits)
 
     // This runs the wordCloud graph!ssss
-    wordCloud(linkInitialWordCloud)
+    // wordCloud(linkInitialWordCloud)
 
     // This gets the pageview stats from Stats.grok.se
     // pageViews(linkInitialPageViews)
 
-    // featuredArticle(linkInitialFeaturedArticle)
+    featuredArticle(linkInitialFeaturedArticle)
 
-    // editorOfTheWeek(linkInitialEditorOfTheWeek)
+    editorOfTheWeek(linkInitialEditorOfTheWeek)
 
-    // monthlyStats("#fourteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_new_editors_count.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
+    monthlyStats("#fourteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_new_editors_count.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
 
-    // monthlyStatsMobileDesktop("#fifteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests.csv", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests_mobile.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
+    monthlyStatsMobileDesktop("#fifteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests.csv", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests_mobile.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
 
 
 }
