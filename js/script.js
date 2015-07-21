@@ -349,12 +349,12 @@ function searchArray(nameKey, myArray) {
     }
 }
 
-function clone(obj){
-    if(obj == null || typeof(obj) != 'object')
+function clone(obj) {
+    if (obj == null || typeof(obj) != 'object')
         return obj;
 
-    var temp = new obj.constructor(); 
-    for(var key in obj)
+    var temp = new obj.constructor();
+    for (var key in obj)
         temp[key] = clone(obj[key]);
 
     return temp;
@@ -876,8 +876,8 @@ function grandPlotter(pageIDin, pageTitlein) {
 
     function initializer(object, pageTitle, url, width, height, atribution) {
 
-        pageEditsTester(object, "#three", "none", "", "", "hour", pageTitle, url, width, height,"stretch", "lineChart", atribution)
-        pageEditsTester(object, "#two", "none", "", "", "day", pageTitle, url, width, height,"stretch", "lineChart", atribution)
+        pageEditsTester(object, "#three", "none", "", "", "hour", pageTitle, url, width, height, "stretch", "lineChart", atribution)
+        pageEditsTester(object, "#two", "none", "", "", "day", pageTitle, url, width, height, "stretch", "lineChart", atribution)
         pageEditsTester(object, "#one", "none", "", "", "week", pageTitle, url, width, height, "stretch", "lineChart", atribution)
 
     }
@@ -957,16 +957,17 @@ function grandPlotter(pageIDin, pageTitlein) {
                         photoUrl,
                         function(width, height) {
                             thereIs = width;
-                            pageEditsTester(fullOnData, "#five", "none", "", "", "hour", pageTitle, photoUrl, width, height, "cover")
+                            // pageEditsTester(fullOnData, "#five", "none", "", "", "hour", pageTitle, photoUrl, width, height, "cover")
 
-                            pageEditsTester(fullOnData, "#four", "none", "", "", "day", pageTitle, photoUrl, width, height, "cover")
+                            // pageEditsTester(fullOnData, "#four", "none", "", "", "day", pageTitle, photoUrl, width, height, "cover")
 
-                            pageEditsTester(fullOnData, "#two", "none", "", "", "day", pageTitle, photoUrl, width, height)
-                            pageEditsTester(fullOnData, "#three", "none", "", "", "hour", pageTitle, photoUrl, width, height)
-                            pageEditsTester(fullOnData, "#one", "none", "", "", "week", pageTitle, photoUrl, width, height)
+                            // pageEditsTester(fullOnData, "#two", "none", "", "", "day", pageTitle, photoUrl, width, height)
+                            // pageEditsTester(fullOnData, "#three", "none", "", "", "hour", pageTitle, photoUrl, width, height)
+                            // pageEditsTester(fullOnData, "#one", "none", "", "", "week", pageTitle, photoUrl, width, height)
 
-                            // runNow("wordCloud", pageTitle, photoUrl, width, height, "", langLinksJsonObject)
-                            // runNow("pieChart", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject)
+                            runNow(fullOnData, "wordCloud", pageTitle, photoUrl, width, height, "", langLinksJsonObject, 90, "CCBYSA")
+                                // runNow("pieChart", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject, 90, "CCBYSA")
+                                // function runNow(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount, atribution) {
 
                         }
                     );
@@ -976,7 +977,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 // This part runs when there is no image for that article
                 else {
 
-                    pageEditsTester(fullOnData, "#two", "none", "", "", "day", pageTitle, "assets/defaultImage.jpg", 1000, 500)
+                    // pageEditsTester(fullOnData, "#two", "none", "", "", "day", pageTitle, "assets/defaultImage.jpg", 1000, 500)
 
                     runNow("wordCloud", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject)
                     runNow("pieChart", pageTitle, "assets/defaultImage.jpg", 1000, 500, "", langLinksJsonObject)
@@ -1069,20 +1070,15 @@ function grandPlotter(pageIDin, pageTitlein) {
         })
     }
 
-    function runNow(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount) {
+    function runNow(fullData, origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount, atribution) {
 
-        function wordCloudLangLinks(dataSourceLangLinks, idname, wordText, fontSizeLowerBound, fontSizeUpperBound) {
+        var totalEditsAllLanguages = fullData.length
+
+
+        function wordCloudLangLinks(totalEdits, dataSourceLangLinks, idname, wordText, fontSizeLowerBound, fontSizeUpperBound, atribution, padding) {
 
             $('#loader').html('');
             $(idname).html('');
-
-            var sizeScale = d3.scale.linear()
-                .domain([0, d3.max(dataSourceLangLinks, function(d) {
-                    return d.totalEdits
-                })])
-                .range(
-                    [fontSizeLowerBound, fontSizeUpperBound]
-                ); // 95 because 100 was causing stuff to be missing
 
             var fullBleedWidth = 1008;
             var fullBleedHeight = 572;
@@ -1101,8 +1097,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr("height", height + margin.top + margin.bottom)
                 .append("g")
                 .attr('class', 'svgBase')
-
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
             var svgFull = svgBase.append("g")
                 .attr('class', 'svgFull')
@@ -1116,156 +1111,636 @@ function grandPlotter(pageIDin, pageTitlein) {
             //     //.domain([1000, 700, 300, 100, 0])
             //     //.range(["#eee", "#e6e6e6", "#ddd", "#d6d6d6", "#ccc"]);
 
-            var imgs = svgFull.selectAll("image").data([0]);
-            imgs.enter()
-                .append("svg:image")
-                .attr('class', "images")
-                .attr("xlink:href", function(d) {
-                    if (picUrl == undefined) {
-                        picUrl = "assets/defaultImage.jpg"
-                        return "assets/defaultImage.jpg"
-                    } else {
-                        return picUrl
-                    }
-                })
-                .attr("x", function(d) {
-                    if (picUrl != "assets/defaultImage.jpg") {
-                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                            return (((0.5) * (fullBleedHeight / picHeight) * picWidth) - (fullBleedWidth / 2))
+            convertImgToBase64(picUrl, picHeight, picWidth, function(base64Img) {
+
+                imageBase64 = base64Img
+
+                // fullBleedHeight = 100;
+
+                // Image Bleed Stuff
+                var imgs = svgFull.selectAll("image").data([0]);
+                imgs.enter()
+                    .append("svg:image")
+                    .attr('class', "images")
+                    .attr('id', "image" + idname.slice(1))
+                    .attr("xlink:href", function(d) {
+                        // if (picUrl == undefined) {
+                        //     picUrl = "assets/defaultImage.jpg"
+                        //     return "assets/defaultImage.jpg"
+                        // } else {
+                        // console.log(imageBase64)
+                        return imageBase64
+                            // }
+                    })
+                    .attr("x", function(d) {
+                        // console.log(picHeight)
+                        // console.log(picWidth)
+                        if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                            if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                                return (((0.5) * (fullBleedHeight / picHeight) * picWidth) - (fullBleedWidth / 2))
+                            } else {
+                                return 0
+                            }
                         } else {
                             return 0
                         }
-                    } else {
-                        return 0
-                    }
-                })
-                .attr("y", function(d) {
-                    if (picUrl != "assets/defaultImage.jpg") {
-                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                            return 0
+                    })
+                    .attr("y", function(d) {
+                        if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                            if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                                return 0
+                            } else {
+                                return (((-0.5) * (fullBleedWidth / picWidth) * picHeight) + (fullBleedHeight / 2))
+                            }
                         } else {
-                            return (((-0.5) * (fullBleedWidth / picWidth) * picHeight) + (fullBleedHeight / 2))
+                            return 0
                         }
-                    } else {
-                        return 0
-                    }
-                })
-                .attr("width", function(d) {
-                    if (picUrl != "assets/defaultImage.jpg") {
-                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                            return (fullBleedHeight / picHeight) * picWidth
+                    })
+                    .attr("width", function(d) {
+                        if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                            if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                                return (fullBleedHeight / picHeight) * picWidth
+                            } else {
+                                return fullBleedWidth
+                            }
                         } else {
                             return fullBleedWidth
                         }
-                    } else {
-                        return fullBleedWidth
-                    }
-                })
-                .attr("height", function(d) {
-                    if (picUrl != "assets/defaultImage.jpg") {
-                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                            return fullBleedHeight
+                    })
+                    .attr("height", function(d) {
+                        if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                            if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                                return fullBleedHeight
+                            } else {
+                                return (fullBleedWidth / picWidth) * picHeight
+                            }
                         } else {
-                            return (fullBleedWidth / picWidth) * picHeight
+                            return fullBleedHeight
                         }
-                    } else {
-                        return fullBleedHeight
-                    }
-                });
+                    });
 
-            // Adding Wikipedia Logo
+                if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+
+                    var opacityRect = svgFull.append("rect")
+                        .attr("id", "rect" + idname.slice(1))
+                        .attr("width", width + margin.right + margin.left)
+                        .attr("fill", "black")
+                        .attr("opacity", 0.7)
+                        .attr("height", height + margin.top + margin.bottom);
+
+                    // if (graphStyle == "cover") {
+
+                    // var opacityRect = svgFull.append("rect")
+                    //     .attr("id", "rectCover" + idname.slice(1))
+                    //     .attr("width", width + margin.right + margin.left)
+                    //     .attr("fill", "#f9f9f9")
+                    //     .attr("opacity", 0)
+                    //     .attr("y", 155)
+                    //     .attr("height", height + margin.top + margin.bottom - 155);
+                    // }
+
+                }
+            });
+
+            convertImgToBase64("assets/wikipediaW.png", picHeight, picWidth, function(base64Img) {
+                imageBase64 = base64Img
+
+                // Adding Wikipedia Logo
+                d3.select(idname).select('.svgBase')
+                    .append("svg:image")
+                    .attr("xlink:href", imageBase64)
+                    .attr("x", 0)
+                    .attr("y", 15)
+                    .attr("width", 80)
+                    .attr("height", 80);
+            })
+
+            convertImgToBase64("assets/" + atribution + ".png", picHeight, picWidth, function(base64Img) {
+                imageBase64 = base64Img
+
+                // Adding Wikipedia Logo
+                d3.select(idname).select('.svgBase')
+                    .append("svg:image")
+                    .attr("xlink:href", imageBase64)
+                    .attr("x", 100)
+                    .attr("y", 65)
+                    .attr("width", function() {
+                        if (atribution == "CCSA") {
+                            return 38.2417582418
+                        } else {
+                            return 57.6923076923
+                        }
+                    })
+                    .attr("height", 20);
+            })
+
+            var totalEditors = dataSourceLangLinks.length
+
             d3.select(idname).select('.svgBase')
-                .append("svg:image")
-                .attr("xlink:href", "assets/wikipediaW.png")
-                .attr("x", 0)
-                .attr("y", 0)
-                .attr("width", 70)
-                .attr("height", 70);
+                .append('text')
+                .text("Editors")
+                .attr("x", function(d) {
+                    var length = numberWithSpaces(totalEditors).length
+                    return width - (24 * length) - 45 + 5
+                })
+                .attr("y", 40)
+                .attr("font-family", "Helvetica Neue")
+                .attr("font-size", function(d) {
+                    return "12.33px"
+                })
+                .attr("font-weight", "500")
+                .attr("fill", "#DCDCDC")
+                .attr('opacity', "1");
+
+            d3.select(idname).select('.svgBase')
+                .append('text')
+                .text(numberWithSpaces(totalEditors))
+                .attr("x", function(d) {
+                    var length = numberWithSpaces(totalEditors).length
+                    return width - (24 * length) - 45
+                })
+                .attr("y", 90)
+                .attr("font-family", "Open Sans")
+                .attr("font-weight", 700)
+                .attr("font-size", function(d) {
+                    return "46px"
+                })
+                .attr("fill", "white")
+                .attr('opacity', "1");
+
+
+                d3.select(idname).select('.svgBase')
+                    .append('text')
+                    .text("Page Edits")
+                    .attr("x", function(d) {
+                        var length = numberWithSpaces(totalEditors).length
+                        var lengthTwo = numberWithSpaces(totalEdits).length
+                        return width - (24 * length) - 90 - (24 * lengthTwo) + 5
+                    })
+                    .attr("y", 40)
+                    .attr("font-family", "Helvetica Neue")
+                    .attr("font-size", function(d) {
+                        return "12.33px"
+                    })
+                    .attr("font-weight", "500")
+                    .attr("fill", "#DCDCDC")
+                    .attr('opacity', "1");
+
+                d3.select(idname).select('.svgBase')
+                    .append('text')
+                    .text(numberWithSpaces(totalEdits))
+                    .attr("x", function(d) {
+                        var length = numberWithSpaces(totalEditors).length
+                        var lengthTwo = numberWithSpaces(totalEdits).length
+                        return width - (24 * length) - 90 - (24 * lengthTwo)
+                    })
+                    .attr("y", 90)
+                    .attr("font-family", "Open Sans")
+                    .attr("font-weight", 700)
+                    .attr("font-size", function(d) {
+                        return "46px"
+                    })
+                    .attr("fill", "white")
+                    .attr('opacity', "1");
+
 
             d3.select(idname).select('.svgBase')
                 .append('text')
                 .text(pageTitle)
+                // .attr("text-anchor", "end")
                 .attr("x", 100)
-                .attr("y", 45)
+                .attr("y", 54)
                 .attr("font-family", "Georgia")
                 .attr("font-size", function(d) {
-                    return "32px"
+                    //console.log(pageTitle + picUrl)
+                    return "29px"
                 })
                 .attr("fill", "white")
-                .attr('opacity', "0.8");
-
-            if (picUrl != "assets/defaultImage.jpg") {
-
-                var opacityRect = svgFull.append("rect")
-                    .attr("width", width + margin.right + margin.left)
-                    .attr("fill", "black")
-                    .attr("opacity", 0.7)
-                    .attr("z-index", 0)
-                    .attr("height", height + margin.top + margin.bottom);
-
-            }
+                .attr('opacity', "1");
 
             //console.log(JSON.stringify(dataSourceLangLinks))
 
-            var layout = d3.layout.cloud().size([930, 420])
-                .words(dataSourceLangLinks)
-                .padding(10)
-                .rotate(0)
-                .text(function(d) {
-                    if (wordText == "autonym") {
-                        return d.autonym;
-                    } else {
-                        return d.articleTitle;
+            var controlsInsertor = d3.select("#" + idname.slice(1) + "Controls")
+
+            controlsInsertor
+                .each(function(d) {
+                    d3.select(this).append("div")
+                        .attr("class", "sliderSections")
+                        .each(function(d) {
+                            d3.select(this).append("label")
+                                .attr("class", "input-labels-graph")
+                                .text('CHART TYPE')
+                            d3.select(this).append("div")
+                                .attr("class", "btn-group")
+                                .attr("data-toggle", "buttons")
+                                .html(function(d) {
+                                    return "<label id='lineChart" + idname.slice(1) + "'class='btn btn-primary active'><input type='radio' name='options' autocomplete='off' checked=''>Line Chart</label><label  id='barChart" + idname.slice(1) + "' class='btn btn-primary'><input type='radio' name='options' autocomplete='off' checked=''>Bar Chart</label>"
+                                })
+                        });
+
+                    d3.select(this).append("div")
+                        .attr("class", "sliderSections")
+                        .each(function(d) {
+                            d3.select(this).append("label")
+                                .attr("class", "input-labels-graph")
+                                .text('CHART TYPE')
+                            d3.select(this).append("div")
+                                .attr("class", "btn-group")
+                                .attr("data-toggle", "buttons")
+                                .html(function(d) {
+                                    return "<label class='btn btn-primary active'  id='cover" + idname.slice(1) + "' ><input type='radio' name='options' autocomplete='off' checked=''>Cover</label><label class='btn btn-primary' id='stretch" + idname.slice(1) + "'><input type='radio' name='options' autocomplete='off' checked=''>Stretch</label>"
+                                })
+                        });
+
+                    d3.select(this).append("div")
+                        .attr("class", "sliderSections")
+                        .each(function(d) {
+                            d3.select(this).append("label")
+                                .attr("class", "input-labels-graph")
+                                .text('REFRESH')
+                            d3.select(this).append("div")
+                                .attr("class", "btn-group")
+                                .attr("data-toggle", "buttons")
+                                .html(function(d) {
+                                    return "<button class='btn btn-default input-button refresher' id='" + idname.slice(1) + "refresher'>Woohoo!</button>"
+                                })
+
+                        });
+
+                    d3.select(this).append("div")
+                        .attr("class", "sliderSections")
+                        .each(function(d) {
+                            d3.select(this).append("label")
+                                .attr("class", "input-labels-graph")
+                                .text('OPACITY')
+                            d3.select(this).append("input")
+                                .attr("type", "range")
+                                .attr("min", 20)
+                                .attr("max", 100)
+                                .style("width", "180px")
+                                .attr("id", "opacitySlider" + idname.slice(1))
+                        });
+
+                    d3.select(this).append("div")
+                        .attr("class", "sliderSections")
+                        .each(function(d) {
+                            d3.select(this).append("label")
+                                .attr("class", "input-labels-graph")
+                                .text('DIMENSIONS')
+                                .each(function(d){
+                                    d3.select(this).append("input")
+                                        .attr("type", "range")
+                                        .attr("min", 5)
+                                        .attr("max", 30)
+                                        .style("width", "180px")
+                                        .attr("id", "rangeOne" + idname.slice(1))
+                                    d3.select(this).append("input")
+                                        .attr("type", "range")
+                                        .attr("min", 50)
+                                        .attr("max", 150)
+                                        .style("width", "180px")
+                                        .attr("id", "rangeTwo" + idname.slice(1))
+                                })
+                        });
+
+                    d3.select(this).append("div")
+                        .attr("class", "sliderSections")
+                        .each(function(d) {
+                            d3.select(this).append("label")
+                                .attr("class", "input-labels-graph")
+                                .text('META DIMENSIONSs')
+                                .each(function(d){
+                                    d3.select(this).append("input")
+                                        .attr("type", "range")
+                                        .attr("min", 200)
+                                        .attr("max", 400)
+                                        .style("width", "180px")
+                                        .attr("id", "translateX" + idname.slice(1))
+                                    d3.select(this).append("input")
+                                        .attr("type", "range")
+                                        .attr("min", 200)
+                                        .attr("max", 400)
+                                        .style("width", "180px")
+                                        .attr("id", "translateY" + idname.slice(1))
+                                })
+                        });
+
+                    d3.select(this).append("div")
+                        .attr("class", "sliderSections")
+                        .each(function(d) {
+                            d3.select(this).append("label")
+                                .attr("class", "input-labels-graph")
+                                .text('WIDTH')
+                            d3.select(this).append("input")
+                                .attr("type", "range")
+                                .attr("min", -picWidth)
+                                .attr("max", picWidth)
+                                .style("width", "180px")
+                                .attr("id", "imageWidthSlider" + idname.slice(1))
+                        });
+
+                    d3.select(this).append("div")
+                        .attr("class", "sliderSections")
+                        .each(function(d) {
+                            d3.select(this).append("label")
+                                .attr("class", "input-labels-graph")
+                                .text('HEIGHT')
+                            d3.select(this).append("input")
+                                .attr("type", "range")
+                                .attr("min", -picHeight)
+                                .attr("max", picHeight)
+                                .style("width", "180px")
+                                .attr("id", "imageHeightSlider" + idname.slice(1))
+                        });
+                })
+
+            var padding = 10;
+            var gWidthValue = 1200;
+            var gHeightValue = 700; 
+            var translateXValue = 300;
+            var translateYValue = 300;
+            var rangeOneValue = 15;
+            var rangeTwoValue = 90;
+
+            d3.select("#" + "opacitySlider" + idname.slice(1)).on("input", function() {
+                padding = +this.value
+                cloudUpdate()
+                // updateOpacity(+this.value);
+            });
+
+            d3.select("#" + "imageHeightSlider" + idname.slice(1)).on("input", function() {
+                updateImageHeight(+this.value);
+            });
+
+            d3.select("#" + "rangeOne" + idname.slice(1)).on("input", function() {
+                rangeOneValue = +this.value
+                cloudUpdate()
+                // gHeight(+this.value);
+            });
+
+            d3.select("#" + "rangeTwo" + idname.slice(1)).on("input", function() {
+                rangeTwoValue = +this.value;
+                cloudUpdate()
+                
+            });
+
+            d3.select("#" + "translateX" + idname.slice(1)).on("input", function() {
+                translateXValue = +this.value;
+                cloudUpdate()
+            });
+
+
+            d3.select("#" + "translateY" + idname.slice(1)).on("input", function() {
+                translateYValue = +this.value;
+                cloudUpdate()
+            });
+
+
+            d3.select("#" + "imageWidthSlider" + idname.slice(1)).on("input", function() {
+                updateImageWidth(+this.value);
+            });
+
+            d3.select("#lineChart" + idname.slice(1)).on("click", function() {
+
+                svgBase.selectAll(".bar")
+                    .remove()
+
+                svgBase.append("path")
+                    .datum(finale)
+                    .attr("class", "upperline")
+                    .attr("d", upperline)
+                    .attr("fill", "none")
+                    .attr("stroke", function() {
+                        if (graphStyle == "cover") {
+                            return "#e74c3c"
+                        } else {
+                            return "rgb(94, 255, 176)"
+                        }
+                    })
+                    .attr("stroke-width", "3px")
+                    .append('text')
+                    .text("Page Edits")
+                    .attr("x", function(d) {
+                        var length = numberWithSpaces(totalEditors).length
+                        var lengthTwo = numberWithSpaces(totalEdits).length
+                        return width - (24 * length) - 90 - (24 * lengthTwo) + 5
+                    })
+                    .attr("y", 40)
+                    .attr("font-family", "Helvetica Neue")
+                    .attr("font-size", function(d) {
+                        return "12.33px"
+                    })
+                    .attr("font-weight", "500")
+                    .attr("fill", "#DCDCDC")
+                    .attr('opacity', "1");
+            });
+
+            d3.select("#barChart" + idname.slice(1)).on("click", function() {
+            });
+
+            d3.select("#stretch" + idname.slice(1)).on("click", function() {
+                // d3.select("#wordCloudContainer").remove()
+                // refresher(10, 25, 95)
+                // wordCloudLangLinks(langLinksJsonObject, "#four", "autonym", 25, 75, 1000)
+            });
+
+            d3.select("#cover" + idname.slice(1)).on("click", function() {
+
+                svgBase.selectAll('.axis line, .axis path')
+                    .style({
+                        'stroke': '#E3E3E3',
+                        'fill': 'none',
+                        'stroke-width': '0.8px',
+                        "opacity": "0.5"
+                    });
+
+                svgBase.select("#rectCover" + idname.slice(1))
+                    .style({
+                        "opacity": "1"
+                    });
+            });
+
+            function cloudUpdate() {
+                d3.select("#wordCloudContainer").remove()
+                console.log(rangeOneValue)
+
+                refresher(padding*0.1, rangeOneValue, rangeTwoValue, translateXValue, translateYValue, gWidthValue, gHeightValue)
+            }
+
+            // function gHeight(ina) {
+            //     d3.select("#wordCloudContainer").remove()
+            //     console.log(padding)
+            //     refresher(padding*0.01, 15, 95, 300, ina)
+            // } 
+
+            // function gHeight(ina) {
+            //     d3.select("#wordCloudContainer").remove()
+            //     console.log(padding)
+            //     refresher(padding*0.01, 15, 95, 300, ina)
+            // } 
+
+            // function updateOpacity(ina) {
+
+            //     d3.select("#wordCloudContainer").remove()
+            //     // console.log(ina)
+            //     refresher(ina*0.01, 15, 95, 300, 300)
+
+            //     // d3.select("#" + "rect" + idname.slice(1))
+            //     //     .data([0])
+            //     //     .style("opacity", function(d) {
+            //     //         // console.log(ina)
+            //     //         return ina * 0.01
+            //     //     })
+            // }
+
+            function updateImageHeight(ina) {
+                d3.select("#" + "image" + idname.slice(1))
+                    .data([0])
+                    .attr("y", function(d) {
+                        return ina
+                    })
+            }
+
+            function updateImageWidth(ina) {
+                d3.select("#" + "image" + idname.slice(1))
+                    .data([0])
+                    .attr("x", function(d) {
+                        return ina
+                    })
+            }
+
+            d3.select("#CCSA").on("click", function() {
+                timeLimit = picker.getDate()
+                console.log('asdasd')
+                timeLimitUpper = pickerTwo.getDate()
+                initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight, "CCSA")
+            })
+
+            d3.select("#CCBYSA").on("click", function() {
+                timeLimit = picker.getDate()
+                console.log('asdasd')
+
+                timeLimitUpper = pickerTwo.getDate()
+                initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight, "CCBYSA")
+            })
+
+            d3.select("#CCSANC").on("click", function() {
+                timeLimit = picker.getDate()
+                console.log('asdasd')
+
+                timeLimitUpper = pickerTwo.getDate()
+                initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight, "CCSANC")
+            })
+
+            d3.select("#imageRefresher").on("click", function() {
+
+                timeLimit = picker.getDate()
+                timeLimitUpper = pickerTwo.getDate()
+
+                var userInputImageURL = $('#imageURL').val()
+
+                getImageDimensions(
+                    userInputImageURL,
+                    function(width, height) {
+
+                        thereIs = width;
+
+                        initializer(dataTemp, pageTitle, userInputImageURL, width, height)
+
                     }
-                })
-                .fontSize(function(d) {
-                    return sizeScale(d.totalEdits)
-                })
-                .on("end", draw)
+                );
+            })
 
-            layout.start();
+            d3.select(idname + "refresher").on("click", function() {
+                d3.select("#wordCloudContainer").remove()
+                refresher(padding*0.1, rangeOneValue, rangeTwoValue, translateXValue, translateYValue, gWidthValue, gHeightValue)
+            });
 
-            //  console.log(dataSourceLangLinks)
+            refresher(10, 15, 95, 300, 300)
+            
+            function refresher(padding, rangeOne, rangeTwo, translateX, translateY, gWidth, gHeight) {
 
-            // langLinksJsonObject.push({
-            //             lang: parameterOne[parameterTwo].lang,
-            //             articleTitle: parameterOne[parameterTwo].articleTitle,
-            //             autonym: parameterOne[parameterTwo].autonym,
-            //             langname: parameterOne[parameterTwo].langname,
-            //             totalEdits: pageEditsTotal
-            //         })
+                var sizeScale = d3.scale.linear()
+                    .domain([0, d3.max(dataSourceLangLinks, function(d) {
+                        return d.totalEdits
+                    })])
+                    .range(
+                        [rangeOne, rangeTwo]
+                    ); // 95 because 100 was causing stuff to be missing
 
-            function draw(words) {
-                svgBase.append("g")
-                    .attr("transform", "translate(370,310)")
-                    .attr("width", 1200)
-                    .attr("height", 700)
-                    .attr("class", "wordcloud")
-                    .append("g")
-                    // without the transform, words words would get cutoff to the left and top, they would
-                    // appear outside of the SVG area
-                    // .attr("transform", "translate(320,200)")
-                    .selectAll("text")
-                    .data(words)
-                    .enter().append("text")
-                    .style("font-size", function(d) {
+                        
+                var layout = d3.layout.cloud().size([930, 420])
+                    .words(dataSourceLangLinks)
+                    .padding(padding)
+                    .rotate(0)
+                    // .text(function(d) {
+                    //     if (wordText == "autonym") {
+                    //         return d.autonym;
+                    //     } else {
+                    //         return d.articleTitle;
+                    //     }
+                    // })
+                    .fontSize(function(d) {
                         return sizeScale(d.totalEdits)
                     })
-                    .style("fill", function(d, i) {
-                        return "#eee";
-                    })
-                    .attr("transform", function(d) {
-                        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
-                    })
-                    .text(function(d) {
-                        //  console.log(d.articleTitle)
-                        if (wordText == "autonym") {
-                            return d.autonym;
-                        } else {
-                            return d.articleTitle;
-                        }
-                    });
+                    .on("end", draw)
+
+                layout.start();
+
+                function draw(words) {
+                    svgBase.append("g")
+                        .attr("id", "wordCloudContainer")
+                        // .attr("transform", "translate(310,320)")
+                        .attr("width", gWidth)
+                        .attr("height", gHeight)
+                        .attr("class", "wordcloud")
+                        .append("g")
+                        // without the transform, words words would get cutoff to the left and top, they would
+                        // appear outside of the SVG area
+                        .attr("transform", "translate(" + translateX + "," + translateY + ")")
+                        .attr("width", gWidth)
+                        .attr("height", gHeight)
+                        .selectAll("text")
+                        .data(words)
+                        .enter().append("text")
+                        .style("font-size", function(d) {
+                            return sizeScale(d.totalEdits)
+                        })
+                        .style("fill", function(d, i) {
+                            return "#eee";
+                        })
+                        .attr("transform", function(d) {
+                            return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
+                        })
+                        .text(function(d) {
+                            //  console.log(d.articleTitle)
+                            if (wordText == "autonym") {
+                                return d.autonym;
+                            } else {
+                                return d.articleTitle;
+                            }
+                        });
+                }
             }
+
+            function binaryblob() {
+                var byteString = atob(document.querySelector("canvas").toDataURL().replace(/^data:image\/(png|jpg);base64,/, "")); //wtf is atob?? https://developer.mozilla.org/en-US/docs/Web/API/Window.atob
+                var ab = new ArrayBuffer(byteString.length);
+                var ia = new Uint8Array(ab);
+                for (var i = 0; i < byteString.length; i++) {
+                    ia[i] = byteString.charCodeAt(i);
+                }
+                var dataView = new DataView(ab);
+                var blob = new Blob([dataView], {
+                    type: "image/png"
+                });
+                var DOMURL = self.URL || self.webkitURL || self;
+                var newurl = DOMURL.createObjectURL(blob);
+
+                var img = '<img src="' + newurl + '">';
+                d3.select("#img").html(img);
+            }
+
         }
 
         function langPieChartTest(dataSourceLangLinks, idname) {
@@ -1482,10 +1957,10 @@ function grandPlotter(pageIDin, pageTitlein) {
             pageEditsPlotter(dataSource, "#two", "none", "size", "size", "week")
 
         } else if (origin == "wordCloud") {
-            wordCloudLangLinks(langLinksJsonObject, "#three", "autonym", 25, 75)
-            wordCloudLangLinks(langLinksJsonObject, "#four", "articleTitle", 10, 50)
+            wordCloudLangLinks(totalEditsAllLanguages, langLinksJsonObject, "#four", "autonym", 25, 75, 10)
+                // wordCloudLangLinks(langLinksJsonObject, "#four", "articleTitle", 10, 50)
         } else if (origin == "pieChart") {
-            langPieChartTest(langLinksJsonObject, "#five")
+            // langPieChartTest(langLinksJsonObject, "#five")
         }
 
         // pageEditsPlotter(dataSource, "#three", "none", "size", "size", "hour")
@@ -1568,13 +2043,9 @@ function grandPlotter(pageIDin, pageTitlein) {
         })
     }
 
-
     function pageEditsTester(dataSource, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight, graphStyle, chartType, atribution) {
 
         var dataTemp = clone(dataSource)
-
-        // console.log(typeof dataTemp)
-
 
         d3.select(idname + "Controls").selectAll("*")
             .remove()
@@ -1587,8 +2058,6 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         var editors = []
         var editorsCount = 0;
-
-        var pristineData = dataTemp
 
         dataTemp.forEach(function(d, i) {
 
@@ -1603,7 +2072,7 @@ function grandPlotter(pageIDin, pageTitlein) {
             }
         })
 
-        var data = dataTemp
+        // var data = dataTemp
 
         dataTemp.forEach(function(d, i) {
 
@@ -2452,13 +2921,13 @@ function grandPlotter(pageIDin, pageTitlein) {
 
                 // if (graphStyle == "cover") {
 
-                    var opacityRect = svgFull.append("rect")
-                        .attr("id", "rectCover" + idname.slice(1))
-                        .attr("width", width + margin.right + margin.left)
-                        .attr("fill", "#f9f9f9")
-                        .attr("opacity", 0)
-                        .attr("y", 155)
-                        .attr("height", height + margin.top + margin.bottom - 155);
+                var opacityRect = svgFull.append("rect")
+                    .attr("id", "rectCover" + idname.slice(1))
+                    .attr("width", width + margin.right + margin.left)
+                    .attr("fill", "#f9f9f9")
+                    .attr("opacity", 0)
+                    .attr("y", 155)
+                    .attr("height", height + margin.top + margin.bottom - 155);
                 // }
 
             }
@@ -2486,10 +2955,12 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr("xlink:href", imageBase64)
                 .attr("x", 100)
                 .attr("y", 65)
-                .attr("width", function(){
+                .attr("width", function() {
                     if (atribution == "CCSA") {
                         return 38.2417582418
-                    } else {return 57.6923076923}
+                    } else {
+                        return 57.6923076923
+                    }
                 })
                 .attr("height", 20);
         })
@@ -2731,44 +3202,44 @@ function grandPlotter(pageIDin, pageTitlein) {
                     return "#2196F3"
                 })
         } else {
-        svgBase.append("path")
-            .datum(finale)
-            .attr("class", "upperline")
-            .attr("d", upperline)
-            .attr("fill", "none")
-            .attr("stroke", function() {
-                if (graphStyle == "cover") {
-                    return "#e74c3c"
-                } else {
-                    return "rgb(94, 255, 176)"
-                }
-            })
-            .attr("stroke-width", "3px")
-            .append('text')
-            .text("Page Edits")
-            .attr("x", function(d) {
-                var length = numberWithSpaces(totalEditors).length
-                var lengthTwo = numberWithSpaces(totalEdits).length
-                return width - (24 * length) - 90 - (24 * lengthTwo) + 5
-            })
-            .attr("y", 40)
-            .attr("font-family", "Helvetica Neue")
-            .attr("font-size", function(d) {
-                return "12.33px"
-            })
-            .attr("font-weight", "500")
-            .attr("fill", "#DCDCDC")
-            .attr('opacity', "1");
+            svgBase.append("path")
+                .datum(finale)
+                .attr("class", "upperline")
+                .attr("d", upperline)
+                .attr("fill", "none")
+                .attr("stroke", function() {
+                    if (graphStyle == "cover") {
+                        return "#e74c3c"
+                    } else {
+                        return "rgb(94, 255, 176)"
+                    }
+                })
+                .attr("stroke-width", "3px")
+                .append('text')
+                .text("Page Edits")
+                .attr("x", function(d) {
+                    var length = numberWithSpaces(totalEditors).length
+                    var lengthTwo = numberWithSpaces(totalEdits).length
+                    return width - (24 * length) - 90 - (24 * lengthTwo) + 5
+                })
+                .attr("y", 40)
+                .attr("font-family", "Helvetica Neue")
+                .attr("font-size", function(d) {
+                    return "12.33px"
+                })
+                .attr("font-weight", "500")
+                .attr("fill", "#DCDCDC")
+                .attr('opacity', "1");
         }
 
-        var rectangle = svgBase.append("rect")
-            // .attr("x", d3.mouse(this)[0])
-            // .attr("y", d3.mouse(this)[1])
-            .attr("width", 100)
-            .attr("fill", "black")
-            .attr("opacity", 0.7)
-            .attr("height", 100)
-            .call(drag);
+        // var rectangle = svgBase.append("rect")
+        //     // .attr("x", d3.mouse(this)[0])
+        //     // .attr("y", d3.mouse(this)[1])
+        //     .attr("width", 100)
+        //     .attr("fill", "black")
+        //     .attr("opacity", 0.7)
+        //     .attr("height", 100)
+        //     .call(drag);
 
         // var text = svgBase.append("rect")
         //     .attr("id", "rect" + idname.slice(1))
@@ -2910,9 +3381,6 @@ function grandPlotter(pageIDin, pageTitlein) {
         //     .style("width", "200px")
         //     .attr("id", "imageWidthSlider" + idname.slice(1))
 
-        console.log(idname + ' ' + chartType)
-        // console.log(finale)
-
         d3.select("#" + "opacitySlider" + idname.slice(1)).on("input", function() {
             updateOpacity(+this.value);
         });
@@ -2931,37 +3399,37 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .remove()
 
             svgBase.append("path")
-            .datum(finale)
-            .attr("class", "upperline")
-            .attr("d", upperline)
-            .attr("fill", "none")
-            .attr("stroke", function() {
-                if (graphStyle == "cover") {
-                    return "#e74c3c"
-                } else {
-                    return "rgb(94, 255, 176)"
-                }
-            })
-            .attr("stroke-width", "3px")
-            .append('text')
-            .text("Page Edits")
-            .attr("x", function(d) {
-                var length = numberWithSpaces(totalEditors).length
-                var lengthTwo = numberWithSpaces(totalEdits).length
-                return width - (24 * length) - 90 - (24 * lengthTwo) + 5
-            })
-            .attr("y", 40)
-            .attr("font-family", "Helvetica Neue")
-            .attr("font-size", function(d) {
-                return "12.33px"
-            })
-            .attr("font-weight", "500")
-            .attr("fill", "#DCDCDC")
-            .attr('opacity', "1");
+                .datum(finale)
+                .attr("class", "upperline")
+                .attr("d", upperline)
+                .attr("fill", "none")
+                .attr("stroke", function() {
+                    if (graphStyle == "cover") {
+                        return "#e74c3c"
+                    } else {
+                        return "rgb(94, 255, 176)"
+                    }
+                })
+                .attr("stroke-width", "3px")
+                .append('text')
+                .text("Page Edits")
+                .attr("x", function(d) {
+                    var length = numberWithSpaces(totalEditors).length
+                    var lengthTwo = numberWithSpaces(totalEdits).length
+                    return width - (24 * length) - 90 - (24 * lengthTwo) + 5
+                })
+                .attr("y", 40)
+                .attr("font-family", "Helvetica Neue")
+                .attr("font-size", function(d) {
+                    return "12.33px"
+                })
+                .attr("font-weight", "500")
+                .attr("fill", "#DCDCDC")
+                .attr('opacity', "1");
         });
 
         d3.select("#barChart" + idname.slice(1)).on("click", function() {
-            
+
             svgBase.selectAll(".upperline")
                 .remove()
 
@@ -3073,7 +3541,7 @@ function grandPlotter(pageIDin, pageTitlein) {
             svgBase.select("#rectCover" + idname.slice(1))
                 .style({
                     "opacity": "0"
-            });
+                });
         });
 
         d3.select("#cover" + idname.slice(1)).on("click", function() {
@@ -3126,7 +3594,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         d3.select("#CCBYSA").on("click", function() {
             timeLimit = picker.getDate()
-                        console.log('asdasd')
+            console.log('asdasd')
 
             timeLimitUpper = pickerTwo.getDate()
             initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight, "CCBYSA")
@@ -3134,7 +3602,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         d3.select("#CCSANC").on("click", function() {
             timeLimit = picker.getDate()
-                        console.log('asdasd')
+            console.log('asdasd')
 
             timeLimitUpper = pickerTwo.getDate()
             initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight, "CCSANC")
@@ -3226,9 +3694,7 @@ function grandPlotter(pageIDin, pageTitlein) {
             timeLimitUpper = pickerTwo.getDate()
             initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight, "CCBYSA")
         })
-
     }
-
 
     var EOWs;
     var reasonsEOWs;
@@ -6161,15 +6627,15 @@ function grandPlotter(pageIDin, pageTitlein) {
     wordCloud(linkInitialWordCloud)
 
     // This gets the pageview stats from Stats.grok.se
-    pageViews(linkInitialPageViews)
+    // pageViews(linkInitialPageViews)
 
-    featuredArticle(linkInitialFeaturedArticle)
+    // featuredArticle(linkInitialFeaturedArticle)
 
-    editorOfTheWeek(linkInitialEditorOfTheWeek)
+    // editorOfTheWeek(linkInitialEditorOfTheWeek)
 
-    monthlyStats("#fourteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_new_editors_count.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
+    // monthlyStats("#fourteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_new_editors_count.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
 
-    monthlyStatsMobileDesktop("#fifteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests.csv", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests_mobile.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
+    // monthlyStatsMobileDesktop("#fifteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests.csv", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests_mobile.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
 
 
 }

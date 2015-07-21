@@ -22,7 +22,6 @@
     <script src="js/d3-tip.js"></script>
     <script src="js/wordCloud.js"></script>
     <script src="js/pikaday.js"></script>
-    <script src="https://cdn.jsdelivr.net/lodash/2.4.1/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.min.js"></script>
     <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
@@ -192,13 +191,22 @@
                     <div id="threeControls"></div>
                     <div class="graphPlace" id="three"></div>
                 </div>
-<!-- 
+                <!-- 
                 <div class="col-md-12">
                     <h1 class="graphTitle" class="graphHeader"> Hourly Aggregated Edits <button class="btn btn-default input-button pngExporter" id="threePngConvertor">Woohoo!</button></h1>
                     <p class="graphDescription">Since the day the article was created. </p>
                     <div class="graphPlace" id="three"></div>
                 </div>
- -->
+                -->
+
+                <div class="col-md-12">
+                    <h1 class="graphTitle" class="graphHeader"> WordCloud
+                    <a id="fourPop" href="#" data-toggle="popover" title="Popover Header"><i class="fa fa-info-circle"></i></a></h1>
+                    <div id="fourControls"></div>
+                    <div class="graphPlace" id="four"></div>
+                </div>
+
+
                 <h1 class="graphTitle" class="graphHeader"> Today's featured article</h1>
                 <!-- <p class="graphDescription">For the past 90 days (stat.grok.se)</p> -->
                 <div id="twelve"></div>
@@ -236,6 +244,7 @@
                 <div id="svgdataurl"></div>
                 <div id="pngdataurl"></div>
                 <div id="pngdataurl"></div>
+
                 <canvas width="960" height="500" style="display:none"></canvas>
             </div>
         </div>
