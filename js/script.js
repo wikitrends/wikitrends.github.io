@@ -30,7 +30,7 @@ $(document).ready(function() {
 
     var step = 10;
     currIEZoom -= step;
-    $('body').css('zoom', ' ' + currIEZoom + '%');
+    $('body').css('zoom', '90%');
 
     $(".lang-selector li a").click(function(){
         console.log('asd')

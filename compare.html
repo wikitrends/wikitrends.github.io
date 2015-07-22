@@ -52,7 +52,7 @@
             <label class="input-labels">ARTICLE SELECTOR</label>
             <div class="input-group">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">En <span class="caret"></span></button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">En<span class="caret"></span></button>
                     <ul class="scrollable-menu dropdown-menu lang-selector">
                         <li><a>en</a></li>
                         <li><a>de</a></li>
@@ -90,12 +90,14 @@
                 </div>
             </div>
             <label class="input-labels">POPULAR ARTICLES (EDITS)</label>
-            <button class="btn btn-default input-button button-half-one" onclick="weeklyPedia('Most Edits')" type="submit">All Articles</button>
-            <button class="btn btn-default input-button button-half-two" onclick="weeklyPedia('Most New Edits')" type="submit">New Articles</button>
+            <button id="mostEdits" class="btn btn-default input-button button-half-one" onclick="weeklyPedia('Most Edits')" type="submit">All Articles</button>
+            <button id="mostNewEdits" class="btn btn-default input-button button-half-two" onclick="weeklyPedia('Most New Edits')" type="submit">New Articles</button>
+            
             <!-- 
             <label class="input-labels">POPULAR ARTICLES (PAGEVIEWS)</label>
             <button class="btn btn-default col-md-12 input-button" type="submit">Most Popular Articles &nbsp; ( Weekly )</button>
- -->
+            -->
+            
             <label class="input-labels">RESULTS</label>
             <!-- <div class="form-group">
                 <div class="input-group-btn">
@@ -146,16 +148,17 @@
             </div>
         </div>
         <div class="col-md-9">
-            
+
                 
-                <div class="col-md-12">
-                    <label class="input-labels">POPULAR ARTICLES (EDITS)</label>
-                    <button class="btn btn-default input-button button-half-one" onclick="weeklyPedia('Most Edits')" type="submit">All Articles</button>
-                </div>
+            <div id="selectedArticles" class="col-md-12">
+                <label style="display: block" class="input-labels">POPULAR ARTICLES (EDITS)</label>
+
+                <!-- <div class="selected_card"><a nohref=""><p>Big Brother 17 (U.S.)</p></a></div>
+                <div class="selected_card"><a nohref=""><p>Big Brother 17 (U.S.)</p></a></div> -->
+            </div>
 
 
             <div class="graphs">
-
 
                 <div class="col-md-12">
                     <h1 class="graphSectionHeader"> Line Charts</h1>

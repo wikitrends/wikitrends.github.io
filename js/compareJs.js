@@ -30,9 +30,9 @@ $(document).ready(function() {
 
     var step = 10;
     currIEZoom -= step;
-    $('body').css('zoom', ' ' + currIEZoom + '%');
+    $('body').css('zoom', '90%');
 
-    $(".lang-selector li a").click(function(){
+    $(".lang-selector li a").click(function() {
         console.log('asd')
         $(this).parents(".input-group-btn").find('.btn').html($(this).text() + "<span class='caret'></span>");
         $(this).parents(".input-group-btn").find('.btn').val($(this).text() + "<span class='caret'></span>");
@@ -73,8 +73,14 @@ $(document).ready(function() {
 
 // Starts the search functionality of the article section. It then calls the next 4 functions (requestArticleExtracts, updateNumResults, resetDisplay, updateDisplay)
 var search = function(query) {
+
+    var langCode = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
+    langCode = langCode.replace(" <span class='caret'></span>", "").toLowerCase();
+
+    console.log(langCode)
+
     $.ajax({
-        url: 'https://en.wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=' + query,
+        url: "https://" + langCode + ".wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=" + query,
         type: 'GET',
         dataType: 'jsonp',
         headers: {
@@ -90,7 +96,11 @@ var search = function(query) {
 
 var requestArticleExtracts = function(queryResult) {
     // Request extracts for each of the articles found in the search
-    var extractQuery = 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exsentences=2&exlimit=max&exintro=&explaintext=&titles=';
+
+    var langCode = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
+    langCode = langCode.replace(" <span class='caret'></span>", "").toLowerCase();
+
+    var extractQuery = 'https://' + langCode + '.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exsentences=2&exlimit=max&exintro=&explaintext=&titles=';
 
     // Add each page title to the query
     var searchResults = queryResult.search;
@@ -152,6 +162,9 @@ var updateDisplay = function(queryResult) {
         $('#suggestionsPane').find('.mostNewEdits').html('');
         $('#results_pane').find('.searchResults').append(htmlToAdd);
 
+        $("#mostNewEdits").removeClass("active")
+        $("#mostEdits").removeClass("active")
+        
     }
 }
 
@@ -175,7 +188,6 @@ function imageChanger(id) {
     //             return parseFloat(currentOpacity) - 0.05
     //         }
     //     })
-
 }
 
 /* Search functionality ends here */
@@ -184,17 +196,25 @@ var numberOf = []
 
 function precurssor(input, globalia, pageTitle) {
 
-    var htmlToAdd = "<div class='result_card'>";
+    var htmlToAdd = "<div class='selected_card'>";
 
     htmlToAdd += "<a nohref onClick=\"precurssor(" + "pages[pId].pageid" +
         "," + globali +
         "," + "\'" + "(pages[pId].title).replace(', )" + "\'" +
         ")\">"
 
-    htmlToAdd += "<p>" + 'pages[pId].title' + "</p>";
+    var langCode = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
+    langCode = langCode.replace(" <span class='caret'></span>", "").toLowerCase();
 
-    $('#results_pane').find('.searchResults').append(htmlToAdd);
+    console.log(langCode)
 
+    htmlToAdd += "<p>" + pageTitle + "</br> " + langCode + "</p>";
+
+    // console.log(pageTitle)
+
+    // $('#selectedArticles').
+
+    $('#selectedArticles').append(htmlToAdd);
 
     numberOf.push(input)
 
@@ -221,20 +241,34 @@ function precurssor(input, globalia, pageTitle) {
 /* WeeklyPedia functionality starts here */
 // Automatic Most Editted and most recently editted pages are fetched and displayed. 
 function weeklyPedia(parameter) {
+
     var lastFriday = moment().startOf('week').subtract(2, 'days')
-    lastFriday = JSON.stringify(lastFriday).slice(1,11).replace(/-/g, "")
+    lastFriday = JSON.stringify(lastFriday).slice(1, 11).replace(/-/g, "")
 
-
-    var textCheck = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
-
-    console.log(textCheck.replace("<span class='caret'></span>", "").toLowerCase());
+    var langCode = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
+    langCode = langCode.replace(" <span class='caret'></span>", "").toLowerCase();
 
     if (parameter == 'Most Edits') {
 
-        var url = "http://weekly.hatnote.com/archive/en/" + lastFriday + "/weeklypedia_" + lastFriday + ".json"
+        var url = "http://weekly.hatnote.com/archive/" + langCode + "/" + lastFriday + "/weeklypedia_" + lastFriday + ".json"
 
         getWeeklyPedia(url, function(data) {
             var useFulData = data.query.results.json.mainspace
+
+            $("#mostNewEdits").css({
+                "color": "#333",
+                "background-color": "#fff"
+            })
+            $("#mostEdits").css({
+                'background-color': "#333",
+                'color': "#fff"
+            })
+
+            $("#mostNewEdits").removeClass("active")
+            $("#mostEdits").addClass("active")
+
+            $('#suggestionsPane').find('.mostEdits').html('');
+            $('#suggestionsPane').find('.mostNewEdits').html('');
 
             for (i = 0; i < useFulData.length; i++) {
 
@@ -254,7 +288,6 @@ function weeklyPedia(parameter) {
 
                 $('#closeMostNewEdits').hide()
                 $('#closeMostEdits').show()
-                $('#suggestionsPane').find('.mostNewEdits').html('');
                 $('#results_pane').find('.searchResults').html('');
                 $('#suggestionsPane').find('.mostEdits').append(htmlToAdd);
             }
@@ -262,8 +295,24 @@ function weeklyPedia(parameter) {
         })
     } else {
 
-        var url = "http://weekly.hatnote.com/archive/en/" + lastFriday + "/weeklypedia_" + lastFriday + ".json"
+        var url = "http://weekly.hatnote.com/archive/" + langCode + "/" + lastFriday + "/weeklypedia_" + lastFriday + ".json"
         getWeeklyPedia(url, function(data) {
+
+            $("#mostEdits").removeClass("active")
+            $("#mostNewEdits").addClass("active")
+
+            $("#mostEdits").css({
+                "color": "#333",
+                "background-color": "#fff"
+            })
+            $("#mostNewEdits").css({
+                'background-color': "#333",
+                'color': "#fff"
+            })
+
+            $('#suggestionsPane').find('.mostEdits').html('');
+            $('#suggestionsPane').find('.mostNewEdits').html('');
+
             if (data.query.results) {
                 var useFulData = data.query.results.json.new_articles
 
@@ -278,7 +327,6 @@ function weeklyPedia(parameter) {
                     $('#closeMostEdits').hide()
                     $('#closeMostNewEdits').show()
                     $('#results_pane').find('.searchResults').html('');
-                    $('#suggestionsPane').find('.mostEdits').html('');
                     $('#suggestionsPane').find('.mostNewEdits').append(htmlToAdd);
 
                 }
@@ -380,16 +428,19 @@ function grandPlotter(graphOne, graphTwo) {
     if (moment(timeLimit) == moment())
 
     //// You mad, bro? 
-    var pageID = pageIDin;
+        var pageID = pageIDin;
     var pageTitle
 
     var jsonObject;
     var lastRevID;
     var objectTwo = []
 
-    var linkInitialPageEdits = "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&pageids=" + graphOne[0] + "&format=json&callback=?"
+    var langCode = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
+    langCode = langCode.replace(" <span class='caret'></span>", "").toLowerCase();
 
-    var linkSubsequentPageEdits = "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?"
+    var linkInitialPageEdits = "https://" + langCode + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&pageids=" + graphOne[0] + "&format=json&callback=?"
+
+    var linkSubsequentPageEdits = "https://" + langCode + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?"
 
     // var linkInitialPageViews = "http://stats.grok.se/json/es/latest90/" + encodeURI(pageTitlein)
 
@@ -514,7 +565,7 @@ function grandPlotter(graphOne, graphTwo) {
         });
     }
 
-    function multipleDataGetter(url, parameterOne, callback){
+    function multipleDataGetter(url, parameterOne, callback) {
 
         var tempTest = $.ajax({
 
@@ -828,8 +879,8 @@ function grandPlotter(graphOne, graphTwo) {
     function initializer(objectOne, objectTwo, pageTitle, url, width, height, atribution) {
 
         // pageEditsTester(objectOne,ObjectTwo, "#three", "none", "", "", "hour", pageTitle, url, width, height, "stretch", "lineChart", atribution)
-        pageEditsTester(objectOne,objectTwo,  "#two", "none", "", "", "day", pageTitle, url, width, height, "stretch", "lineChart", atribution)
-        // pageEditsTester(object, "#one", "none", "", "", "week", pageTitle, url, width, height, "stretch", "lineChart", atribution)
+        pageEditsTester(objectOne, objectTwo, "#two", "none", "", "", "day", pageTitle, url, width, height, "stretch", "lineChart", atribution)
+            // pageEditsTester(object, "#one", "none", "", "", "week", pageTitle, url, width, height, "stretch", "lineChart", atribution)
     }
 
     function pageEditsTester(dataSourceOne, dataSourceTwo, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight, graphStyle, chartType, atribution) {
@@ -3797,7 +3848,7 @@ function grandPlotter2(graphOne, graphTwo) {
             .attr("stroke-width", "1px")
     }
 
-    getDataExtraParams(linkInitialPageEdits, 0)    
+    getDataExtraParams(linkInitialPageEdits, 0)
 }
 
 

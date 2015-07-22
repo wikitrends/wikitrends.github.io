@@ -85,20 +85,43 @@ body {
     padding: 6px 12px;
     margin-bottom: 13px;
 }
-
 .result_card:hover {
     background-color: #e6e6e6;
     border-left: 6px grey solid;
     cursor: pointer;
 }
-
 .result_card p {
     color: #222;
     font-size: 14px;
     margin: 0;
 }
-
 .result_card a:hover {
+    text-decoration: none;
+}
+
+.selected_card {
+    padding-top: 10px;
+    width: 200px;
+    margin-right: 20px;
+    display: inline-block;
+    border-radius: 2px solid white;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-radius: 3px;
+    border-left: 6px grey solid;
+    padding: 6px 12px;
+    margin-bottom: 13px;
+}
+.selected_card:hover {
+    background-color: #e6e6e6;
+    border-left: 6px grey solid;
+    cursor: pointer;
+}
+.selected_card p {
+    color: #222;
+    font-size: 14px;
+    margin: 0;
+}
+.selected_card a:hover {
     text-decoration: none;
 }
 
@@ -113,13 +136,12 @@ body {
     font-weight: 500;
     font-size: 24px;
     margin-left: -10px;
-margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .graphsControls {
     margin-bottom: 50px;
 }
-
 
 /*!
  * Pikaday
