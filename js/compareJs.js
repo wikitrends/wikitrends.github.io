@@ -91,7 +91,6 @@ $(document).ready(function() {
     $("#goGoGo").click(function() {
         grandPlotterPrecurssor()
     });
-
 });
 
 // Starts the search functionality of the article section. It then calls the next 4 functions (requestArticleExtracts, updateNumResults, resetDisplay, updateDisplay)
@@ -158,6 +157,9 @@ var updateDisplay = function(queryResult) {
     //console.log(queryResult);
     var pages = queryResult.query.pages;
 
+    var langCode = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
+    langCode = langCode.replace(" <span class='caret'></span>", "").toLowerCase();
+
     // Find the results pane and reset it
     $('#results_pane').find('.searchResults').html('');
 
@@ -171,7 +173,7 @@ var updateDisplay = function(queryResult) {
             // console.log(globali)
             // htmlToAdd += "<a nohref onClick=\"grandPlotter(" + pages[pId].pageid + "," + "\'" + pages[pId].title + "\'" + ")\">"
         htmlToAdd += "<a nohref onClick=\"precurssor(" + pages[pId].pageid +
-            "," + globali +
+            "," + globali + "," + "\'" + langCode + "\'" +
             "," + "\'" + (pages[pId].title).replace('\'', '\\\'') + "\'" +
             ")\">"
 
@@ -216,53 +218,92 @@ function imageChanger(id) {
 
 var numberOf = []
 
-function precurssor(input, globalia, pageTitle) {
+function precurssor(input, globalia, lang, pageTitle) {
 
+    var finalJsonObjectLangLinks = []
 
-    // multipleOne.push(input)
-    // console.log(multipleOne)
+    function getData(url, callback) {
+        return $.ajax({
+            url: url,
+            dataType: 'jsonp',
+            type: 'GET',
+            headers: {
+                'Api-User-Agent': 'Example/1.0'
+            },
+            success: callback,
+        });
+    }
 
-    var htmlToAdd = "<div id='" + input + "|" + pageTitle + "' class='selected_card'>";
+    function wordCloud(wordCloudUrl, langLinksJsonObject) {
 
+        var jsonObjectLangLinks;
+        var finalWordCloudJsonObject = [];
+        var wordCloudJsonObject;
+        var pageEditsTotal = 0;
+        // The variable which gets passed.
+        // Not sure if this is required!  // It is!
+        var wordCloudJsonObjectlastRevID;
+        //Need to be global because they need to be pushed into finalJsonObjectLangLinks and passed on as arguments for the plotting function. 
+        var articleTitle;
+        var wikiLanguage
+
+        getData(wordCloudUrl, function(data) {
+
+            // This part runs when the pageEdits function or the getData function is used to get the page edits. Otherwise the 'else' part is used (for the thumbnail dimensions and URL)
+            // Langlinks instead of revisions here
+
+            jsonObjectLangLinks = data;
+
+            // Clean up Data -- Actually we already have the pageID! Too scared to delete this piece though, it might be that jenga piece which brings down the entire tower!
+            var pageID = Object.keys(jsonObjectLangLinks.query.pages)[0]
+            jsonObjectLangLinks = jsonObjectLangLinks.query.pages[pageID].langlinks
+
+            for (i = 0; i < Object.keys(jsonObjectLangLinks).length; i++) {
+
+                // var htmlToAdd = "<div id='" + input + "|" + jsonObjectLangLinks[i].url.replace(/.*wiki\//g, "") + "' class='selected_card'>";
+                // htmlToAdd += "<a nohref>"
+                // htmlToAdd += "<p>" + jsonObjectLangLinks[i].url.replace(/.*wiki\//g, "") + "</br> <span style='font-weight: 600'>" +  jsonObjectLangLinks[i].lang + "</span></p>";
+                // var htmlToAdd = "<li><a onClick=\"precurssor(" + 12 + ","+ 12 + ","  + "'" + 
+
+                // htmlToAdd += "<a nohref onClick=\"precurssor(" + useFulData[i].page_id +
+                //     "," + globali + "," + "\'" + langCode + "\'" +
+                //     "," + "\'" + (useFulData[i].title_s).replace('\'', '\\\'') + "\'" +
+                //     ")\">"
+
+                var htmlToAdd = "<li><a nohref onClick=\"precurssor(" + 12 +
+                    "," + 12 + "," + "\'" + jsonObjectLangLinks[i].lang + "\'" +
+                    "," + "\'" + jsonObjectLangLinks[i]['*'] + "\'" +
+                    ")\">" + jsonObjectLangLinks[i].autonym + "</a></li>"
+
+                $('#selectedArticles').find('#languageHelper').find("ul").append(htmlToAdd);
+
+            }
+
+        })
+
+    }
+
+    var htmlToAdd = "<div id='" + lang + "|" + pageTitle + "' class='selected_card'>";
     htmlToAdd += "<a nohref>"
 
-    var langCode = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
-    langCode = langCode.replace(" <span class='caret'></span>", "").toLowerCase();
+    var linkInitialWordCloud = "https://" + lang + ".wikipedia.org/w/api.php?action=query&prop=langlinks&format=json&llprop=url%7Clangname%7Cautonym&lllimit=300&iwurl=" + "&titles=" + pageTitle + "&format=json&callback=?"
 
-    htmlToAdd += "<p>" + pageTitle + "</br> style='font-weight: 600'>" + langCode + "</span></p>";
+    wordCloud(linkInitialWordCloud)
+
+    // console.log(finalJsonObjectLangLinks)
+
+    htmlToAdd += "<p>" + pageTitle + "</br> <span style='font-weight: 600'>" + lang + "</span></p>";
 
     $('#selectedArticles').find('.selectedArticlesContainer').append(htmlToAdd);
 
-    // numberOf.push(input)
-
-    // multipleOne.push({"country": "IN"})
-    // console.log(multipleOne)
-
     pageTitle.replace('\'', '\\\'')
 
-    // var multipleTwo = [];
-
-
-    if (globali == 0) {
-        multipleOne = input;
-    } else {
-        multipleTwo = input;
-    }
-    globali = globalia + 1;
-    // console.log(globali)
-
-    if (globali == 2) {
-        console.log([multipleTwo])
-        grandPlotter([multipleOne], [multipleTwo])
-    } else {}
-
-    // grandPlotter(input, pageTitle)
 }
 
-function grandPlotterPrecurssor(){
-    
+function grandPlotterPrecurssor() {
+
     // arr stores all the titles and pageIDs in the selector section and then passes them over to grandPlotter.
-    var arr = $('.selectedArticlesContainer > div').map(function(){
+    var arr = $('.selectedArticlesContainer > div').map(function() {
         return this.id;
     }).get();
 
@@ -271,7 +312,6 @@ function grandPlotterPrecurssor(){
     var detailsSecond = arr[1].split('|')
 
     grandPlotter(detailsFirst, detailsSecond)
-
 }
 
 /* WeeklyPedia functionality starts here */
@@ -315,7 +355,7 @@ function weeklyPedia(parameter) {
                 // console.log(useFulData[i].title)
 
                 htmlToAdd += "<a nohref onClick=\"precurssor(" + useFulData[i].page_id +
-                    "," + globali +
+                    "," + globali + "," + "\'" + langCode + "\'" +
                     "," + "\'" + (useFulData[i].title_s).replace('\'', '\\\'') + "\'" +
                     ")\">"
 
@@ -356,7 +396,7 @@ function weeklyPedia(parameter) {
 
                     var htmlToAdd = "<div class='result_card'>";
                     htmlToAdd += "<a nohref onClick=\"precurssor(" + useFulData[i].page_id +
-                        "," + globali +
+                        "," + globali + "," + "\'" + langCode + "\'" +
                         "," + "\'" + (useFulData[i].title_s).replace('\'', '\\\'') + "\'" +
                         ")\">"
                     htmlToAdd += "<p>" + useFulData[i].title_s + "</p>";
@@ -464,19 +504,18 @@ function grandPlotter(graphOne, graphTwo) {
     if (moment(timeLimit) == moment())
 
     //// You mad, bro? 
-        var pageID = pageIDin;
+    var pageID = pageIDin;
     var pageTitle
 
     var jsonObject;
     var lastRevID;
     var objectTwo = []
 
-    var langCode = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
-    langCode = langCode.replace(" <span class='caret'></span>", "").toLowerCase();
+    // var langCode = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
+    // langCode = langCode.replace(" <span class='caret'></span>", "").toLowerCase();
 
-    var linkInitialPageEdits = "https://" + langCode + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&pageids=" + graphOne[0] + "&format=json&callback=?"
-
-    var linkSubsequentPageEdits = "https://" + langCode + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?"
+    var linkInitialPageEdits = "https://" + graphOne[0] + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&titles=" + graphOne[1] + "&format=json&callback=?"
+    var linkInitialWordCloud = "https://" + graphOne[0] + ".wikipedia.org/w/api.php?action=query&prop=langlinks&format=json&llprop=url%7Clangname%7Cautonym&lllimit=300&iwurl=" + "&titles=" + graphOne[1] + "&format=json&callback=?"
 
     // var linkInitialPageViews = "http://stats.grok.se/json/es/latest90/" + encodeURI(pageTitlein)
 
@@ -552,12 +591,12 @@ function grandPlotter(graphOne, graphTwo) {
 
                     if (parameterOne == 0) {
                         finaljsonObjectOne = finaljsonObjectOne.concat(jsonObject)
-                        getDataExtraParams("https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + graphOne[0] + "&format=json&callback=?", parameterOne)
+                        getDataExtraParams("https://" + graphOne[0] + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&titles=" + graphOne[1] + "&format=json&callback=?", parameterOne)
                     }
 
                     if (parameterOne == 1) {
                         finaljsonObjectTwo = finaljsonObjectTwo.concat(jsonObject)
-                        getDataExtraParams("https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + graphTwo[0] + "&format=json&callback=?", parameterOne)
+                        getDataExtraParams("https://" + graphTwo[0] + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&titles=" + graphTwo[1] + "&format=json&callback=?", parameterOne)
                     }
 
                 }
@@ -567,11 +606,8 @@ function grandPlotter(graphOne, graphTwo) {
 
                     if (parameterOne == 0) {
                         finaljsonObjectOne = finaljsonObjectOne.concat(jsonObject)
-                        getDataExtraParams("https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&pageids=" + graphTwo[0] + "&format=json&callback=?", 1)
-
-                        console.log(parameterOne)
-
-                        // console.log(finaljsonObjectOne)
+                        getDataExtraParams("https://" + graphTwo[0] + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&titles=" + graphTwo[1] + "&format=json&callback=?", 1)
+                        
                     }
 
                     if (parameterOne == 1) {
@@ -601,88 +637,139 @@ function grandPlotter(graphOne, graphTwo) {
         });
     }
 
-    function multipleDataGetter(url, parameterOne, callback) {
+    // function multipleDataGetter(url, parameterOne, callback) {
+        
+    //     var tempTest = $.ajax({
 
-        var tempTest = $.ajax({
+    //         url: url,
+    //         async: false,
+    //         dataType: 'json',
+    //         type: 'GET',
+    //         headers: {
+    //             'Api-User-Agent': 'Example/1.0'
+    //         },
+    //         success: function() {
 
-            url: url,
-            async: false,
-            dataType: 'json',
-            type: 'GET',
-            headers: {
-                'Api-User-Agent': 'Example/1.0'
-            },
-            success: function() {
+    //             var jsonObject = tempTest.responseJSON
 
-                var jsonObject = tempTest.responseJSON;
+    //             // Clean up Data
+    //             var pageID = Object.keys(jsonObject.query.pages)[0]
+    //             jsonObject = jsonObject.query.pages[pageID].revisions
 
-                // Clean up Data
-                var pageID = Object.keys(jsonObject.query.pages)[0]
-                jsonObject = jsonObject.query.pages[pageID].revisions
+    //             // Get last revision ID
 
-                // Get last revision ID
+    //             // console.log(jsonObject)
+    //             lastRevID = jsonObject[Object.keys(jsonObject)[Object.keys(jsonObject).length - 1]].revid
 
-                // console.log(jsonObject)
-                lastRevID = jsonObject[Object.keys(jsonObject)[Object.keys(jsonObject).length - 1]].revid
+    //             //  console.log(lastRevID)
 
-                //  console.log(lastRevID)
+    //             //  console.log(url)
 
-                //  console.log(url)
+    //             // This is the length of the useful JSON object
+    //             //c.log(Object.keys(jsonObject).length)
 
-                // This is the length of the useful JSON object
-                //c.log(Object.keys(jsonObject).length)
+    //             // Run this part of the if - else everytime except for the last time.
 
-                // Run this part of the if - else everytime except for the last time.
+    //             if (Object.keys(jsonObject).length == 500) {
 
-                if (Object.keys(jsonObject).length == 500) {
+    //                 if (parameterOne == 0) {
+    //                     finaljsonObjectOne = finaljsonObjectOne.concat(jsonObject)
+    //                     getDataExtraParams("https://" + graphOne[0] + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&titles=" + graphOne[1] + "&format=json&callback=?", parameterOne)
+    //                 }
 
-                    if (parameterOne == 0) {
-                        finaljsonObjectOne = finaljsonObjectOne.concat(jsonObject)
-                        getDataExtraParams("https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + graphOne[0] + "&format=json&callback=?", parameterOne)
-                    }
+    //                 if (parameterOne == 1) {
+    //                     finaljsonObjectTwo = finaljsonObjectTwo.concat(jsonObject)
+    //                     getDataExtraParams("https:" + graphTwo[0] + "//en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&titles=" + graphTwo[1] + "&format=json&callback=?", parameterOne)
+    //                 }
 
-                    if (parameterOne == 1) {
-                        finaljsonObjectTwo = finaljsonObjectTwo.concat(jsonObject)
-                        getDataExtraParams("https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + graphTwo[0] + "&format=json&callback=?", parameterOne)
-                    }
+    //             }
 
-                }
+    //             // Run this part of the if - else everytime only for the last time when the callback exits.
+    //             else {
 
-                // Run this part of the if - else everytime only for the last time when the callback exits.
-                else {
+    //                 if (parameterOne == 0) {
+    //                     finaljsonObjectOne = finaljsonObjectOne.concat(jsonObject)
+    //                     getDataExtraParams("https://" + graphTwo[0] + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&titles=" + graphTwo[1] + "&format=json&callback=?", 1)
 
-                    if (parameterOne == 0) {
-                        finaljsonObjectOne = finaljsonObjectOne.concat(jsonObject)
-                        getDataExtraParams("https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&pageids=" + graphTwo[0] + "&format=json&callback=?", 1)
+    //                     console.log(parameterOne)
 
-                        console.log(parameterOne)
+    //                     // console.log(finaljsonObjectOne)
+    //                 }
 
-                        // console.log(finaljsonObjectOne)
-                    }
+    //                 if (parameterOne == 1) {
+    //                     // console.log(finaljsonObjectOne)
+    //                     finaljsonObjectTwo = finaljsonObjectTwo.concat(jsonObject)
 
-                    if (parameterOne == 1) {
-                        // console.log(finaljsonObjectOne)
-                        finaljsonObjectTwo = finaljsonObjectTwo.concat(jsonObject)
+    //                     console.log(finaljsonObjectTwo)
+    //                     console.log(finaljsonObjectOne)
 
-                        console.log(finaljsonObjectTwo)
-                        console.log(finaljsonObjectOne)
+    //                     // multiplePlotter(finaljsonObjectOne, finaljsonObjectTwo, "#one", "none", "", "", "day", "pageTitle", "assets/defaultImage.jpg", 1000, 500)
 
-                        // multiplePlotter(finaljsonObjectOne, finaljsonObjectTwo, "#one", "none", "", "", "day", "pageTitle", "assets/defaultImage.jpg", 1000, 500)
+    //                 }
 
-                    }
+    //                 // For the pageImage thingy
 
-                    // For the pageImage thingy
+    //                 // linkAddress = pageEdits("https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
 
-                    // linkAddress = pageEdits("https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&pageids=" + pageID + "&format=json&callback=?")
+    //                 // var pageID = Object.keys(linkAddress.query.pages)[0]
+    //                 // linkAddress = linkAddress.query.pages[pageID].thumbnail
 
-                    // var pageID = Object.keys(linkAddress.query.pages)[0]
-                    // linkAddress = linkAddress.query.pages[pageID].thumbnail
+    //                 // initialises runNow function which has the d3 stuff. Passes the concated data as the parameter.
 
-                    // initialises runNow function which has the d3 stuff. Passes the concated data as the parameter.
+    //             }
+    //         },
+    //     });
+    // }
 
-                }
-            },
-        });
+    function wordCloud(wordCloudUrl, langLinksJsonObject) {
+
+        var jsonObjectLangLinks;
+        var finalWordCloudJsonObject = [];
+        var wordCloudJsonObject;
+        var pageEditsTotal = 0;
+        // The variable which gets passed.
+        // Not sure if this is required!  // It is!
+        var wordCloudJsonObjectlastRevID;
+        //Need to be global because they need to be pushed into finalJsonObjectLangLinks and passed on as arguments for the plotting function. 
+        var articleTitle;
+        var wikiLanguage
+
+        getData(wordCloudUrl, function(data) {
+
+            // This part runs when the pageEdits function or the getData function is used to get the page edits. Otherwise the 'else' part is used (for the thumbnail dimensions and URL)
+            // Langlinks instead of revisions here
+
+            jsonObjectLangLinks = data;
+
+            // Clean up Data -- Actually we already have the pageID! Too scared to delete this piece though, it might be that jenga piece which brings down the entire tower!
+            var pageID = Object.keys(jsonObjectLangLinks.query.pages)[0]
+            jsonObjectLangLinks = jsonObjectLangLinks.query.pages[pageID].langlinks
+
+            console.log(jsonObjectLangLinks)
+
+            for (i = 0; i < Object.keys(jsonObjectLangLinks).length; i++) {
+
+                wikiLanguage = jsonObjectLangLinks[i].lang
+                articleTitle = jsonObjectLangLinks[i].url.replace(/.*wiki\//g, "")
+                autonym = jsonObjectLangLinks[i].autonym
+                langname = jsonObjectLangLinks[i].langname
+
+                finalJsonObjectLangLinks.push({
+                    lang: wikiLanguage,
+                    articleTitle: articleTitle,
+                    autonym: autonym,
+                    langname: langname,
+                })
+
+            }
+
+            // These need to be the parameters of the first entry of finalJsonObjectLangLinks
+            wikiLanguage = finalJsonObjectLangLinks[0].lang
+            articleTitle = finalJsonObjectLangLinks[0].articleTitle
+
+            // console.log(finalJsonObjectLangLinks)
+
+        })
     }
 
     var finaljsonObject = [];
@@ -914,8 +1001,8 @@ function grandPlotter(graphOne, graphTwo) {
 
     function initializer(objectOne, objectTwo, pageTitle, url, width, height, atribution) {
 
-        // pageEditsTester(objectOne,ObjectTwo, "#three", "none", "", "", "hour", pageTitle, url, width, height, "stretch", "lineChart", atribution)
-        // pageEditsTester(objectOne, objectTwo, "#two", "none", "", "", "day", pageTitle, url, width, height, "stretch", "lineChart", atribution)
+        // pageEditsTester(objectOne,objectTwo, "#three", "none", "", "", "hour", pageTitle, url, width, height, "stretch", "lineChart", atribution)
+        pageEditsTester(objectOne, objectTwo, "#two", "none", "", "", "day", pageTitle, url, width, height, "stretch", "lineChart", atribution)
         pageEditsTester(objectOne, objectTwo, "#one", "none", "", "", "week", pageTitle, url, width, height, "stretch", "lineChart", atribution)
     }
 
@@ -2206,7 +2293,6 @@ function grandPlotter(graphOne, graphTwo) {
                     // console.log(theDayMisnomerMinus)
                 }
                 theDayMisnomerPlus = moment(d.key).subtract(1, 'month')
-                    // console.log(theDayMisnomerPlus)
 
                 // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
                 previousDateActual = d.key;
@@ -2633,16 +2719,16 @@ function grandPlotter(graphOne, graphTwo) {
         //     .attr("height", 100)
         //     .call(drag);
 
-        svgBase.selectAll("circle.line")
-            .data(data)
-            .enter().append("svg:circle")
-            .attr("class", "line")
-            .style("fill", "green")
-            .attr("cx", upperline.x())
-            .attr("cy", upperline.y())
-            .attr("r", 12)
-            .attr('opacity', 0)
-            .on("click", function(d) {})
+        // svgBase.selectAll("circle.line")
+        //     .data(data)
+        //     .enter().append("svg:circle")
+        //     .attr("class", "line")
+        //     .style("fill", "green")
+        //     .attr("cx", upperline.x())
+        //     .attr("cy", upperline.y())
+        //     .attr("r", 12)
+        //     .attr('opacity', 0)
+        //     .on("click", function(d) {})
 
         d3.select(idname + "Controls")
             .selectAll("div")
@@ -2872,9 +2958,11 @@ function grandPlotter(graphOne, graphTwo) {
                 userInputImageURL,
                 function(width, height) {
 
-                    thereIs = width;
+                    console.log(picUrl)
 
-                    initializer(dataTempOne, pageTitle, userInputImageURL, width, height)
+                    thereIs = width;
+                    initializer(finaljsonObjectOne, finaljsonObjectTwo, pageTitle, userInputImageURL, width, height, "CCBYSA")
+                        // initializer(dataTempOne, pageTitle, userInputImageURL, width, height)
 
                 }
             );
@@ -2941,7 +3029,9 @@ function grandPlotter(graphOne, graphTwo) {
         d3.select("#dateRefresher").on("click", function() {
             timeLimit = picker.getDate()
             timeLimitUpper = pickerTwo.getDate()
-            initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight, "CCBYSA")
+            console.log('asd')
+                // initializer(finaljsonObjectOne, finaljsonObjectTwo, "one", "assets/defaultImage.jpg", 1000, 500)
+            initializer(finaljsonObjectOne, finaljsonObjectTwo, pageTitle, picUrl, picWidth, picHeight, "CCBYSA")
         })
     }
 
@@ -2949,7 +3039,9 @@ function grandPlotter(graphOne, graphTwo) {
     // pageEdits(linkInitialPageEdits)
 
     // This gets the pageview stats from Stats.grok.se
-    multipleDataGetter(linkInitialPageEdits, 0)
+    getDataExtraParams(linkInitialPageEdits, 0)
+
+    // wordCloud(linkInitialWordCloud)
 }
 
 
@@ -4262,4 +4354,4 @@ function grandPlotter2(graphOne, graphTwo) {
 
 ///// = Pretty Difficult.
 //*// = Not that Difficult
-//**// = Ah! That is what I can fix in my sleep.
+//**// = Ah! That is what I can fix in my sleep.s
