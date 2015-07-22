@@ -224,7 +224,10 @@ function precurssor(input, globalia, pageTitle) {
 
     var htmlToAdd = "<div id='" + input + "|" + pageTitle + "' class='selected_card'>";
 
-    htmlToAdd += "<a nohref>"
+    htmlToAdd += "<a nohref onClick=\"precurssor(" + "pages[pId].pageid" +
+        "," + globali +
+        "," + "\'" + "(pages[pId].title).replace(', )" + "\'" +
+        ")\">"
 
     var langCode = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
     langCode = langCode.replace(" <span class='caret'></span>", "").toLowerCase();
@@ -915,8 +918,8 @@ function grandPlotter(graphOne, graphTwo) {
     function initializer(objectOne, objectTwo, pageTitle, url, width, height, atribution) {
 
         // pageEditsTester(objectOne,ObjectTwo, "#three", "none", "", "", "hour", pageTitle, url, width, height, "stretch", "lineChart", atribution)
-        // pageEditsTester(objectOne, objectTwo, "#two", "none", "", "", "day", pageTitle, url, width, height, "stretch", "lineChart", atribution)
-        pageEditsTester(objectOne, objectTwo, "#one", "none", "", "", "week", pageTitle, url, width, height, "stretch", "lineChart", atribution)
+        pageEditsTester(objectOne, objectTwo, "#two", "none", "", "", "day", pageTitle, url, width, height, "stretch", "lineChart", atribution)
+            // pageEditsTester(object, "#one", "none", "", "", "week", pageTitle, url, width, height, "stretch", "lineChart", atribution)
     }
 
     function pageEditsTester(dataSourceOne, dataSourceTwo, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight, graphStyle, chartType, atribution) {
@@ -936,40 +939,26 @@ function grandPlotter(graphOne, graphTwo) {
             return d - c;
         });
 
-        dataTempTwo.sort(function(a, b) {
-            var c = new Date(a.timestamp);
-            var d = new Date(b.timestamp);
-            return d - c;
-        });
-
-        var editorsOne = []
-        var editorsTwo = []
-        var editorsCountOne = 0;
-        var editorsCountTwo = 0;
+        var editors = []
+        var editorsCount = 0;
 
         dataTempOne.forEach(function(d, i) {
+
             var user = d.user
-            if (editorsOne.indexOf(user) > -1) {
-                d.editorsCountOne = editorsCountOne
+
+            if (editors.indexOf(user) > -1) {
+                d.editorsCount = editorsCount
             } else {
-                editorsCountOne = editorsCountOne + 1;
-                editorsOne.push(user)
-                d.editorsCountOne = editorsCountOne
+                editorsCount = editorsCount + 1;
+                editors.push(user)
+                d.editorsCount = editorsCount
             }
         })
 
-        dataTempTwo.forEach(function(d, i) {
-            var user = d.user
-            if (editorsTwo.indexOf(user) > -1) {
-                d.editorsCountTwo = editorsCountTwo
-            } else {
-                editorsCountTwo = editorsCountTwo + 1;
-                editorsTwo.push(user)
-                d.editorsCountTwo = editorsCountTwo
-            }
-        })
+        // var data = dataTempOne
 
         dataTempOne.forEach(function(d, i) {
+
             if (i == dataTempOne.length - 1) {
                 d.difference = d.size;
             } else {
@@ -977,34 +966,23 @@ function grandPlotter(graphOne, graphTwo) {
             }
         })
 
-        dataTempTwo.forEach(function(d, i) {
-            if (i == dataTempTwo.length - 1) {
-                d.difference = d.size;
-            } else {
-                d.difference = d.size - dataTempTwo[i + 1].size;
-            }
-        })
+        // getGeoData(dataTempOne)
 
-        // getGeoDaa(dataTempOne)
-
-        var totalEditsOne = 0;
-        var totalEditorsOne;
+        var totalEdits = 0;
+        var totalEditors;
         var brokenDownDataSource = []
-
-        var totalEditsTwo = 0;
-        var totalEditorsTwo;
 
         dataTempOne.forEach(function(d) {
 
             if (timeLimit == null && timeLimitUpper == null) {
-                totalEditsOne = totalEditsOne + 1
+                totalEdits = totalEdits + 1
                 brokenDownDataSource.push({
                     user: d.user,
                     timestamp: d.timestamp
                 })
             } else if (timeLimit == null && timeLimitUpper != null) {
                 if (moment(d.timestamp).diff(moment(timeLimitUpper)) < 0) {
-                    totalEditsOne = totalEditsOne + 1
+                    totalEdits = totalEdits + 1
                     brokenDownDataSource.push({
                         user: d.user,
                         timestamp: d.timestamp
@@ -1012,7 +990,7 @@ function grandPlotter(graphOne, graphTwo) {
                 }
             } else if (timeLimit != null && timeLimitUpper == null) {
                 if (moment(d.timestamp).diff(moment(timeLimit)) > 0) {
-                    totalEditsOne = totalEditsOne + 1
+                    totalEdits = totalEdits + 1
                     brokenDownDataSource.push({
                         user: d.user,
                         timestamp: d.timestamp
@@ -1021,7 +999,7 @@ function grandPlotter(graphOne, graphTwo) {
             } else if (timeLimit != null && timeLimitUpper != null) {
                 if (moment(d.timestamp).diff(moment(timeLimit)) < 0) {} else {
                     if (moment(d.timestamp).diff(moment(timeLimitUpper)) < 0) {
-                        totalEditsOne = totalEditsOne + 1
+                        totalEdits = totalEdits + 1
                         brokenDownDataSource.push({
                             user: d.user,
                             timestamp: d.timestamp
@@ -1031,7 +1009,6 @@ function grandPlotter(graphOne, graphTwo) {
             }
         })
 
-        // Counts the unique instances of 'user' so gets the total number of edits.
         var distances = {},
             e;
         for (var i = 0, l = brokenDownDataSource.length; i < l; i++) {
@@ -1039,54 +1016,7 @@ function grandPlotter(graphOne, graphTwo) {
             distances[e.user] = (distances[e.user] || 0) + 1;
         }
 
-        var totalEditorsOne = Object.keys(distances).length
-
-        dataTempTwo.forEach(function(d) {
-
-            if (timeLimit == null && timeLimitUpper == null) {
-                totalEditsTwo = totalEditsTwo + 1
-                brokenDownDataSource.push({
-                    user: d.user,
-                    timestamp: d.timestamp
-                })
-            } else if (timeLimit == null && timeLimitUpper != null) {
-                if (moment(d.timestamp).diff(moment(timeLimitUpper)) < 0) {
-                    totalEditsTwo = totalEditsTwo + 1
-                    brokenDownDataSource.push({
-                        user: d.user,
-                        timestamp: d.timestamp
-                    })
-                }
-            } else if (timeLimit != null && timeLimitUpper == null) {
-                if (moment(d.timestamp).diff(moment(timeLimit)) > 0) {
-                    totalEditsTwo = totalEditsTwo + 1
-                    brokenDownDataSource.push({
-                        user: d.user,
-                        timestamp: d.timestamp
-                    })
-                }
-            } else if (timeLimit != null && timeLimitUpper != null) {
-                if (moment(d.timestamp).diff(moment(timeLimit)) < 0) {} else {
-                    if (moment(d.timestamp).diff(moment(timeLimitUpper)) < 0) {
-                        totalEditsTwo = totalEditsTwo + 1
-                        brokenDownDataSource.push({
-                            user: d.user,
-                            timestamp: d.timestamp
-                        })
-                    }
-                }
-            }
-        })
-
-        // Counts the unique instances of 'user' so gets the total number of edits.
-        var distances = {},
-            e;
-        for (var i = 0, l = brokenDownDataSource.length; i < l; i++) {
-            e = brokenDownDataSource[i];
-            distances[e.user] = (distances[e.user] || 0) + 1;
-        }
-
-        var totalEditorsTwo = Object.keys(distances).length
+        var totalEditors = Object.keys(distances).length
 
         $('#loader').html('');
         $(idname).html('')
@@ -1215,72 +1145,9 @@ function grandPlotter(graphOne, graphTwo) {
         var lastDate;
         var totalCount = 0;
 
-        // var newData = dataTempOne
-        // all newData subsesquently were replaced with dataTempOne
+        var newData = dataTempOne
 
-        dataTempOne.forEach(function(d) {
-
-            var trueTime = d.timestamp
-
-            //// Adding zero insertor for date checker as well. 
-            if (timeDuration == "hour") {
-                var tempDate = d.timestamp;
-                tempDate = tempDate.substring(0, 14)
-                tempDate = tempDate.concat("00:01.000Z")
-                d.timestamp = tempDate;
-            }
-
-            if (timeDuration == "day") {
-                // Days
-                var tempDate = d.timestamp;
-                tempDate = tempDate.substring(0, 10);
-                tempDate = tempDate.concat("T00:00:01.000Z");
-                d.timestamp = tempDate;
-                lastDate = tempDate;
-                totalCount = totalCount + 1;
-
-            }
-
-            if (timeDuration == "week") {
-
-                // Weeks
-                thisWeekNumber = moment(d.timestamp).week();
-                if (weekNumber == thisWeekNumber) {
-                    d.timestamp = weekInitial
-                    d.timestamp = d.timestamp.substring(0, 10);
-                    d.timestamp = d.timestamp.concat("T00:00:01.000Z");
-                } else {
-                    d.timestamp = d.timestamp.substring(0, 10);
-                    d.timestamp = d.timestamp.concat("T00:00:01.000Z");
-
-                    dayOfTheWeek = moment(d.timestamp).day()
-                    d.timestamp = JSON.stringify(moment(d.timestamp).subtract(dayOfTheWeek, "days")).replace("\"", "").replace("\"", "")
-                    weekInitial = d.timestamp;
-
-                    // console.log(moment(d.timestamp).day())
-
-                    weekNumber = thisWeekNumber
-                }
-
-            }
-
-            if (timeDuration == "month") {
-
-                // Month
-                var tempDate = d.timestamp;
-                tempDate = tempDate.substring(0, 7);
-                tempDate = tempDate.concat("-01T00:00:01.000Z");
-                d.timestamp = tempDate;
-                // console.log(d.timestamp)
-
-            }
-
-            d.timestamptrue = trueTime;
-
-            d.values = 1;
-        });
-
-        dataTempTwo.forEach(function(d) {
+        newData.forEach(function(d) {
 
             var trueTime = d.timestamp
 
@@ -1293,6 +1160,7 @@ function grandPlotter(graphOne, graphTwo) {
             }
 
             if (timeDuration == "day") {
+
                 // Days
                 var tempDate = d.timestamp;
                 tempDate = tempDate.substring(0, 10);
@@ -1345,9 +1213,7 @@ function grandPlotter(graphOne, graphTwo) {
         // console.log(datasource)
         // console.log(newData)
 
-        // dataOne and dataTwo from now on.
-
-        var dataOne = d3.nest()
+        var data = d3.nest()
             .key(function(d) {
                 return d.timestamp;
             })
@@ -1355,21 +1221,10 @@ function grandPlotter(graphOne, graphTwo) {
                 return d3.sum(d, function(d) {
                     return d.values;
                 });
-            }).entries(dataTempOne);
-
-        var dataTwo = d3.nest()
-            .key(function(d) {
-                return d.timestamp;
-            })
-            .rollup(function(d) {
-                return d3.sum(d, function(d) {
-                    return d.values;
-                });
-            }).entries(dataTempTwo);
+            }).entries(newData);
 
         // Attempting to fix the Zero Date problem
-        var finaleOne = []
-        var finaleTwo = []
+        var finale = []
 
         //console.log(finale)
 
@@ -1378,7 +1233,7 @@ function grandPlotter(graphOne, graphTwo) {
             var previousDateActual = "";
             var dayMinusOne;
 
-            dataOne.forEach(function(d, i) {
+            data.forEach(function(d, i) {
 
                 var dayPlusOne = moment(d.key).add(1, 'hour')
 
@@ -1397,7 +1252,7 @@ function grandPlotter(graphOne, graphTwo) {
                         var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
                         var smoothner = moment(dayMinusOne).subtract(2, "minutes")
 
-                        finaleOne.push({
+                        finale.push({
                             key: tempIn,
                             values: 0
                         })
@@ -1405,7 +1260,7 @@ function grandPlotter(graphOne, graphTwo) {
 
                         var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
 
-                        finaleOne.push({
+                        finale.push({
                             key: tempIn,
                             values: 0
                         })
@@ -1431,7 +1286,7 @@ function grandPlotter(graphOne, graphTwo) {
 
                         //console.log(tempIn)
 
-                        finaleOne.push({
+                        finale.push({
                             key: tempIn,
                             values: 0
                         })
@@ -1440,20 +1295,20 @@ function grandPlotter(graphOne, graphTwo) {
 
                         var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
 
-                        finaleOne.push({
+                        finale.push({
                             key: tempIn,
                             values: 0
                         })
 
                     } else {
-                        finaleOne.push({
+                        finale.push({
                             key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
                             values: d.values
                         })
                     }
                 } else {}
 
-                finaleOne.push({
+                finale.push({
                     key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
                     values: d.values
                 })
@@ -1465,7 +1320,7 @@ function grandPlotter(graphOne, graphTwo) {
 
                 // if ( i == data.length - 1 ) {
                 // //console.log('sadas')
-                //     finaleOne.push({
+                //     finale.push({
                 //         key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
                 //         values: 0
                 //     })                
@@ -1474,7 +1329,7 @@ function grandPlotter(graphOne, graphTwo) {
                 // if ( i == 0 ) {
                 // //console.log(JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", ""))
 
-                //     finaleOne.push({
+                //     finale.push({
                 //         key: JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", ""),
                 //         values: 0
                 //     })                
@@ -1491,7 +1346,7 @@ function grandPlotter(graphOne, graphTwo) {
             var previousDateActual = "";
             var dayMinusOne;
 
-            dataOne.forEach(function(d, i) {
+            data.forEach(function(d, i) {
 
                 var dayPlusOne = moment(d.key).add(1, 'days')
 
@@ -1518,14 +1373,14 @@ function grandPlotter(graphOne, graphTwo) {
                         var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
                         var smoothner = moment(dayMinusOne).subtract(1, "hour")
 
-                        finaleOne.push({
+                        finale.push({
                             key: tempIn,
                             values: 0
                         })
 
                         var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
 
-                        finaleOne.push({
+                        finale.push({
                             key: tempIn,
                             values: 0
                         })
@@ -1549,28 +1404,28 @@ function grandPlotter(graphOne, graphTwo) {
                         var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
                             // console.log(tempIn)
 
-                        finaleOne.push({
+                        finale.push({
                             key: tempIn,
                             values: 0
                         })
 
                         var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
 
-                        finaleOne.push({
+                        finale.push({
                                 key: tempIn,
                                 values: 0
                             })
                             // console.log('One  ' + tempIn)
 
                     } else {
-                        finaleOne.push({
+                        finale.push({
                             key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
                             values: d.values
                         })
                     }
                 } else {}
 
-                finaleOne.push({
+                finale.push({
                     key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
                     values: d.values
                 })
@@ -1604,7 +1459,7 @@ function grandPlotter(graphOne, graphTwo) {
             var previousDateActual = "";
             var dayMinusOne;
 
-            dataOne.forEach(function(d, i) {
+            data.forEach(function(d, i) {
 
                 var dayPlusOne = moment(d.key).add(1, 'week')
 
@@ -1630,7 +1485,7 @@ function grandPlotter(graphOne, graphTwo) {
                         // tempIn is just of temporary string conversions. '"' need to be removed.å
                         var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
 
-                        finaleOne.push({
+                        finale.push({
                             key: tempIn,
                             values: 0
                         })
@@ -1648,21 +1503,21 @@ function grandPlotter(graphOne, graphTwo) {
                         var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
                             // console.log(tempIn)
 
-                        finaleOne.push({
+                        finale.push({
                                 key: tempIn,
                                 values: 0
                             })
                             //  console.log('One  ' + tempIn)
 
                     } else {
-                        finaleOne.push({
+                        finale.push({
                             key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
                             values: d.values
                         })
                     }
                 } else {}
 
-                finaleOne.push({
+                finale.push({
                     key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
                     values: d.values
                 })
@@ -1680,6 +1535,7 @@ function grandPlotter(graphOne, graphTwo) {
 
                 // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
                 previousDateActual = d.key;
+
             })
         } else if (timeDuration == "month") {
 
@@ -1690,7 +1546,7 @@ function grandPlotter(graphOne, graphTwo) {
             var previousDateActual = "";
             var theDayMisnomerPlus;
 
-            dataOne.forEach(function(d, i) {
+            data.forEach(function(d, i) {
 
                 var theDayMisnomerMonth = (d.key).substr(5, 6)
 
@@ -1790,434 +1646,9 @@ function grandPlotter(graphOne, graphTwo) {
 
                 // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
                 previousDateActual = d.key;
+
             })
         }
-
-        if (timeDuration == "hour") {
-
-            var previousDateActual = "";
-            var dayMinusOne;
-
-            dataTwo.forEach(function(d, i) {
-
-                var dayPlusOne = moment(d.key).add(1, 'hour')
-
-                var theDay = moment(d.key)
-
-                var previousDate = moment(previousDateActual)
-
-                //  console.log(JSON.stringify(dayPlusOne) + "  |  " + JSON.stringify(previousDate) + "  |  " + JSON.stringify(dayMinusOne) + "  |  " + JSON.stringify(d.key))
-
-                // START: At all costs, this needs to be in front of the second part.
-
-                if (i == 0) {} else {
-                    if (JSON.stringify(dayMinusOne) != JSON.stringify(d.key)) {
-
-                        // tempIn is just of temporary string conversions. '"' need to be removed.å
-                        var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
-                        var smoothner = moment(dayMinusOne).subtract(2, "minutes")
-
-                        finaleTwo.push({
-                            key: tempIn,
-                            values: 0
-                        })
-
-
-                        var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
-
-                        finaleTwo.push({
-                            key: tempIn,
-                            values: 0
-                        })
-
-
-                        //console.log('two  ' + tempIn)
-
-                    } else {
-
-                    }
-                }
-
-                // END
-
-                if (i != 0) {
-
-                    if (JSON.stringify(dayPlusOne) != JSON.stringify(previousDate)) {
-
-                        var smoothner = moment(dayPlusOne).add(1, "hour")
-
-                        // tempIn is just of temporary string conversions.
-                        var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
-
-                        //console.log(tempIn)
-
-                        finaleTwo.push({
-                            key: tempIn,
-                            values: 0
-                        })
-
-                        var smoothner = moment(dayPlusOne).add(2, "minutes")
-
-                        var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
-
-                        finaleTwo.push({
-                            key: tempIn,
-                            values: 0
-                        })
-
-                    } else {
-                        finaleTwo.push({
-                            key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-                            values: d.values
-                        })
-                    }
-                } else {}
-
-                finaleTwo.push({
-                    key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-                    values: d.values
-                })
-
-                // Checks for the next 
-                dayMinusOne = moment(d.key).subtract(1, 'hour')
-                    // console.log(i)
-                    // console.log(data.length)
-
-                // if ( i == data.length - 1 ) {
-                // //console.log('sadas')
-                //     finaleTwo.push({
-                //         key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-                //         values: 0
-                //     })                
-                // } 
-                // // d.key = momen
-                // if ( i == 0 ) {
-                // //console.log(JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", ""))
-
-                //     finaleTwo.push({
-                //         key: JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", ""),
-                //         values: 0
-                //     })                
-                // } 
-                // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
-                previousDateActual = d.key;
-            })
-        } else if (timeDuration == "day") {
-
-            // BEWARE BEWARE BEWARE!
-            // Countless hours have been spent trying to get this part to work. 
-            // TLDR; On MediaWiki APIs, time runs backwards!
-
-            var previousDateActual = "";
-            var dayMinusOne;
-
-            dataTwo.forEach(function(d, i) {
-
-                var dayPlusOne = moment(d.key).add(1, 'days')
-
-                // Daylight Savings (the knot problem)
-                if (JSON.stringify(dayPlusOne).indexOf("T23:00:01.000Z") > -1) {
-                    dayPlusOne = moment(dayPlusOne).add(1, "hour")
-                }
-                if (JSON.stringify(dayPlusOne).indexOf("T01:00:01.000Z") > -1) {
-                    dayPlusOne = moment(dayPlusOne).subtract(1, "hour")
-                }
-
-                var theDay = moment(d.key)
-
-                var previousDate = moment(previousDateActual)
-
-                //  console.log(JSON.stringify(dayPlusOne) + "  |  " + JSON.stringify(previousDate) + "  |  " + JSON.stringify(dayMinusOne) + "  |  " + JSON.stringify(d.key))
-
-                // START: At all costs, this needs to be in front of the second part.
-
-                if (i == 0) {} else {
-                    if (JSON.stringify(dayMinusOne) != JSON.stringify(d.key)) {
-
-                        // tempIn is just of temporary string conversions. '"' need to be removed.å
-                        var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
-                        var smoothner = moment(dayMinusOne).subtract(1, "hour")
-
-                        finaleTwo.push({
-                            key: tempIn,
-                            values: 0
-                        })
-
-                        var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
-
-                        finaleTwo.push({
-                            key: tempIn,
-                            values: 0
-                        })
-
-                        // console.log('two  ' + tempIn)
-
-                    } else {
-
-                    }
-                }
-
-                // END
-
-                if (i != 0) {
-
-                    if (JSON.stringify(dayPlusOne) != JSON.stringify(previousDate)) {
-
-                        var smoothner = moment(dayPlusOne).add(1, "hour")
-
-                        // tempIn is just of temporary string conversions.
-                        var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
-                            // console.log(tempIn)
-
-                        finaleTwo.push({
-                            key: tempIn,
-                            values: 0
-                        })
-
-                        var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
-
-                        finaleTwo.push({
-                                key: tempIn,
-                                values: 0
-                            })
-                            // console.log('One  ' + tempIn)
-
-                    } else {
-                        finaleTwo.push({
-                            key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-                            values: d.values
-                        })
-                    }
-                } else {}
-
-                finaleTwo.push({
-                    key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-                    values: d.values
-                })
-
-                // Checks for the next 
-                dayMinusOne = moment(d.key).subtract(1, 'days')
-
-                // Daylight Savings (the knot problem)
-                if (JSON.stringify(dayMinusOne).indexOf("T23:00:01.000Z") > -1) {
-                    dayMinusOne = moment(dayMinusOne).add(1, "hour")
-
-                    // console.log('asdasd' + JSON.stringify(dayMinusOne))
-                }
-                if (JSON.stringify(dayMinusOne).indexOf("T01:00:01.000Z") > -1) {
-                    dayMinusOne = moment(dayMinusOne).subtract(1, "hour")
-
-                    // console.log('asdasd' + JSON.stringify(dayMinusOne))
-                }
-
-                // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
-                previousDateActual = d.key;
-            })
-        } else if (timeDuration == "week") {
-
-            // console.log('asdsa')
-
-            // BEWARE BEWARE BEWARE!
-            // Countless hours have been spent trying to get this part to work. 
-            // TLDR; On MediaWiki APIs, time runs backwards!
-
-            var previousDateActual = "";
-            var dayMinusOne;
-
-            dataTwo.forEach(function(d, i) {
-
-                var dayPlusOne = moment(d.key).add(1, 'week')
-
-                // Daylight Savings (the knot problem)
-                if (JSON.stringify(dayPlusOne).indexOf("T23:00:01.000Z") > -1) {
-                    dayPlusOne = moment(dayPlusOne).add(1, "hour")
-                }
-                if (JSON.stringify(dayPlusOne).indexOf("T01:00:01.000Z") > -1) {
-                    dayPlusOne = moment(dayPlusOne).subtract(1, "hour")
-                }
-
-                var theDay = moment(d.key)
-
-                var previousDate = moment(previousDateActual)
-
-                // console.log('Week: ' + JSON.stringify(dayPlusOne) + "  |  " + JSON.stringify(previousDate) + "  |  " + JSON.stringify(dayMinusOne) + "  |  " + JSON.stringify(d.key))
-
-                // START: At all costs, this needs to be in front of the second part.
-
-                if (i == 0) {} else {
-                    if (JSON.stringify(dayMinusOne) != JSON.stringify(d.key)) {
-
-                        // tempIn is just of temporary string conversions. '"' need to be removed.å
-                        var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
-
-                        finaleTwo.push({
-                            key: tempIn,
-                            values: 0
-                        })
-                    } else {
-
-                    }
-                }
-                // END
-
-                if (i != 0) {
-
-                    if (JSON.stringify(dayPlusOne) != JSON.stringify(previousDate)) {
-
-                        // tempIn is just of temporary string conversions.
-                        var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
-                            // console.log(tempIn)
-
-                        finaleTwo.push({
-                                key: tempIn,
-                                values: 0
-                            })
-                            //  console.log('One  ' + tempIn)
-
-                    } else {
-                        finaleTwo.push({
-                            key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-                            values: d.values
-                        })
-                    }
-                } else {}
-
-                finaleTwo.push({
-                    key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-                    values: d.values
-                })
-
-                // Checks for the next 
-                dayMinusOne = moment(d.key).subtract(1, 'week')
-
-                // Daylight Savings (the knot problem)
-                if (JSON.stringify(dayMinusOne).indexOf("T23:00:01.000Z") > -1) {
-                    dayMinusOne = moment(dayMinusOne).add(1, "hour")
-                }
-                if (JSON.stringify(dayMinusOne).indexOf("T01:00:01.000Z") > -1) {
-                    dayMinusOne = moment(dayMinusOne).subtract(1, "hour")
-                }
-
-                // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
-                previousDateActual = d.key;
-            })
-        } else if (timeDuration == "month") {
-
-            // BEWARE BEWARE BEWARE!
-            // Countless hours have been spent trying to get this part to work. 
-            // TLDR; On MediaWiki APIs, time runs backwards!
-
-            var previousDateActual = "";
-            var theDayMisnomerPlus;
-
-            dataTwo.forEach(function(d, i) {
-
-                var theDayMisnomerMonth = (d.key).substr(5, 6)
-
-                var initialPart = (d.key).substr(0, 4)
-                var latterPart = "-01T00:00:01.000Z"
-
-                var theDayMisnomerMinus = parseInt(theDayMisnomerMonth);
-
-                if (theDayMisnomerMinus == 12) {
-
-                    // Getting year + 1 & month = 01
-                    initialPart = (parseInt(initialPart) + 1).toString()
-                    theDayMisnomerMinus = "01"
-                    theDayMisnomerMinus = initialPart + "-" + theDayMisnomerMinus + latterPart;
-
-                } else {
-                    theDayMisnomerMinus = theDayMisnomerMinus + 1;
-                    theDayMisnomerMinus = theDayMisnomerMinus.toString()
-
-                    // To add 0 in front of months. String socery.
-                    if (theDayMisnomerMinus.length == 1) {
-                        theDayMisnomerMinus = initialPart + "-0" + theDayMisnomerMinus + latterPart;
-                    } else {
-                        theDayMisnomerMinus = initialPart + "-" + theDayMisnomerMinus + latterPart;
-                    }
-                }
-
-                var theDay = moment(d.key)
-
-                var previousDate = moment(previousDateActual)
-
-                if (JSON.stringify(theDayMisnomerMinus) != JSON.stringify(previousDate)) {
-
-                    // tempIn is just of temporary string conversions.
-                    var tempIn = JSON.stringify(theDayMisnomerMinus).replace("\"", "").replace("\"", "")
-                        // console.log(tempIn)
-
-                    // Adding the new Zeroed entry at relevant location so as to avoid sorting.
-                    data.splice(i, 1, {
-                        key: tempIn,
-                        values: 0
-                    })
-
-                } else {}
-
-                // START: At all costs, this needs to be in front before -> theDayMisnomerPlus = moment(d.key).subtract(1, 'days')
-                if (i != 0) {
-                    if (JSON.stringify(theDayMisnomerPlus) != JSON.stringify(d.key)) {
-
-                        // tempIn is just of temporary string conversions. '"' need to be removed.å
-                        var tempIn = JSON.stringify(theDayMisnomerPlus).replace("\"", "").replace("\"", "")
-
-                        // Adding the new Zeroed entry at relevant location so as to avoid sorting.
-                        data.splice(i - 1, 1, {
-                            key: tempIn,
-                            values: 0
-                        })
-
-                    } else {}
-                }
-
-                // END
-
-                // Checks for the next 
-
-                var theDayMisnomerMonth = (d.key).substr(5, 6)
-
-                var initialPart = (d.key).substr(0, 4)
-                var latterPart = "-01T00:00:01.000Z"
-
-                var theDayMisnomerPlus = parseInt(theDayMisnomerMonth);
-
-                if (theDayMisnomerPlus == 1) {
-
-                    // Getting year + 1 & month = 01
-                    initialPart = (parseInt(initialPart) - 1).toString()
-                    theDayMisnomerPlus = "12"
-
-                    theDayMisnomerPlus = initialPart + "-" + theDayMisnomerPlus + latterPart;
-                    // console.log(theDayMisnomerPlus)
-
-                } else {
-                    theDayMisnomerPlus = theDayMisnomerPlus - 1;
-                    theDayMisnomerPlus = theDayMisnomerPlus.toString()
-
-                    // To add 0 in front of months. String socery.
-                    if (theDayMisnomerPlus.length == 1) {
-                        theDayMisnomerPlus = initialPart + "-0" + theDayMisnomerPlus + latterPart;
-                    } else {
-                        theDayMisnomerPlus = initialPart + "-" + theDayMisnomerPlus + latterPart;
-                    }
-
-                    // console.log(theDayMisnomerMinus)
-                }
-                theDayMisnomerPlus = moment(d.key).subtract(1, 'month')
-                    // console.log(theDayMisnomerPlus)
-
-                // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
-                previousDateActual = d.key;
-            })
-        }
-
-        // Concating the two dataSets
-        var finaleFinale = []
-
-        finaleFinale = finaleOne.concat(finaleTwo);
-        console.log(finaleFinale)
 
         var tip = d3.tip()
             .attr('class', 'd3-tip')
@@ -2228,7 +1659,7 @@ function grandPlotter(graphOne, graphTwo) {
 
         svgBase.call(tip);
 
-        x.domain(d3.extent(finaleFinale, function(d) {
+        x.domain(d3.extent(finale, function(d) {
 
             if (timeLimit == null && timeLimitUpper == null) {
                 // console.log("nullnull")
@@ -2255,7 +1686,7 @@ function grandPlotter(graphOne, graphTwo) {
                 }
             }
         }))
-        y.domain(d3.extent(finaleFinale, function(d) {
+        y.domain(d3.extent(finale, function(d) {
 
             if (timeLimit == null && timeLimitUpper == null) {
                 return d.values;
@@ -2417,85 +1848,85 @@ function grandPlotter(graphOne, graphTwo) {
                 .attr("height", 20);
         })
 
-        // d3.select(idname).select('.svgBase')
-        //     .append('text')
-        //     .text("Page Edits")
-        //     .attr("x", function(d) {
-        //         var length = numberWithSpaces(totalEditorsOne).length
-        //         var lengthTwo = numberWithSpaces(totalEditsOne).length
-        //         return width - (24 * length) - 90 - (24 * lengthTwo) + 5
-        //     })
-        //     .attr("y", 40)
-        //     .attr("font-family", "Helvetica Neue")
-        //     .attr("font-size", function(d) {
-        //         return "12.33px"
-        //     })
-        //     .attr("font-weight", "500")
-        //     .attr("fill", "#DCDCDC")
-        //     .attr('opacity', "1");
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text("Page Edits")
+            .attr("x", function(d) {
+                var length = numberWithSpaces(totalEditors).length
+                var lengthTwo = numberWithSpaces(totalEdits).length
+                return width - (24 * length) - 90 - (24 * lengthTwo) + 5
+            })
+            .attr("y", 40)
+            .attr("font-family", "Helvetica Neue")
+            .attr("font-size", function(d) {
+                return "12.33px"
+            })
+            .attr("font-weight", "500")
+            .attr("fill", "#DCDCDC")
+            .attr('opacity', "1");
 
-        // d3.select(idname).select('.svgBase')
-        //     .append('text')
-        //     .text(numberWithSpaces(totalEdits))
-        //     .attr("x", function(d) {
-        //         var length = numberWithSpaces(totalEditors).length
-        //         var lengthTwo = numberWithSpaces(totalEdits).length
-        //         return width - (24 * length) - 90 - (24 * lengthTwo)
-        //     })
-        //     .attr("y", 90)
-        //     .attr("font-family", "Open Sans")
-        //     .attr("font-weight", 700)
-        //     .attr("font-size", function(d) {
-        //         return "46px"
-        //     })
-        //     .attr("fill", "white")
-        //     .attr('opacity', "1");
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text(numberWithSpaces(totalEdits))
+            .attr("x", function(d) {
+                var length = numberWithSpaces(totalEditors).length
+                var lengthTwo = numberWithSpaces(totalEdits).length
+                return width - (24 * length) - 90 - (24 * lengthTwo)
+            })
+            .attr("y", 90)
+            .attr("font-family", "Open Sans")
+            .attr("font-weight", 700)
+            .attr("font-size", function(d) {
+                return "46px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "1");
 
-        // d3.select(idname).select('.svgBase')
-        //     .append('text')
-        //     .text("Editors")
-        //     .attr("x", function(d) {
-        //         var length = numberWithSpaces(totalEditors).length
-        //         return width - (24 * length) - 45 + 5
-        //     })
-        //     .attr("y", 40)
-        //     .attr("font-family", "Helvetica Neue")
-        //     .attr("font-size", function(d) {
-        //         return "12.33px"
-        //     })
-        //     .attr("font-weight", "500")
-        //     .attr("fill", "#DCDCDC")
-        //     .attr('opacity', "1");
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text("Editors")
+            .attr("x", function(d) {
+                var length = numberWithSpaces(totalEditors).length
+                return width - (24 * length) - 45 + 5
+            })
+            .attr("y", 40)
+            .attr("font-family", "Helvetica Neue")
+            .attr("font-size", function(d) {
+                return "12.33px"
+            })
+            .attr("font-weight", "500")
+            .attr("fill", "#DCDCDC")
+            .attr('opacity', "1");
 
-        // d3.select(idname).select('.svgBase')
-        //     .append('text')
-        //     .text(numberWithSpaces(totalEditors))
-        //     .attr("x", function(d) {
-        //         var length = numberWithSpaces(totalEditors).length
-        //         return width - (24 * length) - 45
-        //     })
-        //     .attr("y", 90)
-        //     .attr("font-family", "Open Sans")
-        //     .attr("font-weight", 700)
-        //     .attr("font-size", function(d) {
-        //         return "46px"
-        //     })
-        //     .attr("fill", "white")
-        //     .attr('opacity', "1");
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text(numberWithSpaces(totalEditors))
+            .attr("x", function(d) {
+                var length = numberWithSpaces(totalEditors).length
+                return width - (24 * length) - 45
+            })
+            .attr("y", 90)
+            .attr("font-family", "Open Sans")
+            .attr("font-weight", 700)
+            .attr("font-size", function(d) {
+                return "46px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "1");
 
-        // d3.select(idname).select('.svgBase')
-        //     .append('text')
-        //     .text(pageTitle)
-        //     // .attr("text-anchor", "end")
-        //     .attr("x", 100)
-        //     .attr("y", 54)
-        //     .attr("font-family", "Georgia")
-        //     .attr("font-size", function(d) {
-        //         //console.log(pageTitle + picUrl)
-        //         return "29px"
-        //     })
-        //     .attr("fill", "white")
-        //     .attr('opacity', "1");
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text(pageTitle)
+            // .attr("text-anchor", "end")
+            .attr("x", 100)
+            .attr("y", 54)
+            .attr("font-family", "Georgia")
+            .attr("font-size", function(d) {
+                //console.log(pageTitle + picUrl)
+                return "29px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "1");
 
 
         // .attr("transform", "translate(0," + height + ")") shifts the axis to the bottom part of the G element. 
@@ -2557,64 +1988,132 @@ function grandPlotter(graphOne, graphTwo) {
                 rectangle.style('fill', 'black');
             });
 
+        if (chartType == "barChart") {
 
-        svgBase.append("path")
-            .datum(finaleOne)
-            .attr("class", "upperline")
-            .attr("d", upperline)
-            .attr("fill", "none")
-            .attr("stroke", function() {
-                if (graphStyle == "cover") {
-                    return "#e74c3c"
-                } else {
-                    return "#FAFAFA"
-                }
-            })
-            .attr("stroke-width", "3px")
-            .append('text')
-            .text("Page Edits")
-            .attr("x", function(d) {
-                var length = numberWithSpaces(totalEditorsOne).length
-                var lengthTwo = numberWithSpaces(totalEditsOne).length
-                return width - (24 * length) - 90 - (24 * lengthTwo) + 5
-            })
-            .attr("y", 40)
-            .attr("font-family", "Helvetica Neue")
-            .attr("font-size", function(d) {
-                return "12.33px"
-            })
-            .attr("font-weight", "500")
-            .attr("fill", "#DCDCDC")
-            .attr('opacity', "1");
+            var a = moment(x.domain()[1]);
+            var b = moment(x.domain()[0]);
 
-        svgBase.append("path")
-            .datum(finaleTwo)
-            .attr("class", "upperline")
-            .attr("d", upperline)
-            .attr("fill", "none")
-            .attr("stroke", function() {
-                if (graphStyle == "cover") {
-                    return "#e74c3c"
-                } else {
-                    return "#1DB1FC"
-                }
-            })
-            .attr("stroke-width", "3px")
-            .append('text')
-            .text("Page Edits")
-            .attr("x", function(d) {
-                var length = numberWithSpaces(totalEditorsTwo).length
-                var lengthTwo = numberWithSpaces(totalEditsTwo).length
-                return width - (24 * length) - 90 - (24 * lengthTwo) + 5
-            })
-            .attr("y", 40)
-            .attr("font-family", "Helvetica Neue")
-            .attr("font-size", function(d) {
-                return "12.33px"
-            })
-            .attr("font-weight", "500")
-            .attr("fill", "#DCDCDC")
-            .attr('opacity', "1");
+            var difference = a.diff(b, timeDuration)
+
+            svgBase.selectAll(".bar")
+                .data(finale)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("x", function(d, i) {
+
+                    if (timeLimit == null && timeLimitUpper == null) {
+                        return x(parseDate(d.key)) - ((width) / difference) / 2
+                    } else if (timeLimit == null && timeLimitUpper != null) {
+                        if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                            return x(parseDate(d.key)) - ((width) / difference) / 2
+                        }
+                        return x(timeLimitUpper)
+                    } else if (timeLimit != null && timeLimitUpper == null) {
+                        if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                            return x(parseDate(d.key)) - ((width) / difference) / 2
+                        }
+                        return x(timeLimit)
+                    } else if (timeLimit != null && timeLimitUpper != null) {
+                        if (moment(d.key).diff(moment(timeLimit)) < 0) {
+                            return x(timeLimit)
+                        } else {
+                            if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                                return x(parseDate(d.key)) - ((width) / difference) / 2
+                            } else {
+                                return x(timeLimitUpper)
+                            }
+                        }
+                    }
+
+                    // console.log(d.key)
+                    // console.log(parseDate(d.key))
+                    // console.log(x(parseDate(d.key)))
+
+                    // return x(parseDate(d.key)) - ((width) / difference)/2
+
+                })
+                .attr("width", function() {
+
+                    // var barWidth = width / difference 
+                    // if ( barWidth < 5 ) {
+                    //     return 3
+                    // }
+                    // return ( width / difference )
+                    return (width / difference) - ((width / difference) / 5)
+                })
+                .attr("y", function(d) {
+                    return y(d.values)
+                })
+                .attr("height", function(d) {
+
+                    if (timeLimit == null && timeLimitUpper == null) {
+                        return height - y(d.values)
+                    } else if (timeLimit == null && timeLimitUpper != null) {
+                        if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                            return height - y(d.values)
+                        } else {
+                            return height - y(0)
+                        }
+                    } else if (timeLimit != null && timeLimitUpper == null) {
+                        if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                            return height - y(d.values)
+                        } else {
+                            return height - y(0)
+                        }
+                    } else if (timeLimit != null && timeLimitUpper != null) {
+
+                        if (moment(d.key).diff(moment(timeLimit)) < 0) {
+                            return y(0)
+                        } else {
+                            if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                                return height - y(d.values)
+                            } else {
+                                return height - y(0)
+                            }
+                        }
+                    }
+
+                    // return height - y(d.values)
+
+                })
+                .attr("opacity", function(d) {
+                    return 0.5
+                })
+                .attr("shape-rendering", "crispEdges")
+                .attr("fill", function(d) {
+                    return "#2196F3"
+                })
+        } else {
+            svgBase.append("path")
+                .datum(finale)
+                .attr("class", "upperline")
+                .attr("d", upperline)
+                .attr("fill", "none")
+                .attr("stroke", function() {
+                    if (graphStyle == "cover") {
+                        return "#e74c3c"
+                    } else {
+                        return "rgb(94, 255, 176)"
+                    }
+                })
+                .attr("stroke-width", "3px")
+                .append('text')
+                .text("Page Edits")
+                .attr("x", function(d) {
+                    var length = numberWithSpaces(totalEditors).length
+                    var lengthTwo = numberWithSpaces(totalEdits).length
+                    return width - (24 * length) - 90 - (24 * lengthTwo) + 5
+                })
+                .attr("y", 40)
+                .attr("font-family", "Helvetica Neue")
+                .attr("font-size", function(d) {
+                    return "12.33px"
+                })
+                .attr("font-weight", "500")
+                .attr("fill", "#DCDCDC")
+                .attr('opacity', "1");
+        }
 
         // var rectangle = svgBase.append("rect")
         //     // .attr("x", d3.mouse(this)[0])
@@ -2775,6 +2274,141 @@ function grandPlotter(graphOne, graphTwo) {
 
         d3.select("#" + "imageWidthSlider" + idname.slice(1)).on("input", function() {
             updateImageWidth(+this.value);
+        });
+
+        d3.select("#lineChart" + idname.slice(1)).on("click", function() {
+
+            svgBase.selectAll(".bar")
+                .remove()
+
+            svgBase.append("path")
+                .datum(finale)
+                .attr("class", "upperline")
+                .attr("d", upperline)
+                .attr("fill", "none")
+                .attr("stroke", function() {
+                    if (graphStyle == "cover") {
+                        return "#e74c3c"
+                    } else {
+                        return "rgb(94, 255, 176)"
+                    }
+                })
+                .attr("stroke-width", "3px")
+                .append('text')
+                .text("Page Edits")
+                .attr("x", function(d) {
+                    var length = numberWithSpaces(totalEditors).length
+                    var lengthTwo = numberWithSpaces(totalEdits).length
+                    return width - (24 * length) - 90 - (24 * lengthTwo) + 5
+                })
+                .attr("y", 40)
+                .attr("font-family", "Helvetica Neue")
+                .attr("font-size", function(d) {
+                    return "12.33px"
+                })
+                .attr("font-weight", "500")
+                .attr("fill", "#DCDCDC")
+                .attr('opacity', "1");
+        });
+
+        d3.select("#barChart" + idname.slice(1)).on("click", function() {
+
+            svgBase.selectAll(".upperline")
+                .remove()
+
+            var a = moment(x.domain()[1]);
+            var b = moment(x.domain()[0]);
+
+            var difference = a.diff(b, timeDuration)
+
+            console.log(difference)
+
+            console.log(finale)
+
+            svgBase.selectAll(".bar")
+                .data(finale)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
+                .attr("x", function(d, i) {
+
+                    if (timeLimit == null && timeLimitUpper == null) {
+                        return x(parseDate(d.key)) - ((width) / difference) / 2
+                    } else if (timeLimit == null && timeLimitUpper != null) {
+                        if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                            return x(parseDate(d.key)) - ((width) / difference) / 2
+                        }
+                        return x(timeLimitUpper)
+                    } else if (timeLimit != null && timeLimitUpper == null) {
+                        if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                            return x(parseDate(d.key)) - ((width) / difference) / 2
+                        }
+                        return x(timeLimit)
+                    } else if (timeLimit != null && timeLimitUpper != null) {
+                        if (moment(d.key).diff(moment(timeLimit)) < 0) {
+                            return x(timeLimit)
+                        } else {
+                            if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                                return x(parseDate(d.key)) - ((width) / difference) / 2
+                            } else {
+                                return x(timeLimitUpper)
+                            }
+                        }
+                    }
+
+                    // console.log(d.key)
+                    // console.log(parseDate(d.key))
+                    // console.log(x(parseDate(d.key)))
+
+                    // return x(parseDate(d.key)) - ((width) / difference)/2
+
+                })
+                .attr("width", function() {
+
+                    return (width / difference) - ((width / difference) / 5)
+                })
+                .attr("y", function(d) {
+                    return y(d.values)
+                })
+                .attr("height", function(d) {
+
+                    if (timeLimit == null && timeLimitUpper == null) {
+                        return height - y(d.values)
+                    } else if (timeLimit == null && timeLimitUpper != null) {
+                        if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                            return height - y(d.values)
+                        } else {
+                            return height - y(0)
+                        }
+                    } else if (timeLimit != null && timeLimitUpper == null) {
+                        if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                            return height - y(d.values)
+                        } else {
+                            return height - y(0)
+                        }
+                    } else if (timeLimit != null && timeLimitUpper != null) {
+
+                        if (moment(d.key).diff(moment(timeLimit)) < 0) {
+                            return y(0)
+                        } else {
+                            if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                                return height - y(d.values)
+                            } else {
+                                return height - y(0)
+                            }
+                        }
+                    }
+
+                    // return height - y(d.values)
+
+                })
+                .attr("opacity", function(d) {
+                    return 1
+                })
+                .attr("shape-rendering", "crispEdges")
+                .attr("fill", function(d) {
+                    return "#2196F3"
+                })
         });
 
         d3.select("#stretch" + idname.slice(1)).on("click", function() {
@@ -3055,6 +2689,8 @@ function grandPlotter2(graphOne, graphTwo) {
 
     function multiplePlotter(objectOne, objectTwo, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight) {
         // var data = objectOne
+
+        ////
         var timeLimit = null;
 
         var previousSize;
