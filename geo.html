@@ -26,13 +26,11 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.min.js"></script>
     <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
     <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
-
-    <script src="js/script.js"></script>
-
+    <script src="js/junk/geo.js"></script>
     <!-- 
     <script src="test.js"></script>
     <script src="js/scriptGrandPlotter.js"></script>
-    -->   
+    -->
 </head>
 
 <body>
@@ -45,10 +43,10 @@
                 <p class="navbar-text">Wikipedia Visualizer</p>
             </div>
             <ul class="nav navbar-nav navbar-right">
-              <li><a class="navbar-text borderless" href="index.html">Event</span></a></li>
-              <li><a class="navbar-text borderless" href="general.html">General</a></li>
-              <li><a class="navbar-text borderless" href="compare.html">Compare</a></li>
-              <li><a class="navbar-text borderless" href="geo.html"><span class="span-underline">GeoPlot</span></a></li>
+                <li><a class="navbar-text borderless" href="index.html">Event</span></a></li>
+                <li><a class="navbar-text borderless" href="general.html">General</a></li>
+                <li><a class="navbar-text borderless" href="compare.html">Compare</a></li>
+                <li><a class="navbar-text borderless" href="geo.html"><span class="span-underline">GeoPlot</span></a></li>
             </ul>
         </div>
     </nav>
@@ -151,40 +149,22 @@
             </div>
         </div>
         <div class="col-md-9">
-
-
             <div class="graphs">
-
                 <div class="col-md-12">
-                    <h1 class="graphSectionHeader"> Line Charts</h1>
-                    <div class="graphsControls">
-                        <label class="input-labels-graph">ATTRIBUTION</label>
-                        
-                        <div class="btn-group" data-toggle="buttons">
-                            <label  id="CCSA" class="btn btn-primary active">
-                                <input type="radio" name="options" autocomplete="off" checked>CC BY
-                            </label>
-                            <label  id="CCBYSA" class="btn btn-primary">
-                                <input type="radio" name="options" autocomplete="off">CC BY SA
-                            </label>
-                            <label id="CCSANC" class="btn btn-primary">
-                                <input type="radio" name="options" id="CCSANC" autocomplete="off">CC SA NC
-                            </label>
+                </div>
+                <div class="col-md-12">
+                    <h1 class="graphTitle" class="graphHeader"> GeoPlot
+                    <a id="onePop" href="#" data-toggle="popover"><i class="fa fa-info-circle"></i></a></h1>
+                    <div id="oneControls">
+                        <div id="controlsone"></div>
+                        <div class="sliderSections">
+                            <label class="input-labels-graph">PLOT</label>
+                            <div class="btn-group" data-toggle="buttons">
+                                <button class="btn btn-default input-button" id="oneB">Woohoo!</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="graphsControls">
-                        <label class="input-labels-graph">AUTHOR</label>
-                        <input type='text' class="form-control col-md-2" id='imageURL' placeholder='Author Name' /></input>
-                    </div>
-                    
-                </div>
-
-
-                <div class="col-md-12">
-                    <h1 class="graphTitle" class="graphHeader"> Weekly Aggregated Edits 
-                    <a id="onePop" href="#" data-toggle="popover"><i class="fa fa-info-circle"></i></a></h1>
-                    <div id="oneControls"></div>
-                    <div class="graphPlace" id="one"></div>
+                    <div class="graphPlace" id="one" style="margin-top: 150px;width: 900px;height: 500px"></div>
                 </div>
 
                 <div class="col-md-12">
@@ -193,8 +173,6 @@
                     <div id="twoControls"></div>
                     <div class="graphPlace" id="two"></div>
                 </div>
-
-
                 <canvas width="960" height="500" style="display:none"></canvas>
             </div>
         </div>
