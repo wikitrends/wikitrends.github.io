@@ -19,18 +19,20 @@
     <!-- Core D3 files -->
     <script src="js/d3.min.js"></script>
     <!-- Extensions or Addons -->
+
     <script src="js/d3-tip.js"></script>
     <script src="js/wordCloud.js"></script>
     <script src="js/pikaday.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.9.3/lodash.min.js"></script>
     <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+
     <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
-    <script src="js/junk/geo.js"></script>
-    <!-- 
-    <script src="test.js"></script>
-    <script src="js/scriptGrandPlotter.js"></script>
-    -->
+
+    <script src="junk/geo.js"></script>
+
 </head>
 
 <body>
@@ -81,9 +83,8 @@
                 <!-- /btn-group -->
                 <input type="text" class="form-control" name='searchQuery' placeholder='Search Articles' />
             </div>
-            <label class="input-labels">DATES SELECTOR</label>
+             <label class="input-labels">DATES SELECTOR</label>
             <div class="input-group  col-md-12">
-                <!-- /btn-group -->
                 <div class="datesSectionOne col-md-5 input-half-one">
                     <input type="text" class="datepicker form-control" placeholder='Start Date' id="datepicker" />
                 </div>
@@ -93,17 +94,13 @@
                 <div class="col-md-2">
                     <button class="btn btn-default input-button button-half-one" id="dateRefresher" type="submit"><i style="margin-left: -6px;" class="fa fa-arrow-right"></i></button>
                 </div>
-            </div>
+            </div> 
             <label class="input-labels">IMAGEURL</label>
             <div class="input-group col-md-12">
-                <!-- /btn-group -->
                 <div class="col-md-10 input-half-one">
                     <input type='text' class="form-control" id='imageURL' placeholder='Wikicommons URL' /></input>
                 </div>
-                <!-- 
-                <div class="col-md-5 input-half-two">
-                    <input type="text" class="datepicker form-control" placeholder='End Date' id="datepickerTwo">
-                </div> -->
+
                 <div class="col-md-2 input-half-two">
                     <button class="btn btn-default input-button button-half-one" id="imageRefresher" type="submit"><i style="  margin-left: -6px;" class="fa fa-arrow-right"></i></button>
                 </div>
@@ -246,19 +243,4 @@ $(document).ready(function() {
 
 // This has to be here. Otherwise the datepicker UI wouldn't load!
 
-// The Date Picker thingy. Uses pikaday.js
-var picker = new Pikaday({
-    field: document.getElementById('datepicker'),
-    firstDay: 1,
-    minDate: new Date('2000-01-01'),
-    maxDate: new Date('2020-12-31'),
-    yearRange: [2000, 2020]
-});
-var pickerTwo = new Pikaday({
-    field: document.getElementById('datepickerTwo'),
-    firstDay: 1,
-    minDate: new Date('2000-01-01'),
-    maxDate: new Date('2020-12-31'),
-    yearRange: [2000, 2020]
-});
 </script>

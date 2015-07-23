@@ -353,7 +353,7 @@ var thereIs;
 
 // This is the main place where everything works. All the calls the the APIs ( except for the article seach and weeklypedia suggestions ), pretty much everything lies here. 
 
-function grandPlotter(pageIDin, pageTitlein) {
+// function grandPlotter(pageIDin, pageTitlein) {
 
     var timeLimit = picker.getDate()
     var timeLimitUpper = pickerTwo.getDate()
@@ -1721,16 +1721,15 @@ function grandPlotter(pageIDin, pageTitlein) {
         });
     }
 
-    // featuredArticle(linkInitialFeaturedArticle)
+    featuredArticle(linkInitialFeaturedArticle)
 
-    // editorOfTheWeek(linkInitialEditorOfTheWeek)
+    editorOfTheWeek(linkInitialEditorOfTheWeek)
 
-    // monthlyStats("#fourteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_new_editors_count.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
+    monthlyStats("#fourteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_new_editors_count.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
 
-    // monthlyStatsMobileDesktop("#fifteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests.csv", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests_mobile.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
+    monthlyStatsMobileDesktop("#fifteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests.csv", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests_mobile.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
 
 
-}
 
 
 // grandPlotter(2615708, "Jurrasic World")

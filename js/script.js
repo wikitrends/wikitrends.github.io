@@ -6568,7 +6568,7 @@ function grandPlotter(pageIDin, pageTitlein) {
     wordCloud(linkInitialWordCloud)
 
     // This gets the pageview stats from Stats.grok.se
-    // pageViews(linkInitialPageViews)
+    pageViews(linkInitialPageViews)
 
     // featuredArticle(linkInitialFeaturedArticle)
 
