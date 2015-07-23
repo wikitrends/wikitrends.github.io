@@ -48,6 +48,7 @@
               <li><a class="navbar-text borderless" href="index.html"><span class="span-underline">Event</span></a></li>
               <li><a class="navbar-text borderless" href="general.html">General</a></li>
               <li><a class="navbar-text borderless" href="compare.html">Compare</a></li>
+              <li><a class="navbar-text borderless" href="geo.html">GeoPlot</a></li>
             </ul>
         </div>
     </nav>
@@ -56,11 +57,27 @@
             <label class="input-labels">ARTICLE SELECTOR</label>
             <div class="input-group">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">En <span class="caret"></span></button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">en<span class="caret"></span></button>
                     <ul class="scrollable-menu dropdown-menu lang-selector">
                         <li><a>en</a></li>
                         <li><a>de</a></li>
+                        <li><a>fr</a></li>
+                        <li><a>nl</a></li>
+                        <li><a>it</a></li>
+                        <li><a>pl</a></li>
                         <li><a>es</a></li>
+                        <li><a>ru</a></li>
+                        <li><a>ja</a></li>
+                        <li><a>pt</a></li>
+                        <li><a>zh</a></li>
+                        <li><a>sv</a></li>
+                        <li><a>vi</a></li>
+                        <li><a>ca</a></li>
+                        <li><a>fi</a></li>
+                        <li><a>cs</a></li>
+                        <li><a>hu</a></li>
+                        <li><a>ko</a></li>
+                        <li><a>hi</a></li>
                     </ul>
                 </div>
                 <!-- /btn-group -->
@@ -69,10 +86,10 @@
             <label class="input-labels">DATES SELECTOR</label>
             <div class="input-group  col-md-12">
                 <!-- /btn-group -->
-                <div class="col-md-5 input-half-one">
+                <div class="datesSectionOne col-md-5 input-half-one">
                     <input type="text" class="datepicker form-control" placeholder='Start Date' id="datepicker" />
                 </div>
-                <div class="col-md-5 input-half-one">
+                <div class="datesSectionTwo col-md-5 input-half-one">
                     <input type="text" class="datepicker form-control" placeholder='End Date' id="datepickerTwo">
                 </div>
                 <div class="col-md-2">
@@ -94,8 +111,8 @@
                 </div>
             </div>
             <label class="input-labels">POPULAR ARTICLES (EDITS)</label>
-            <button class="btn btn-default input-button button-half-one" onclick="weeklyPedia('Most Edits')" type="submit">All Articles</button>
-            <button class="btn btn-default input-button button-half-two" onclick="weeklyPedia('Most New Edits')" type="submit">New Articles</button>
+            <button id="mostEdits" class="btn btn-default input-button button-half-one" onclick="weeklyPedia('Most Edits')" type="submit">All Articles</button>
+            <button id="mostNewEdits" class="btn btn-default input-button button-half-two" onclick="weeklyPedia('Most New Edits')" type="submit">New Articles</button>
             <!-- 
             <label class="input-labels">POPULAR ARTICLES (PAGEVIEWS)</label>
             <button class="btn btn-default col-md-12 input-button" type="submit">Most Popular Articles &nbsp; ( Weekly )</button>
@@ -125,19 +142,6 @@
                     <p class="weeklyPedia">WeeklyPedia</p>
                 </div> -->
             <div id="suggestionsPane">
-                <!-- div class="suggestedTitles">
-                        <a nohref="" onclick="weeklyPedia('Most Edits')">
-                            <p>Most Edits</p>
-                        </a>
-                        <a href="#" id="closeMostEdits"><i class="fa fa-times"></i></a>
-                    </div>
-
-                    <div class="suggestedTitles">
-                        <a nohref="" onclick="weeklyPedia('Most New Edits')">
-                            <p>Most New Edits</p>
-                        </a>
-                        <a href="#" id="closeMostNewEdits"><i class="fa fa-times"></i></a>
-                    </div> -->
                 <div class="mostEdits"></div>
                 <div class="mostNewEdits"></div>
             </div>
@@ -176,7 +180,6 @@
                 </div>
 
 
-
                 <div class="col-md-12">
                     <h1 class="graphTitle" class="graphHeader"> Weekly Aggregated Edits 
                     <a id="onePop" href="#" data-toggle="popover"><i class="fa fa-info-circle"></i></a></h1>
@@ -212,17 +215,16 @@
                     <div class="graphPlace" id="four"></div>
                 </div>
 
+                <div class="col-md-12">
+                    <h1 class="graphTitle" class="graphHeader"> Pie Chart
+                    <a id="fivePop" href="#" data-toggle="popover" title="Popover Header"><i class="fa fa-info-circle"></i></a></h1>
+                    <div id="fiveControls"></div>
+                    <div class="graphPlace" id="five"></div>
+                </div>
+                                <!-- <div id=""></div> -->
 
-                <h1 class="graphTitle" class="graphHeader"> Today's featured article</h1>
-                <!-- <p class="graphDescription">For the past 90 days (stat.grok.se)</p> -->
-                <div id="twelve"></div>
-                <h1 class="graphTitle" class="graphHeader"> Editors of the Month</h1>
-                <!-- <p class="graphDescription">For the past 90 days (stat.grok.se)</p> -->
-                <div id="thirteen"></div>
-                <h1 class="graphTitle" class="graphHeader"> Monthly Statistics</h1>
-                <!-- <p class="graphDescription">For the past 90 days (stat.grok.se)</p> -->
-                <div id="fourteen"></div>
-                <div id="fifteen"></div>
+
+<!-- 
                 <h1 class="graphTitle" class="graphHeader"> WordCloud Graph (Page Titles)</h1>
                 <p class="graphDescription">Since the day the article was created. </p>
                 <div id="three"></div>
@@ -231,13 +233,16 @@
                 <div id="four"></div>
                 <h1 class="graphTitle" class="graphHeader"> Pie Chart (By Language)</h1>
                 <p class="graphDescription">Since the day the article was created. </p>
-                <div id="five"></div>
+
+
                 <h1 class="graphTitle" class="graphHeader"> PageViews</h1>
                 <p class="graphDescription">For the past 90 days (stat.grok.se)</p>
                 <div id="seven"></div>
                 <h1 class="graphTitle" class="graphHeader"> PageViews (Interpolated)</h1>
                 <p class="graphDescription">For the past 90 days (stat.grok.se)</p>
                 <div id="eight"></div>
+ -->
+                <!-- 
                 <h1 class="graphTitle" class="graphHeader"> Geo-Plot (Number of Edits) <button style="margin-left: 80px" id="nineB">Tada!</button></h1>
                 <p class="graphDescription">Uses CartoDB</p>
                 <div id="nine"></div>
@@ -245,11 +250,8 @@
                 <p class="graphDescription">Uses CartoDB</p>
                 <div id="ten"></div>
                 <h1 class="graphTitle" class="graphHeader"> Geo-Plot (Edits Clustermap) <button style="margin-left: 80px" id="elevenB">Tada!</button></h1>
-                <p class="graphDescription">Uses CartoDB</p>
-                <div id="eleven"></div>
-                <div id="svgdataurl"></div>
-                <div id="pngdataurl"></div>
-                <div id="pngdataurl"></div>
+                <p class="graphDescription">Uses CartoDB</p> -->
+
 
                 <canvas width="960" height="500" style="display:none"></canvas>
             </div>

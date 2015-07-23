@@ -13,12 +13,26 @@
     padding-right: 15px;
     padding-left: 15px;
 }
+#selectedArticles {
+    margin-bottom: 30px;
+}
 .span-underline {
     border-bottom: black 1px solid;
     padding-bottom: 5px;
 }
 .navbar-brand img {
     width: 40px;
+}
+.selectionCard {
+    width: 158px;
+    float: left;
+}
+.closingIcon {
+    float: left;
+    display: inline-block;
+    margin-left: 0px;
+    line-height: 20px;
+        padding-top: 5px;
 }
 .scrollable-menu {
     height: auto;

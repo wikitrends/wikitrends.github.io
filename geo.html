@@ -27,8 +27,12 @@
     <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
     <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
 
-    <script src="js/compareJS.js"></script>
+    <script src="js/script.js"></script>
 
+    <!-- 
+    <script src="test.js"></script>
+    <script src="js/scriptGrandPlotter.js"></script>
+    -->   
 </head>
 
 <body>
@@ -41,10 +45,10 @@
                 <p class="navbar-text">Wikipedia Visualizer</p>
             </div>
             <ul class="nav navbar-nav navbar-right">
-              <li><a class="navbar-text borderless" href="index.html">Event</a></li>
+              <li><a class="navbar-text borderless" href="index.html">Event</span></a></li>
               <li><a class="navbar-text borderless" href="general.html">General</a></li>
-              <li><a class="navbar-text borderless" href="compare.html"><span class="span-underline">Compare<span></a></li>
-              <li><a class="navbar-text borderless" href="geo.html">GeoPlot</a></li>
+              <li><a class="navbar-text borderless" href="compare.html">Compare</a></li>
+              <li><a class="navbar-text borderless" href="geo.html"><span class="span-underline">GeoPlot</span></a></li>
             </ul>
         </div>
     </nav>
@@ -53,7 +57,7 @@
             <label class="input-labels">ARTICLE SELECTOR</label>
             <div class="input-group">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">En<span class="caret"></span></button>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">en<span class="caret"></span></button>
                     <ul class="scrollable-menu dropdown-menu lang-selector">
                         <li><a>en</a></li>
                         <li><a>de</a></li>
@@ -82,10 +86,10 @@
             <label class="input-labels">DATES SELECTOR</label>
             <div class="input-group  col-md-12">
                 <!-- /btn-group -->
-                <div class="col-md-5 input-half-one">
+                <div class="datesSectionOne col-md-5 input-half-one">
                     <input type="text" class="datepicker form-control" placeholder='Start Date' id="datepicker" />
                 </div>
-                <div class="col-md-5 input-half-one">
+                <div class="datesSectionTwo col-md-5 input-half-one">
                     <input type="text" class="datepicker form-control" placeholder='End Date' id="datepickerTwo">
                 </div>
                 <div class="col-md-2">
@@ -109,12 +113,10 @@
             <label class="input-labels">POPULAR ARTICLES (EDITS)</label>
             <button id="mostEdits" class="btn btn-default input-button button-half-one" onclick="weeklyPedia('Most Edits')" type="submit">All Articles</button>
             <button id="mostNewEdits" class="btn btn-default input-button button-half-two" onclick="weeklyPedia('Most New Edits')" type="submit">New Articles</button>
-            
             <!-- 
             <label class="input-labels">POPULAR ARTICLES (PAGEVIEWS)</label>
             <button class="btn btn-default col-md-12 input-button" type="submit">Most Popular Articles &nbsp; ( Weekly )</button>
-            -->
-            
+ -->
             <label class="input-labels">RESULTS</label>
             <!-- <div class="form-group">
                 <div class="input-group-btn">
@@ -140,19 +142,6 @@
                     <p class="weeklyPedia">WeeklyPedia</p>
                 </div> -->
             <div id="suggestionsPane">
-                <!-- div class="suggestedTitles">
-                        <a nohref="" onclick="weeklyPedia('Most Edits')">
-                            <p>Most Edits</p>
-                        </a>
-                        <a href="#" id="closeMostEdits"><i class="fa fa-times"></i></a>
-                    </div>
-
-                    <div class="suggestedTitles">
-                        <a nohref="" onclick="weeklyPedia('Most New Edits')">
-                            <p>Most New Edits</p>
-                        </a>
-                        <a href="#" id="closeMostNewEdits"><i class="fa fa-times"></i></a>
-                    </div> -->
                 <div class="mostEdits"></div>
                 <div class="mostNewEdits"></div>
             </div>
@@ -160,44 +149,14 @@
             <div id="results_pane">
                 <div class="searchResults"></div>
             </div>
-            <div id="results_pane2">
-                <div class="searchResults"></div>
-            </div>
         </div>
         <div class="col-md-9">
-
-                
-            <div id="selectedArticles" class="col-md-12">
-                <label style="display: block" class="input-labels">SELECTED ARTICLES</label>
-
-                <div class="selectedArticlesContainer" style="float:left">
-                </div>
-
-<!--                 <div class="input-group">
- -->                 
-<!--                 </div>
- -->
-
-                <div class="col-md-4">
-
-                    <div style="width: 65px; height: 52px; margin-right: 20px; float: left" id="languageHelper" class="input-group-btn">
-                        <button style="width: 65px; height: 52px;" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Lang<span class="caret"></span></button>
-                        <ul class="scrollable-menu dropdown-menu lang-selectora">
-<!--                             <li><a href="">English</a></li>
- -->                        </ul>
-                    </div>
-
-                    <button style=" float: left; width: 50px;margin-right: 20px;  height: 52px;" class="btn btn-default input-button button-half-one" id="staph" type="submit"><i style="margin-left: -6px;" class="fa fa-times"></i></button>
-                    <button style=" width: 50px; height: 52px;" class="btn btn-default input-button button-half-one" id="goGoGo" type="submit"><i style="margin-left: -6px;" class="fa fa-arrow-right"></i></button>
-                </div>
-
-            </div>
 
 
             <div class="graphs">
 
                 <div class="col-md-12">
-
+                    <h1 class="graphSectionHeader"> Line Charts</h1>
                     <div class="graphsControls">
                         <label class="input-labels-graph">ATTRIBUTION</label>
                         
@@ -208,8 +167,8 @@
                             <label  id="CCBYSA" class="btn btn-primary">
                                 <input type="radio" name="options" autocomplete="off">CC BY SA
                             </label>
-                            <label id="NONE" class="btn btn-primary">
-                                <input type="radio" name="options" id="NONE" autocomplete="off">NONE
+                            <label id="CCSANC" class="btn btn-primary">
+                                <input type="radio" name="options" id="CCSANC" autocomplete="off">CC SA NC
                             </label>
                         </div>
                     </div>
@@ -219,7 +178,6 @@
                     </div>
                     
                 </div>
-
 
 
                 <div class="col-md-12">
@@ -236,33 +194,6 @@
                     <div class="graphPlace" id="two"></div>
                 </div>
 
-                <div class="col-md-12">
-                    <h1 class="graphTitle" class="graphHeader"> Hourly Aggregated Edits 
-                    <a id="threePop" href="#" data-toggle="popover" title="Popover Header"><i class="fa fa-info-circle"></i></a></h1>
-                    <div id="threeControls"></div>
-                    <div class="graphPlace" id="three"></div>
-                </div>
-                <!-- 
-                <div class="col-md-12">
-                    <h1 class="graphTitle" class="graphHeader"> Hourly Aggregated Edits <button class="btn btn-default input-button pngExporter" id="threePngConvertor">Woohoo!</button></h1>
-                    <p class="graphDescription">Since the day the article was created. </p>
-                    <div class="graphPlace" id="three"></div>
-                </div>
-                -->
-
-                <div class="col-md-12">
-                    <h1 class="graphTitle" class="graphHeader"> PageViews
-                    <a id="fourPop" href="#" data-toggle="popover" title="Popover Header"><i class="fa fa-info-circle"></i></a></h1>
-                    <div id="fourControls"></div>
-                    <div class="graphPlace" id="four"></div>
-                </div>
-<!-- 
-                <div class="col-md-12">
-                    <h1 class="graphTitle" class="graphHeader"> Hourly Aggregated Edits 
-                    <a id="threePop" href="#" data-toggle="popover" title="Popover Header"><i class="fa fa-info-circle"></i></a></h1>
-                    <div id="threeControls"></div>
-                    <div class="graphPlace" id="three"></div>
-                </div> -->
 
                 <canvas width="960" height="500" style="display:none"></canvas>
             </div>

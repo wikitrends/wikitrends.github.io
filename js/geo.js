@@ -664,6 +664,88 @@ function grandPlotter(pageIDin, pageTitlein) {
 
     var linkAddress;
 
+    function getGeoData(editsRawData) {
+
+        // $.post("https://wikimedia.cartodb.com/api/v2/sql?q=create table datasource (_user varchar, timestamp TIMESTAMP, difference int, lang int)&api_key=b80e6740e20f91d4cfda9b00a9474407f30ba7e1")
+        // $.post("https://wikimedia.cartodb.com/api/v2/sql?q=select cdb_cartodbfytable('datasource')&api_key=b80e6740e20f91d4cfda9b00a9474407f30ba7e1")
+
+        $.post("https://wikimedia.cartodb.com/api/v2/sql?q=TRUNCATE TABLE datasource&api_key=b80e6740e20f91d4cfda9b00a9474407f30ba7e1")
+
+        var ja = 0;
+
+        var ipData = []
+
+        //console.log(editsRawData.length)
+
+        for (i = 0; i < editsRawData.length; i++) {
+            if (editsRawData[i].user) {
+                if ((editsRawData[i].user.match(/\./g) || []).length > 2) {
+                    ja = ja + 1;
+                    // console.log(editsRawData[i].user)
+                    ipData.push({
+                        user: editsRawData[i].user,
+                        timestamp: editsRawData[i].timestamp,
+                        difference: editsRawData[i].difference
+                            // difference: Math.abs(editsRawData[i].difference)
+                    })
+                }
+            }
+
+        }
+
+        // console.log(JSON.stringify(ipData))
+
+        var remainderEntries = ipData.length % 100;
+        // console.log(remainderEntries)
+        // console.log(ipData.length)
+        // console.log(ipData.length - remainderEntries)
+
+        for (j = 0; j < ipData.length - remainderEntries; j = j + 100) {
+
+            var postQuery = "https://wikimedia.cartodb.com/api/v2/sql?q=INSERT INTO datasource (_user, timestamp, difference) VALUES "
+
+
+            // console.log(ipData[i].difference)
+
+            for (i = j; i < j + 100; i++) {
+                // For the last one (without comma)
+                if (i == j + 99) {
+                    var postQueryPusher = "('" + ipData[i].user + "','" + ipData[i].timestamp + "','" + ipData[i].difference + "') &api_key=b80e6740e20f91d4cfda9b00a9474407f30ba7e1"
+                } else {
+                    var postQueryPusher = "('" + ipData[i].user + "','" + ipData[i].timestamp + "','" + ipData[i].difference + "'),"
+                }
+                postQuery = postQuery.concat(postQueryPusher)
+            }
+
+            // console.log(postQuery)
+            // $.post("postQuery")
+            $.post(postQuery)
+
+        }
+
+        var postQuery = "https://wikimedia.cartodb.com/api/v2/sql?q=INSERT INTO datasource (_user, timestamp, difference) VALUES "
+
+        for (j = ipData.length - remainderEntries; j < ipData.length; j = j + 1) {
+
+            // for (i = j; i < j + 100; i++) {
+            //     // For the last one (without comma)
+            if (j == ipData.length - 1) {
+                var postQueryPusher = "('" + ipData[j].user + "','" + ipData[j].timestamp + "','" + ipData[j].difference + "') &api_key=b80e6740e20f91d4cfda9b00a9474407f30ba7e1"
+            } else {
+                var postQueryPusher = "('" + ipData[j].user + "','" + ipData[j].timestamp + "','" + ipData[j].difference + "'),"
+            }
+            postQuery = postQuery.concat(postQueryPusher)
+                // }
+
+            // console.log(postQuery)
+
+            // console.log(postQuery)
+            // $.post("postQuery")
+
+        }
+        $.post(postQuery)
+    }
+
     function pageEdits(url) {
 
         getData(url, function(data) {
@@ -2020,6 +2102,8 @@ function grandPlotter(pageIDin, pageTitlein) {
                 d.difference = d.size - dataTemp[i + 1].size;
             }
         })
+
+        // getGeoData(dataTemp)
 
         var totalEdits = 0;
         var totalEditors;
@@ -5481,6 +5565,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         })
 
+
         var distances = {},
             e;
         for (var i = 0, l = brokenDownDataSource.length; i < l; i++) {
@@ -5489,6 +5574,8 @@ function grandPlotter(pageIDin, pageTitlein) {
         }
 
         var totalEditors = Object.keys(distances).length
+
+        getGeoData(dataSource)
 
         $('#loader').html('');
         $(idname).html('')

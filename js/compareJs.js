@@ -99,8 +99,6 @@ var search = function(query) {
     var langCode = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
     langCode = langCode.replace(" <span class='caret'></span>", "").toLowerCase();
 
-    console.log(langCode)
-
     $.ajax({
         url: "https://" + langCode + ".wikipedia.org/w/api.php?action=query&list=search&format=json&srsearch=" + query,
         type: 'GET',
@@ -115,6 +113,13 @@ var search = function(query) {
         // console.log("ERROR! " + status);
     });
 };
+
+// Removes the selector IDs.
+function closeThis(idname){
+    idname = "[id='" + idname + "']"
+    $(idname).remove()
+    console.log('asd')
+}    
 
 var requestArticleExtracts = function(queryResult) {
     // Request extracts for each of the articles found in the search
@@ -278,21 +283,16 @@ function precurssor(input, globalia, lang, pageTitle) {
                 $('#selectedArticles').find('#languageHelper').find("ul").append(htmlToAdd);
 
             }
-
         })
-
     }
 
     var htmlToAdd = "<div id='" + lang + "|" + pageTitle + "' class='selected_card'>";
     htmlToAdd += "<a nohref>"
 
     var linkInitialWordCloud = "https://" + lang + ".wikipedia.org/w/api.php?action=query&prop=langlinks&format=json&llprop=url%7Clangname%7Cautonym&lllimit=300&iwurl=" + "&titles=" + pageTitle + "&format=json&callback=?"
-
     wordCloud(linkInitialWordCloud)
 
-    // console.log(finalJsonObjectLangLinks)
-
-    htmlToAdd += "<p>" + pageTitle + "</br> <span style='font-weight: 600'>" + lang + "</span></p>";
+    htmlToAdd += "<p class=\"selectionCard\">" + pageTitle + "</br> <span style='font-weight: 600'>" + lang + "</span></p><i class='closingIcon fa fa-times' onClick='closeThis(\"" + lang + "|" + pageTitle + "\")'></i>";
 
     $('#selectedArticles').find('.selectedArticlesContainer').append(htmlToAdd);
 
@@ -306,6 +306,10 @@ function grandPlotterPrecurssor() {
     var arr = $('.selectedArticlesContainer > div').map(function() {
         return this.id;
     }).get();
+
+    if (arr.length!=2) {
+        alert('Nope. You need exactly two selected items to plot graph.')
+    }
 
     // the details of the two pages which have to be compared. 
     var detailsFirst = arr[0].split('|')
@@ -494,6 +498,9 @@ var thereIs;
 // This is the main place where everything works. All the calls the the APIs ( except for the article seach and weeklypedia suggestions ), pretty much everything lies here. 
 
 function grandPlotter(graphOne, graphTwo) {
+
+    document.getElementById('datepicker').value='';
+    document.getElementById('datepickerTwo').value='';
 
     var finaljsonObjectOne = [];
     var finaljsonObjectTwo = [];
@@ -777,88 +784,6 @@ function grandPlotter(graphOne, graphTwo) {
 
     var linkAddress;
 
-    function getGeoData(editsRawData) {
-
-        // $.post("https://wikimedia.cartodb.com/api/v2/sql?q=create table datasource (_user varchar, timestamp TIMESTAMP, difference int, lang int)&api_key=b80e6740e20f91d4cfda9b00a9474407f30ba7e1")
-        // $.post("https://wikimedia.cartodb.com/api/v2/sql?q=select cdb_cartodbfytable('datasource')&api_key=b80e6740e20f91d4cfda9b00a9474407f30ba7e1")
-
-        $.post("https://wikimedia.cartodb.com/api/v2/sql?q=TRUNCATE TABLE datasource&api_key=b80e6740e20f91d4cfda9b00a9474407f30ba7e1")
-
-        var ja = 0;
-
-        var ipData = []
-
-        //console.log(editsRawData.length)
-
-        for (i = 0; i < editsRawData.length; i++) {
-            if (editsRawData[i].user) {
-                if ((editsRawData[i].user.match(/\./g) || []).length > 2) {
-                    ja = ja + 1;
-                    // console.log(editsRawData[i].user)
-                    ipData.push({
-                        user: editsRawData[i].user,
-                        timestamp: editsRawData[i].timestamp,
-                        difference: editsRawData[i].difference
-                            // difference: Math.abs(editsRawData[i].difference)
-                    })
-                }
-            }
-
-        }
-
-        // console.log(JSON.stringify(ipData))
-
-        var remainderEntries = ipData.length % 100;
-        // console.log(remainderEntries)
-        // console.log(ipData.length)
-        // console.log(ipData.length - remainderEntries)
-
-        for (j = 0; j < ipData.length - remainderEntries; j = j + 100) {
-
-            var postQuery = "https://wikimedia.cartodb.com/api/v2/sql?q=INSERT INTO datasource (_user, timestamp, difference) VALUES "
-
-
-            // console.log(ipData[i].difference)
-
-            for (i = j; i < j + 100; i++) {
-                // For the last one (without comma)
-                if (i == j + 99) {
-                    var postQueryPusher = "('" + ipData[i].user + "','" + ipData[i].timestamp + "','" + ipData[i].difference + "') &api_key=b80e6740e20f91d4cfda9b00a9474407f30ba7e1"
-                } else {
-                    var postQueryPusher = "('" + ipData[i].user + "','" + ipData[i].timestamp + "','" + ipData[i].difference + "'),"
-                }
-                postQuery = postQuery.concat(postQueryPusher)
-            }
-
-            // console.log(postQuery)
-            // $.post("postQuery")
-            $.post(postQuery)
-
-        }
-
-        var postQuery = "https://wikimedia.cartodb.com/api/v2/sql?q=INSERT INTO datasource (_user, timestamp, difference) VALUES "
-
-        for (j = ipData.length - remainderEntries; j < ipData.length; j = j + 1) {
-
-            // for (i = j; i < j + 100; i++) {
-            //     // For the last one (without comma)
-            if (j == ipData.length - 1) {
-                var postQueryPusher = "('" + ipData[j].user + "','" + ipData[j].timestamp + "','" + ipData[j].difference + "') &api_key=b80e6740e20f91d4cfda9b00a9474407f30ba7e1"
-            } else {
-                var postQueryPusher = "('" + ipData[j].user + "','" + ipData[j].timestamp + "','" + ipData[j].difference + "'),"
-            }
-            postQuery = postQuery.concat(postQueryPusher)
-                // }
-
-            // console.log(postQuery)
-
-            // console.log(postQuery)
-            // $.post("postQuery")
-
-        }
-        $.post(postQuery)
-    }
-
     function pageEdits(url) {
         getData(url, function(data) {
 
@@ -1001,7 +926,7 @@ function grandPlotter(graphOne, graphTwo) {
 
     function initializer(objectOne, objectTwo, pageTitle, url, width, height, atribution) {
 
-        // pageEditsTester(objectOne,objectTwo, "#three", "none", "", "", "hour", pageTitle, url, width, height, "stretch", "lineChart", atribution)
+        pageEditsTester(objectOne,objectTwo, "#three", "none", "", "", "hour", pageTitle, url, width, height, "stretch", "lineChart", atribution)
         pageEditsTester(objectOne, objectTwo, "#two", "none", "", "", "day", pageTitle, url, width, height, "stretch", "lineChart", atribution)
         pageEditsTester(objectOne, objectTwo, "#one", "none", "", "", "week", pageTitle, url, width, height, "stretch", "lineChart", atribution)
     }
@@ -1071,8 +996,6 @@ function grandPlotter(graphOne, graphTwo) {
                 d.difference = d.size - dataTempTwo[i + 1].size;
             }
         })
-
-        // getGeoDaa(dataTempOne)
 
         var totalEditsOne = 0;
         var totalEditorsOne;
@@ -2299,6 +2222,18 @@ function grandPlotter(graphOne, graphTwo) {
             })
         }
 
+        finaleOne.sort(function(a, b) {
+            var c = new Date(a.key);
+            var d = new Date(b.key);
+            return d - c;
+        });
+
+        finaleTwo.sort(function(a, b) {
+            var c = new Date(a.key);
+            var d = new Date(b.key);
+            return d - c;
+        });
+
         // Concating the two dataSets
         var finaleFinale = []
 
@@ -2448,6 +2383,14 @@ function grandPlotter(graphOne, graphTwo) {
                     }
                 });
 
+                var opacityRect = svgFull.append("rect")
+                    .attr("id", "rectCover" + idname.slice(1))
+                    .attr("width", width + margin.right + margin.left)
+                    .attr("fill", "#f9f9f9")
+                    .attr("opacity", 0)
+                    .attr("y", 155)
+                    .attr("height", height + margin.top + margin.bottom - 155);
+
             if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
 
                 var opacityRect = svgFull.append("rect")
@@ -2456,17 +2399,6 @@ function grandPlotter(graphOne, graphTwo) {
                     .attr("fill", "black")
                     .attr("opacity", 0.7)
                     .attr("height", height + margin.top + margin.bottom);
-
-                // if (graphStyle == "cover") {
-
-                var opacityRect = svgFull.append("rect")
-                    .attr("id", "rectCover" + idname.slice(1))
-                    .attr("width", width + margin.right + margin.left)
-                    .attr("fill", "#f9f9f9")
-                    .attr("opacity", 0)
-                    .attr("y", 155)
-                    .attr("height", height + margin.top + margin.bottom - 155);
-                // }
 
             }
         });
@@ -2620,7 +2552,9 @@ function grandPlotter(graphOne, graphTwo) {
                     'stroke-width': '0.8px',
                     "opacity": "0.5"
                 });
+
         } else {
+
             svgBase.selectAll('.axis line, .axis path')
                 .style({
                     'stroke': '#ddd',
@@ -2628,6 +2562,7 @@ function grandPlotter(graphOne, graphTwo) {
                     'stroke-width': '0.7px',
                     "opacity": "0.4"
                 });
+
         }
 
         var drag = d3.behavior.drag()
@@ -3164,8 +3099,6 @@ function grandPlotter2(graphOne, graphTwo) {
         // })
 
         // console.log(tempCheck)
-
-        // getGeoData(objectOne)
 
         $('#loader').html('');
         $(idname).html('')
