@@ -2312,7 +2312,7 @@ function grandPlotter(graphOne, graphTwo) {
 
         d3.select(idname).select('.svgBase')
             .append('text')
-            .text("for " + graphOne[0] + " language" )
+            .text(graphOne[0] + "-wiki " + graphOne[1].substring(0,9) )
             .attr("x", function(d) {
                 var length = numberWithSpaces(totalEditsOne).length
                 var lengthTwo = numberWithSpaces(totalEditsTwo).length
@@ -2366,7 +2366,7 @@ function grandPlotter(graphOne, graphTwo) {
 
         d3.select(idname).select('.svgBase')
             .append('text')
-            .text("for " +graphTwo[0] + " language" )
+            .text(graphTwo[0] + "-wiki " + graphTwo[1].substring(0,9) )
             .attr("x", function(d) {
                 var length = numberWithSpaces(totalEditsTwo).length
                 return width - (24 * length) - 45 + 5
