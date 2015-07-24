@@ -2677,7 +2677,7 @@ function grandPlotter(pageIDin, pageTitlein) {
         d3.select(idname).select('.svgBase')
             .append('text')
             .attr('id', "author" + idname.slice(1))
-            .text("Author")
+            .text("")
             // .attr("text-anchor", "end")
             .attr("y", 100)
             .attr("x", function() {
