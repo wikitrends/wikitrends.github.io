@@ -2579,7 +2579,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                     }
                 })
                 .attr("height", 20);
-                
+
         })
 
         // d3.select(idname).select('.svgBase')
@@ -3114,7 +3114,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                     return (width / difference) - ((width / difference) / 5)
                 })
                 .attr("y", function(d) {
-                    return y(d.values)
+                    return y(d.values) + 100
                 })
                 .attr("height", function(d) {
 
