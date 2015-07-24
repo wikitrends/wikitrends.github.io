@@ -22,6 +22,9 @@ var pickerTwo = new Pikaday({
 // This part simply changes the UI. Just to add the the cross button when the WeeklyPedia section is used etc. 
 $(document).ready(function() {
 
+        $('.graphs').hide()
+
+
     $('#element').tooltip('show')
 
     $(".graphs").hide()
@@ -477,7 +480,7 @@ var thereIs;
 
 function grandPlotter(graphOne, graphTwo) {
 
-    $(".graphs").hide()
+    $(".graphs").show()
 
     document.getElementById('datepicker').value='';
     document.getElementById('datepickerTwo').value='';
