@@ -54,9 +54,7 @@ $(document).ready(function() {
 
         $(this).parents(".input-group-btn").find('.btn').html($(this).text() + "<span class='caret'></span>");
         $(this).parents(".input-group-btn").find('.btn').val($(this).text() + "<span class='caret'></span>");
-
     });
-
 
     $('input[name=searchQuery][type=text]').bind('change paste keyup', function() {
         var query = $('input[name=searchQuery]').val();
@@ -315,7 +313,7 @@ function getImageDimensions(url, callback) {
 
 // Puts spaces in the number!
 function numberWithSpaces(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function convertImgToBase64(url, heightParam, widthParam, callback, outputFormat) {
@@ -1173,10 +1171,10 @@ function grandPlotter(pageIDin, pageTitlein) {
 
             d3.select(idname).select('.svgBase')
                 .append('text')
-                .text("Editors")
+                .text("Languages")
                 .attr("x", function(d) {
                     var length = numberWithSpaces(totalEditors).length
-                    return width - (24 * length) - 45 + 5
+                    return width - (24 * length) - 45 - 15
                 })
                 .attr("y", 40)
                 .attr("font-family", "Helvetica Neue")
@@ -1192,7 +1190,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .text(numberWithSpaces(totalEditors))
                 .attr("x", function(d) {
                     var length = numberWithSpaces(totalEditors).length
-                    return width - (24 * length) - 45
+                    return width - (24 * length) - 65
                 })
                 .attr("y", 90)
                 .attr("font-family", "Open Sans")
@@ -1206,11 +1204,11 @@ function grandPlotter(pageIDin, pageTitlein) {
 
             d3.select(idname).select('.svgBase')
                 .append('text')
-                .text("Page Edits")
+                .text("Total Edits")
                 .attr("x", function(d) {
                     var length = numberWithSpaces(totalEditors).length
                     var lengthTwo = numberWithSpaces(totalEdits).length
-                    return width - (24 * length) - 90 - (24 * lengthTwo) + 5
+                    return width - (24 * length) - 90 - (24 * lengthTwo) - 15
                 })
                 .attr("y", 40)
                 .attr("font-family", "Helvetica Neue")
@@ -1227,7 +1225,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr("x", function(d) {
                     var length = numberWithSpaces(totalEditors).length
                     var lengthTwo = numberWithSpaces(totalEdits).length
-                    return width - (24 * length) - 90 - (24 * lengthTwo)
+                    return width - (24 * length) - 90 - (24 * lengthTwo) - 15
                 })
                 .attr("y", 90)
                 .attr("font-family", "Open Sans")
@@ -1253,39 +1251,24 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr("fill", "white")
                 .attr('opacity', "1");
 
-            //console.log(JSON.stringify(dataSourceLangLinks))
-
             var controlsInsertor = d3.select("#" + idname.slice(1) + "Controls")
 
             controlsInsertor
                 .each(function(d) {
-                    d3.select(this).append("div")
-                        .attr("class", "sliderSections")
-                        .each(function(d) {
-                            d3.select(this).append("label")
-                                .attr("class", "input-labels-graph")
-                                .text('CHART TYPE')
-                            d3.select(this).append("div")
-                                .attr("class", "btn-group")
-                                .attr("data-toggle", "buttons")
-                                .html(function(d) {
-                                    return "<label id='lineChart" + idname.slice(1) + "'class='btn btn-primary active'><input type='radio' name='options' autocomplete='off' checked=''>Line Chart</label><label  id='barChart" + idname.slice(1) + "' class='btn btn-primary'><input type='radio' name='options' autocomplete='off' checked=''>Bar Chart</label>"
-                                })
-                        });
 
-                    d3.select(this).append("div")
-                        .attr("class", "sliderSections")
-                        .each(function(d) {
-                            d3.select(this).append("label")
-                                .attr("class", "input-labels-graph")
-                                .text('CHART TYPE')
-                            d3.select(this).append("div")
-                                .attr("class", "btn-group")
-                                .attr("data-toggle", "buttons")
-                                .html(function(d) {
-                                    return "<label class='btn btn-primary active'  id='cover" + idname.slice(1) + "' ><input type='radio' name='options' autocomplete='off' checked=''>Cover</label><label class='btn btn-primary' id='stretch" + idname.slice(1) + "'><input type='radio' name='options' autocomplete='off' checked=''>Stretch</label>"
-                                })
-                        });
+                    // d3.select(this).append("div")
+                    //     .attr("class", "sliderSections")
+                    //     .each(function(d) {
+                    //         d3.select(this).append("label")
+                    //             .attr("class", "input-labels-graph")
+                    //             .text('CHART TYPE')
+                    //         d3.select(this).append("div")
+                    //             .attr("class", "btn-group")
+                    //             .attr("data-toggle", "buttons")
+                    //             .html(function(d) {
+                    //                 return "<label class='btn btn-primary active'  id='cover" + idname.slice(1) + "' ><input type='radio' name='options' autocomplete='off' checked=''>Cover</label><label class='btn btn-primary' id='stretch" + idname.slice(1) + "'><input type='radio' name='options' autocomplete='off' checked=''>Stretch</label>"
+                    //             })
+                    //     });
 
                     d3.select(this).append("div")
                         .attr("class", "sliderSections")
@@ -1307,7 +1290,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                         .each(function(d) {
                             d3.select(this).append("label")
                                 .attr("class", "input-labels-graph")
-                                .text('OPACITY')
+                                .text('PADDING')
                             d3.select(this).append("input")
                                 .attr("type", "range")
                                 .attr("min", 20)
@@ -1321,7 +1304,8 @@ function grandPlotter(pageIDin, pageTitlein) {
                         .each(function(d) {
                             d3.select(this).append("label")
                                 .attr("class", "input-labels-graph")
-                                .text('DIMENSIONS')
+                                .text('RANGE MAPPING')
+                                // (top bar changes the minimum size of the words and bottom bar, the maximum size)
                                 .each(function(d) {
                                     d3.select(this).append("input")
                                         .attr("type", "range")
@@ -1343,7 +1327,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                         .each(function(d) {
                             d3.select(this).append("label")
                                 .attr("class", "input-labels-graph")
-                                .text('META DIMENSIONSs')
+                                .text('POSITION ( x & y )')
                                 .each(function(d) {
                                     d3.select(this).append("input")
                                         .attr("type", "range")
@@ -1447,7 +1431,8 @@ function grandPlotter(pageIDin, pageTitlein) {
                     .attr("fill", "none")
                     .attr("stroke", function() {
                         if (graphStyle == "cover") {
-                            return "#e74c3c"
+                            return blue
+                            "#e74c3c"
                         } else {
                             return "rgb(94, 255, 176)"
                         }
@@ -1689,80 +1674,10 @@ function grandPlotter(pageIDin, pageTitlein) {
     var extract;
     var articleTitle;
 
-    function featuredArticle(url) {
-
-        getData(url, function(data) {
-
-            if (url.indexOf("extracts") > -1) {
-
-                impData = data
-
-                var pageID = Object.keys(impData.query.pages)[0]
-                var engTitle = impData.query.pages[pageID].title
-
-                extract = impData.query.pages[pageID].extract
-                    // console.log(extract)
-
-                articleTitle = extract.match(/<b>(.*?)<\/b>/g)[0]
-
-                articleTitle = articleTitle.replace("<b>", "").replace("</b>", "")
-
-                extract = extract.match(/<\/b>(.*)\(<b>/g, "")[0]
-                extract = extract.replace("</b>", "").replace(" (<b>", "")
-
-                // console.log(extract)
-
-                var userInputImageURL = $('#imageURL').val()
-
-                if (userInputImageURL == "") {
-                    featuredArticle("https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&titles=" + articleTitle + "&format=json&callback=?")
-                } else {
-                    getImageDimensions(
-                        userInputImageURL,
-                        function(width, height) {
-                            thereIs = width;
-                            featuredArticlePlotter(articleTitle, extract, "#one", userInputImageURL, width, height)
-                        }
-                    );
-                }
-
-            } else {
-
-                linkAddress = data;
-
-                var pageID = Object.keys(linkAddress.query.pages)[0]
-                var pageTitle = linkAddress.query.pages[pageID].title
-
-                linkAddress = linkAddress.query.pages[pageID].thumbnail
-
-                // Extrememly Sorry for this shitfuckery!
-                var photoUrl = JSON.stringify(linkAddress)
-                if (photoUrl != undefined) {
-                    photoUrl = photoUrl.substring(13)
-                    photoUrl = photoUrl.substring(0, photoUrl.length - 2);
-
-                    getImageDimensions(
-                        photoUrl,
-                        function(width, height) {
-                            thereIs = width;
-
-                            // console.log(width)
-
-                            featuredArticlePlotter(articleTitle, extract, "#twelve", photoUrl, width, height)
-                        }
-                    );
-
-                } else {
-                    featuredArticlePlotter(articleTitle, extract, "#twelve", "assets/defaultImage.jpg", 1000, 500)
-
-                }
-
-            }
-
-        })
-    }
-
     function pageEditsTester(dataSource, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight, graphStyle, chartType, atribution) {
+
+        var blue = "#2196F3"
+        var green = "rgb(94, 255, 176)"
 
         var dataTemp = clone(dataSource)
 
@@ -1790,8 +1705,6 @@ function grandPlotter(pageIDin, pageTitlein) {
                 d.editorsCount = editorsCount
             }
         })
-
-        // var data = dataTemp
 
         dataTemp.forEach(function(d, i) {
 
@@ -1855,7 +1768,7 @@ function grandPlotter(pageIDin, pageTitlein) {
         $('#loader').html('');
         $(idname).html('')
 
-        var fullBleedWidth = 1008;
+        var fullBleedWidth = 1095;
         var fullBleedHeight = 572;
 
         var margin = {
@@ -1871,10 +1784,10 @@ function grandPlotter(pageIDin, pageTitlein) {
         var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
 
         var x = d3.time.scale()
-            .range([25, width - 25]);
+            .range([25, width - 225]);
 
         var y = d3.scale.linear()
-            .range([height, 180]);
+            .range([height-28, 180]);
 
         var xAxis = d3.svg.axis()
             .scale(x)
@@ -1889,7 +1802,7 @@ function grandPlotter(pageIDin, pageTitlein) {
         var yAxis = d3.svg.axis()
             .scale(y)
             .ticks(5)
-            .tickSize(-width + 20)
+            .tickSize(-width + 200)
             .outerTickSize(0)
             .orient("left");
 
@@ -1960,8 +1873,7 @@ function grandPlotter(pageIDin, pageTitlein) {
             .attr('id', 'testing')
             .append("g")
             .attr('class', 'svgBase')
-
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         var svgFull = svgBase.append("g")
             .attr('class', 'svgFull')
@@ -1979,7 +1891,7 @@ function grandPlotter(pageIDin, pageTitlein) {
         var lastDate;
         var totalCount = 0;
 
-        var newData = dataTemp
+        var newData = dataTemp;
 
         newData.forEach(function(d) {
 
@@ -2044,9 +1956,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             d.values = 1;
         });
 
-        // console.log(datasource)
-        // console.log(newData)
-
         var data = d3.nest()
             .key(function(d) {
                 return d.timestamp;
@@ -2059,8 +1968,6 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         // Attempting to fix the Zero Date problem
         var finale = []
-
-        //console.log(finale)
 
         if (timeDuration == "hour") {
 
@@ -2484,7 +2391,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             })
         }
 
-
         finale.sort(function(a, b) {
             var c = new Date(a.key);
             var d = new Date(b.key);
@@ -2557,8 +2463,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             }
         }));
 
-        // The opacity rectangle and the image need to be above everything else. Otherwise the graphs and the text would be hidden
-
         // Image Bleed Stuff
         var imageBase64 = "";
 
@@ -2570,8 +2474,6 @@ function grandPlotter(pageIDin, pageTitlein) {
 
             imageBase64 = base64Img
 
-            // fullBleedHeight = 100;
-
             // Image Bleed Stuff
             var imgs = svgFull.selectAll("image").data([0]);
             imgs.enter()
@@ -2579,17 +2481,9 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr('class', "images")
                 .attr('id', "image" + idname.slice(1))
                 .attr("xlink:href", function(d) {
-                    // if (picUrl == undefined) {
-                    //     picUrl = "assets/defaultImage.jpg"
-                    //     return "assets/defaultImage.jpg"
-                    // } else {
-                    // console.log(imageBase64)
                     return imageBase64
-                        // }
                 })
                 .attr("x", function(d) {
-                    // console.log(picHeight)
-                    // console.log(picWidth)
                     if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
                         if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
                             return (((0.5) * (fullBleedHeight / picHeight) * picWidth) - (fullBleedWidth / 2))
@@ -2643,16 +2537,14 @@ function grandPlotter(pageIDin, pageTitlein) {
                     .attr("opacity", 0.7)
                     .attr("height", height + margin.top + margin.bottom);
 
-                // if (graphStyle == "cover") {
 
                 var opacityRect = svgFull.append("rect")
                     .attr("id", "rectCover" + idname.slice(1))
                     .attr("width", width + margin.right + margin.left)
-                    .attr("fill", "#f9f9f9")
-                    .attr("opacity", 0)
+                    .attr("fill", "#F5F5F5")
+                    .attr("opacity", 1)
                     .attr("y", 155)
                     .attr("height", height + margin.top + margin.bottom - 155);
-                // }
 
             }
         });
@@ -2665,9 +2557,9 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .append("svg:image")
                 .attr("xlink:href", imageBase64)
                 .attr("x", 0)
-                .attr("y", 15)
-                .attr("width", 80)
-                .attr("height", 80);
+                .attr("y", 10)
+                .attr("width", 87)
+                .attr("height", 87);
         })
 
         convertImgToBase64("assets/" + atribution + ".png", picHeight, picWidth, function(base64Img) {
@@ -2677,8 +2569,8 @@ function grandPlotter(pageIDin, pageTitlein) {
             d3.select(idname).select('.svgBase')
                 .append("svg:image")
                 .attr("xlink:href", imageBase64)
-                .attr("x", 100)
-                .attr("y", 65)
+                .attr("x", 110)
+                .attr("y", 85)
                 .attr("width", function() {
                     if (atribution == "CCSA") {
                         return 38.2417582418
@@ -2687,96 +2579,109 @@ function grandPlotter(pageIDin, pageTitlein) {
                     }
                 })
                 .attr("height", 20);
+                
         })
+
+        // d3.select(idname).select('.svgBase')
+        //     .append('text')
+        //     .text("Page Edits")
+        //     .attr("x", function(d) {
+        //         var length = numberWithSpaces(totalEditors).length
+        //         var lengthTwo = numberWithSpaces(totalEdits).length
+        //         return width - (24 * length) - 90 - (24 * lengthTwo) + 5
+        //     })
+        //     .attr("y", 40)
+        //     .attr("font-family", "Helvetica Neue")
+        //     .attr("font-size", function(d) {
+        //         return "12.33px"
+        //     })
+        //     .attr("font-weight", "500")
+        //     .attr("fill", "#DCDCDC")
+        //     .attr('opacity', "1");
+
+        // d3.select(idname).select('.svgBase')
+        //     .append('text')
+        //     .text(numberWithSpaces(totalEdits))
+        //     .attr("x", function(d) {
+        //         var length = numberWithSpaces(totalEditors).length
+        //         var lengthTwo = numberWithSpaces(totalEdits).length
+        //         return width - (24 * length) - 90 - (24 * lengthTwo)
+        //     })
+        //     .attr("y", 90)
+        //     .attr("font-family", "Open Sans")
+        //     .attr("font-weight", 700)
+        //     .attr("font-size", function(d) {
+        //         return "46px"
+        //     })
+        //     .attr("fill", "white")
+        //     .attr('opacity', "1");
 
         d3.select(idname).select('.svgBase')
             .append('text')
-            .text("Page Edits")
+            .attr('id', 'textHeader')
+            .text("Total page edits")
             .attr("x", function(d) {
-                var length = numberWithSpaces(totalEditors).length
-                var lengthTwo = numberWithSpaces(totalEdits).length
-                return width - (24 * length) - 90 - (24 * lengthTwo) + 5
+                var length = numberWithSpaces(totalEdits).length
+                return width - (24 * length) - 45 + 5
             })
-            .attr("y", 40)
+            .attr("y", 220)
             .attr("font-family", "Helvetica Neue")
             .attr("font-size", function(d) {
                 return "12.33px"
             })
             .attr("font-weight", "500")
-            .attr("fill", "#DCDCDC")
+            .attr("fill", "#444")
             .attr('opacity', "1");
 
         d3.select(idname).select('.svgBase')
             .append('text')
             .text(numberWithSpaces(totalEdits))
             .attr("x", function(d) {
-                var length = numberWithSpaces(totalEditors).length
-                var lengthTwo = numberWithSpaces(totalEdits).length
-                return width - (24 * length) - 90 - (24 * lengthTwo)
-            })
-            .attr("y", 90)
-            .attr("font-family", "Open Sans")
-            .attr("font-weight", 700)
-            .attr("font-size", function(d) {
-                return "46px"
-            })
-            .attr("fill", "white")
-            .attr('opacity', "1");
-
-        d3.select(idname).select('.svgBase')
-            .append('text')
-            .text("Editors")
-            .attr("x", function(d) {
-                var length = numberWithSpaces(totalEditors).length
-                return width - (24 * length) - 45 + 5
-            })
-            .attr("y", 40)
-            .attr("font-family", "Helvetica Neue")
-            .attr("font-size", function(d) {
-                return "12.33px"
-            })
-            .attr("font-weight", "500")
-            .attr("fill", "#DCDCDC")
-            .attr('opacity', "1");
-
-        d3.select(idname).select('.svgBase')
-            .append('text')
-            .text(numberWithSpaces(totalEditors))
-            .attr("x", function(d) {
-                var length = numberWithSpaces(totalEditors).length
+                var length = numberWithSpaces(totalEdits).length
                 return width - (24 * length) - 45
             })
-            .attr("y", 90)
+            .attr("y", 270)
             .attr("font-family", "Open Sans")
             .attr("font-weight", 700)
             .attr("font-size", function(d) {
                 return "46px"
             })
-            .attr("fill", "white")
+            .attr("fill", blue)
             .attr('opacity', "1");
 
         d3.select(idname).select('.svgBase')
             .append('text')
             .text(pageTitle)
             // .attr("text-anchor", "end")
-            .attr("x", 100)
-            .attr("y", 54)
+            .attr("x", 110)
+            .attr("y", 70)
             .attr("font-family", "Georgia")
             .attr("font-size", function(d) {
-                //console.log(pageTitle + picUrl)
                 return "29px"
             })
             .attr("fill", "white")
             .attr('opacity', "1");
 
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text("Number of Page Edits per " + timeDuration)
+            // .attr("text-anchor", "end")
+            .attr("x", 110)
+            .attr("y", 34)
+            .attr("font-family", "Helvetica Neue")
+            .attr("font-size", function(d) {
+                return "17.5px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "1");
 
-        // .attr("transform", "translate(0," + height + ")") shifts the axis to the bottom part of the G element. 
         svgBase.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis)
             .selectAll("text")
             .style("fill", "#999")
+            .attr("dy", -15)
             .style("font-family", "Source Sans Pro")
             .style("font-weight", "100")
             .style("font-size", "16px");
@@ -2933,12 +2838,12 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr("fill", "none")
                 .attr("stroke", function() {
                     if (graphStyle == "cover") {
-                        return "#e74c3c"
+                        return "#2196F3"
                     } else {
-                        return "rgb(94, 255, 176)"
+                        return blue
                     }
                 })
-                .attr("stroke-width", "3px")
+                .attr("stroke-width", "4px")
                 .append('text')
                 .text("Page Edits")
                 .attr("x", function(d) {
@@ -2973,16 +2878,16 @@ function grandPlotter(pageIDin, pageTitlein) {
         //     .attr("height", 100)
         //     .call(drag);
 
-        svgBase.selectAll("circle.line")
-            .data(data)
-            .enter().append("svg:circle")
-            .attr("class", "line")
-            .style("fill", "green")
-            .attr("cx", upperline.x())
-            .attr("cy", upperline.y())
-            .attr("r", 12)
-            .attr('opacity', 0)
-            .on("click", function(d) {})
+        // svgBase.selectAll("circle.line")
+        //     .data(data)
+        //     .enter().append("svg:circle")
+        //     .attr("class", "line")
+        //     .style("fill", "green")
+        //     .attr("cx", upperline.x())
+        //     .attr("cy", upperline.y())
+        //     .attr("r", 12)
+        //     .attr('opacity', 0)
+        //     .on("click", function(d) {})
 
         d3.select(idname + "Controls")
             .selectAll("div")
@@ -3030,7 +2935,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                     .each(function(d) {
                         d3.select(this).append("label")
                             .attr("class", "input-labels-graph")
-                            .text('CHART TYPE')
+                            .text('DOWNLOAD')
                         d3.select(this).append("div")
                             .attr("class", "btn-group")
                             .attr("data-toggle", "buttons")
@@ -3128,11 +3033,11 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr("d", upperline)
                 .attr("fill", "none")
                 .attr("stroke", function() {
-                    if (graphStyle == "cover") {
-                        return "#e74c3c"
-                    } else {
-                        return "rgb(94, 255, 176)"
-                    }
+                    // if (graphStyle == "cover") {
+                        return blue
+                    // } else {
+                    //     return "rgb(94, 255, 176)"
+                    // }
                 })
                 .attr("stroke-width", "3px")
                 .append('text')
@@ -3149,7 +3054,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 })
                 .attr("font-weight", "500")
                 .attr("fill", "#DCDCDC")
-                .attr('opacity', "1");
+                .attr('opacity', "1");      
         });
 
         d3.select("#barChart" + idname.slice(1)).on("click", function() {
@@ -3266,6 +3171,39 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .style({
                     "opacity": "0"
                 });
+
+            svgBase.selectAll("#textHeader")
+                .style({
+                    'fill': '#DCDCDC'
+                });
+
+            svgBase.selectAll(".upperline")
+                .remove()
+
+            svgBase.append("path")
+                .datum(finale)
+                .attr("class", "upperline")
+                .attr("d", upperline)
+                .attr("fill", "none")
+                .attr("stroke", function() {
+                    return blue
+                })
+                .attr("stroke-width", "4px")
+                .append('text')
+                .text("Page Edits")
+                .attr("x", function(d) {
+                    var length = numberWithSpaces(totalEditors).length
+                    var lengthTwo = numberWithSpaces(totalEdits).length
+                    return width - (24 * length) - 90 - (24 * lengthTwo) + 5
+                })
+                .attr("y", 40)
+                .attr("font-family", "Helvetica Neue")
+                .attr("font-size", function(d) {
+                    return "12.33px"
+                })
+                .attr("font-weight", "500")
+                .attr("fill", "#DCDCDC")
+                .attr('opacity', "1");  
         });
 
         d3.select("#cover" + idname.slice(1)).on("click", function() {
@@ -3282,6 +3220,43 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .style({
                     "opacity": "1"
                 });
+
+            svgBase.selectAll(".upperline")
+                .remove()
+
+            svgBase.selectAll("#textHeader")
+                .style({
+                    'fill': '#333'
+                });
+
+            svgBase.append("path")
+                .datum(finale)
+                .attr("class", "upperline")
+                .attr("d", upperline)
+                .attr("fill", "none")
+                .attr("stroke", function() {
+                    // if (graphStyle == "cover") {
+                        return blue
+                    // } else {
+                    //     return "rgb(94, 255, 176)"
+                    // }
+                })
+                .attr("stroke-width", "4px")
+                .append('text')
+                .text("Page Edits")
+                .attr("x", function(d) {
+                    var length = numberWithSpaces(totalEditors).length
+                    var lengthTwo = numberWithSpaces(totalEdits).length
+                    return width - (24 * length) - 90 - (24 * lengthTwo) + 5
+                })
+                .attr("y", 40)
+                .attr("font-family", "Helvetica Neue")
+                .attr("font-size", function(d) {
+                    return "12.33px"
+                })
+                .attr("font-weight", "500")
+                .attr("fill", "#DCDCDC")
+                .attr('opacity', "1");
         });
 
         function updateOpacity(ina) {
@@ -3365,7 +3340,6 @@ function grandPlotter(pageIDin, pageTitlein) {
 
             var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
             var img = '<img src="' + imgsrc + '">';
-            // d3.select("#svgdataurl").html(img);
 
             var canvas = document.querySelector("canvas"),
                 context = canvas.getContext("2d");
@@ -3375,11 +3349,9 @@ function grandPlotter(pageIDin, pageTitlein) {
             image.onload = function() {
 
                 canvas.height = 572;
-                canvas.width = 1008;
+                canvas.width = 1095;
 
                 context.drawImage(image, 0, 0);
-
-                // context.drawImage(image, -48, -72);
 
                 //save and serve it as an actual filename
                 binaryblob();
@@ -3418,1158 +3390,11 @@ function grandPlotter(pageIDin, pageTitlein) {
             timeLimitUpper = pickerTwo.getDate()
             initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight, "CCBYSA")
         })
-
     }
 
     var EOWs;
     var reasonsEOWs;
     var dateEOWs;
-
-    function editorOfTheWeek(url) {
-
-        getData(url, function(data) {
-
-            impData = data
-
-            var pageID = Object.keys(impData.query.pages)[0]
-
-            impData = impData.query.pages[pageID].revisions[0]['*']
-
-            var currentYearTable = impData.replace(/\r?\n|\r/g, '')
-
-            var x = currentYearTable.indexOf("2015 Recipients of ''Editor of the Week'' aka ''The Eddy''=={| class=\"wikitable sortable\" style=\"margin: 1em auto 1em auto;\"|-! Recipient !! data-sort-type=\"date\" | Date awarded !! Reason|");
-            var y = currentYearTable.indexOf("{{mbox|text='''Visit the [[Wikipedia:WikiProject Editor Retention/Editor of the Week/Hall of Fame|Editor of the Week Hall of Fame]]'''|image=[[File:Editor of the week barnstar.svg|44px]]|style=width:30em;margin: 1em auto 1em auto;}}{{center|[[Wikipedia:WikiProject Editor Retention/Editor of the Week/Accepted nominations|Queue of accepted nominations]]}}==Members==*Please sign this with three tildes (<nowiki>~~~</nowiki>) if you are interested in helping with this project.")
-
-            currentYearTable = currentYearTable.slice(x, y)
-            currentYearTable = currentYearTable.replace("2015 Recipients of ''Editor of the Week'' aka ''The Eddy''=={| class=\"wikitable sortable\" style=\"margin: 1em auto 1em auto;\"|-! Recipient !! data-sort-type=\"date\" | Date awarded !! Reason", "")
-
-            currentYearTable = currentYearTable.split("\|-\| ")
-
-            // currentYearTable = currentYearTable.replace(/.*(?=2015 Recipients of )/g, '')
-
-            // currentYearTable = currentYearTable.replace(/.*(?=2015 Recipients of )/g, '')
-
-            // var totalEntriesCurrentYear = currentYearTable.length
-
-            // TODO month wise seperation. Not past four or five
-
-            var pastFourEOW = [currentYearTable[currentYearTable.length - 1], currentYearTable[currentYearTable.length - 2], currentYearTable[currentYearTable.length - 3], currentYearTable[currentYearTable.length - 4], ]
-
-
-            var EOWs = []
-            var reasonsEOWs = []
-            var dateEOWs = []
-
-
-            for (i = 0; i < 4; i++) {
-                pastFourEOW[i] = pastFourEOW[i].split('\| ')
-
-                // console.log(i)
-                if (pastFourEOW[i][0].match(/(.*)\|/) != null) {
-                    EOWs.push(((pastFourEOW[i][0].match(/(.*)\|/))[1]).replace('[[', '').replace('User:', ''))
-                    reasonsEOWs.push(((pastFourEOW[i][2].match(/\d (.*)/))[1]).replace(']|}', ''))
-                } else {
-                    EOWs.push(null)
-                    reasonsEOWs.push(null)
-                }
-
-                dateEOWs.push(pastFourEOW[i][1])
-
-            }
-
-            editorOfTheWeekPlotter(EOWs, reasonsEOWs, dateEOWs, "#thirteen", "assets/defaultImage.jpg", 1000, 500)
-        })
-    }
-
-    function featuredArticlePlotter(articleTitle, extract, idname, picUrl, picWidth, picHeight) {
-
-        var previousSize;
-
-        // console.log(idname)
-
-        $('#loader').html('');
-        $(idname).html('')
-
-        var fullBleedWidth = 1008;
-        var fullBleedHeight = 572;
-
-        var margin = {
-                top: 20,
-                right: 20,
-                bottom: 30,
-                left: 50
-            },
-            width = fullBleedWidth - margin.left - margin.right,
-            height = fullBleedHeight - margin.top - margin.bottom;
-
-        //var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
-        var svgBase = d3.select("body").select(idname).append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr('class', 'svgBase')
-
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        var svgFull = svgBase.append("g")
-            .attr('class', 'svgFull')
-            // .attr("width", width + margin.left + margin.right)
-            // .attr("height", height + margin.top + margin.bottom)
-            .attr("transform", "translate(" + (-1) * margin.left + "," + (-1) * margin.top + ")");
-
-        // Image Bleed Stuff
-        var imgs = svgFull.selectAll("image").data([0]);
-        imgs.enter()
-            .append("svg:image")
-            .attr('class', "images")
-            .attr('id', "image" + idname.slice(1))
-            .attr("xlink:href", function(d) {
-                if (picUrl == undefined) {
-                    picUrl = "assets/defaultImage.jpg"
-                    return "assets/defaultImage.jpg"
-                } else {
-                    return picUrl
-                }
-            })
-            .attr("x", function(d) {
-                if (picUrl != "assets/defaultImage.jpg") {
-                    if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                        return (((0.5) * (fullBleedHeight / picHeight) * picWidth) - (fullBleedWidth / 2))
-                    } else {
-                        return 0
-                    }
-                } else {
-                    return 0
-                }
-            })
-            .attr("y", function(d) {
-                if (picUrl != "assets/defaultImage.jpg") {
-                    if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                        return 0
-                    } else {
-                        return (((-0.5) * (fullBleedWidth / picWidth) * picHeight) + (fullBleedHeight / 2))
-                    }
-                } else {
-                    return 0
-                }
-            })
-            .attr("width", function(d) {
-                if (picUrl != "assets/defaultImage.jpg") {
-                    if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                        return (fullBleedHeight / picHeight) * picWidth
-                    } else {
-                        return fullBleedWidth
-                    }
-                } else {
-                    return fullBleedWidth
-                }
-            })
-            .attr("height", function(d) {
-                if (picUrl != "assets/defaultImage.jpg") {
-                    if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
-                        return fullBleedHeight
-                    } else {
-                        return (fullBleedWidth / picWidth) * picHeight
-                    }
-                } else {
-                    return fullBleedHeight
-                }
-            });
-
-        // Adding Wikipedia Logo
-        d3.select(idname).select('.svgBase')
-            .append("svg:image")
-            .attr("xlink:href", "assets/wikipediaW.png")
-            .attr("x", width - 80)
-            .attr("y", 0)
-            .attr("width", 70)
-            .attr("height", 70);
-
-        extractRequiredPortion = extract.match(/\n|([^\r\n.!?]+([.!?]+|$))/gim)[0]
-        extractRequiredPortion = extractRequiredPortion + extract.match(/\n|([^\r\n.!?]+([.!?]+|$))/gim)[1]
-        extractRequiredPortion = extractRequiredPortion + extract.match(/\n|([^\r\n.!?]+([.!?]+|$))/gim)[2]
-
-        if (extractRequiredPortion.indexOf(" ") == 0) {
-            extractRequiredPortion = extractRequiredPortion.slice(1, extractRequiredPortion.length)
-        }
-
-        var textEnter = svgBase.selectAll("text")
-            .data([0]);
-
-        var textEnter = textEnter.enter().append("text");
-
-        // console.log(extractRequiredPortion)
-
-        textEnter.text(extractRequiredPortion)
-            .attr("x", 20)
-            .attr("y", 250)
-            .attr("dy", "0.7em")
-            .attr("font-family", "Georgia")
-            .attr("font-size", 25)
-            .attr("fill", "white").attr('opacity', "0.8").call(wrap, 800);
-
-        function wrap(text, width) {
-            text.each(function() {
-
-                var text = d3.select(this),
-                    words = text.text().split(/\s+/).reverse(),
-                    word,
-                    line = [],
-                    lineNumber = 0,
-                    lineHeight = 1.6, // ems
-                    y = text.attr("y"),
-                    x = text.attr("x"),
-                    dy = parseFloat(text.attr("dy")),
-                    tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", dy + "em");
-
-                while (word = words.pop()) {
-                    line.push(word);
-                    tspan.text(line.join(" "));
-                    if (tspan.node().getComputedTextLength() > width) {
-                        line.pop();
-                        tspan.text(line.join(" "));
-                        line = [word];
-                        tspan = text.append("tspan").attr("x", x).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-                    }
-                }
-
-            });
-        }
-
-
-        d3.select(idname).select('.svgBase')
-            .append('text')
-            .text(articleTitle)
-            .attr("x", 20)
-            .attr("y", 200)
-            .attr("font-family", "Open Sans")
-            .attr("font-size", function(d) {
-                return "50px"
-            })
-            .attr("fill", "white")
-            .attr('opacity', "0.8");
-
-
-        d3.select(idname).select('.svgBase')
-            .append('text')
-            .text("Today's Featured Article")
-            .attr("text-anchor", "end")
-            .attr("x", width - 100)
-            .attr("y", 45)
-            .attr("font-family", "Georgia")
-            .attr("font-size", function(d) {
-                return "32px"
-            })
-            .attr("fill", "white")
-            .attr('opacity', "0.8");
-
-        if (picUrl != "assets/defaultImage.jpg") {
-
-            // console.log('asdas')
-
-            var opacityRect = svgFull.append("rect")
-                .attr("id", "rect" + idname.slice(1))
-                .attr("width", width + margin.right + margin.left)
-                .attr("fill", "black")
-                .attr("opacity", 0.7)
-                .attr("z-index", 0)
-                .attr("height", height + margin.top + margin.bottom);
-        }
-
-        d3.select(idname)
-            .selectAll("div")
-            .data([0])
-            .enter()
-            .append("div")
-            .attr("id", function(d) {
-                return "controls" + idname.slice(1)
-            })
-
-        var controlsInsertor = d3.select("#" + "controls" + idname.slice(1))
-            .selectAll("button")
-            .data([0])
-            .enter()
-
-        controlsInsertor.append("input")
-            .attr("type", "range")
-            .attr("min", 1)
-            .attr("max", 100)
-            .style("width", "200px")
-            .attr("id", "opacitySlider" + idname.slice(1))
-
-        controlsInsertor.append("input")
-            .attr("type", "range")
-            .attr("min", -picHeight)
-            .attr("max", picHeight)
-            .style("width", "200px")
-            .attr("id", "imageHeightSlider" + idname.slice(1))
-
-        controlsInsertor.append("input")
-            .attr("type", "range")
-            .attr("min", -picWidth)
-            .attr("max", picWidth)
-            .style("width", "200px")
-            .attr("id", "imageWidthSlider" + idname.slice(1))
-
-        d3.select("#" + "opacitySlider" + idname.slice(1)).on("input", function() {
-            updateOpacity(+this.value);
-        });
-
-        d3.select("#" + "imageHeightSlider" + idname.slice(1)).on("input", function() {
-            updateImageHeight(+this.value);
-        });
-
-        d3.select("#" + "imageWidthSlider" + idname.slice(1)).on("input", function() {
-            updateImageWidth(+this.value);
-        });
-
-        function updateOpacity(ina) {
-            d3.select("#" + "rect" + idname.slice(1))
-                .data([0])
-                .style("opacity", function(d) {
-                    // console.log(ina)
-                    return ina * 0.01
-                })
-        }
-
-        function updateImageHeight(ina) {
-            d3.select("#" + "image" + idname.slice(1))
-                .data([0])
-                .attr("y", function(d) {
-                    return ina
-                })
-        }
-
-        function updateImageWidth(ina) {
-            d3.select("#" + "image" + idname.slice(1))
-                .data([0])
-                .attr("x", function(d) {
-                    // console.log(ina)
-                    return ina
-                })
-        }
-    }
-
-    function editorOfTheWeekPlotter(EOWs, reasonsEOWs, dateEOWs, idname, picUrl, picWidth, picHeight) {
-
-        var previousSize;
-
-        $('#loader').html('');
-        $(idname).html('')
-
-        var fullBleedWidth = 1008;
-        var fullBleedHeight = 572;
-
-        var margin = {
-                top: 20,
-                right: 20,
-                bottom: 30,
-                left: 50
-            },
-            width = fullBleedWidth - margin.left - margin.right,
-            height = fullBleedHeight - margin.top - margin.bottom;
-
-        var svgBase = d3.select("body").select(idname).append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr('class', 'svgBase')
-
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        var svgFull = svgBase.append("g")
-            .attr('class', 'svgFull')
-            .attr("transform", "translate(" + (-1) * margin.left + "," + (-1) * margin.top + ")");
-
-        // Image Bleed Stuff
-        var imgs = svgFull.selectAll("image").data([0]);
-        imgs.enter()
-            .append("svg:image")
-            .attr('class', "images")
-            .attr('id', "image" + idname.slice(1))
-            .attr("xlink:href", function(d) {
-                return "assets/defaultImage.jpg"
-            })
-            .attr("x", 0)
-            .attr("y", 0)
-            .attr("width", fullBleedWidth)
-            .attr("height", fullBleedHeight);
-
-        // Adding Wikipedia Logo
-        d3.select(idname).select('.svgBase')
-            .append("svg:image")
-            .attr("xlink:href", "assets/wikipediaW.png")
-            .attr("x", width - 80)
-            .attr("y", 0)
-            .attr("width", 70)
-            .attr("height", 70);
-
-
-        var circle = svgBase.selectAll("circle")
-            .data([0, 0, 0, 0]);
-
-        var imageEnter = circle.enter().append("svg:image");
-
-        imageEnter.attr("xlink:href", "assets/EOWBarnstar.png")
-        imageEnter.attr("x", function(d, i) {
-            return i * 200 + 100;
-        });
-        imageEnter.attr("y", 215);
-        imageEnter.attr("width", 100).attr("height", 100)
-
-
-        var circle = svgBase.selectAll("line")
-            .data([0, 0, 0, 0]);
-
-        var lines = circle.enter().append("line")
-            .attr("x1", function(d, i) {
-                return i * 200 + 80;
-            })
-            .attr("y1", 350)
-            .attr("x2", function(d, i) {
-                return i * 200 + 220;
-            })
-            .attr("y2", 350)
-            .attr("stroke-width", 0.5)
-            .attr("stroke", "#ddd");
-
-        EOWs = EOWs.concat(dateEOWs)
-        EOWs = EOWs.concat(reasonsEOWs)
-
-        // Editor of the Weeks
-        var textEnter = svgBase.selectAll("text")
-            .data(EOWs);
-        var textEnter = textEnter.enter().append("text");
-
-        var tackyStuff = 0;
-
-        var x;
-
-        textEnter.text(function(d, i) {
-                if (d != null) {
-                    return d
-                } else if (d == null && i < 8) {
-                    return "N/A"
-                } else {
-                    return "No award distributed\n due to clerk error"
-                }
-            })
-            .attr("x", function(d, i) {
-                if (i < 4) {
-                    x = i * 200 + 150
-                    return i * 200 + 150;
-                } else if (i > 3 && i < 8) {
-                    x = (i - 4) * 200 + 150
-                    return (i - 4) * 200 + 150;
-                } else {
-                    x = (i - 8) * 200 + 150
-                    return (i - 8) * 200 + 150;
-                }
-            })
-            .attr("y", function(d, i) {
-                if (i < 4) {
-                    return 150;
-                } else if (i > 3 && i < 8) {
-                    return 180;
-                } else {
-                    return 380;
-                }
-            })
-            .attr("font-family", function(d, i) {
-                if (i < 4) {
-                    return "Georgia";
-                } else if (i > 3 && i < 8) {
-                    return "Open Sans";
-                } else {
-                    return "Open Sans";
-                }
-            }).attr("font-size", function(d, i) {
-                if (i < 4) {
-                    return 22;
-                } else if (i > 3 && i < 8) {
-                    return 14;
-                } else {
-                    return 18;
-                }
-            })
-            .attr("dy", "0.7em").attr("text-anchor", "middle").attr("fill", "white").attr('opacity', "0.8").call(wrap, 150);
-
-        function wrap(text, width) {
-            text.each(function(d, i) {
-                if (i < 12 && i > 7) {
-                    var text = d3.select(this),
-                        words = text.text().split(/\s+/).reverse(),
-                        word,
-                        line = [],
-                        lineNumber = 0,
-                        lineHeight = 1.6, // ems
-                        y = text.attr("y"),
-                        dy = parseFloat(text.attr("dy")),
-                        tspan = text.text(null).append("tspan").attr("x", function() {
-                            return (i - 8) * 200 + 150;
-
-                        }).attr("y", y).attr("dy", dy + "em");
-
-                    while (word = words.pop()) {
-                        line.push(word);
-                        tspan.text(line.join(" "));
-                        if (tspan.node().getComputedTextLength() > width) {
-                            line.pop();
-                            tspan.text(line.join(" "));
-                            line = [word];
-                            tspan = text.append("tspan").attr("x", function() {
-                                return (i - 8) * 200 + 150;
-
-                            }).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-                        }
-                    }
-                }
-            });
-        }
-    }
-
-    function monthlyStats(idname, url, interpolation, picUrl, picWidth, picHeight) {
-
-        d3.csv(url, function(error, data) {
-
-            d3.csv("http://reportcard.wmflabs.org/data/datafiles/rc/rc_very_active_editors_count.csv", function(error, dataTwo) {
-
-                var previousSize;
-
-                $('#loader').html('');
-                $(idname).html('')
-
-                var fullBleedWidth = 1008;
-                var fullBleedHeight = 572;
-
-                var margin = {
-                        top: 20,
-                        right: 20,
-                        bottom: 30,
-                        left: 50
-                    },
-                    width = fullBleedWidth - margin.left - margin.right,
-                    height = fullBleedHeight - margin.top - margin.bottom;
-
-                var svgBase = d3.select("body").select(idname).append("svg")
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom)
-                    .append("g")
-                    .attr('class', 'svgBase')
-
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-                var svgFull = svgBase.append("g")
-                    .attr('class', 'svgFull')
-                    .attr("transform", "translate(" + (-1) * margin.left + "," + (-1) * margin.top + ")");
-
-                var imageBase64 = "";
-
-                if (picUrl === undefined) {
-                    picUrl = "http://wikitrends.github.io/assets/defaultImage.jpg"
-                } else {}
-
-                convertImgToBase64(picUrl, picHeight, picWidth, function(base64Img) {
-
-                    imageBase64 = base64Img
-
-                    // Image Bleed Stuff
-                    var imgs = svgFull.selectAll("image").data([0]);
-                    imgs.enter()
-                        .append("svg:image")
-                        .attr('class', "images")
-                        .attr('id', "image" + idname.slice(1))
-                        .attr("xlink:href", function(d) {
-                            return imageBase64
-                        })
-                        .attr("x", 0)
-                        .attr("y", 0)
-                        .attr("width", fullBleedWidth)
-                        .attr("height", fullBleedHeight);
-
-                })
-
-                // Adding Wikipedia Logo
-                d3.select(idname).select('.svgBase')
-                    .append("svg:image")
-                    .attr("xlink:href", "assets/wikipediaW.png")
-                    .attr("x", width - 80)
-                    .attr("y", 0)
-                    .attr("width", 70)
-                    .attr("height", 70);
-
-                var YOYRawOne = data[data.length - 1].Total - data[data.length - 13].Total
-                var MOMRawOne = data[data.length - 1].Total - data[data.length - 2].Total
-
-                var YOYPercentOne = (100 * YOYRawOne / data[data.length - 1].Total).toFixed(2)
-                var MOMPercentOne = (100 * MOMRawOne / data[data.length - 1].Total).toFixed(2)
-
-                var YOYRawTwo = dataTwo[dataTwo.length - 1].Total - dataTwo[dataTwo.length - 13].Total
-                var MOMRawTwo = dataTwo[dataTwo.length - 1].Total - dataTwo[dataTwo.length - 2].Total
-
-                var YOYPercentTwo = (100 * YOYRawTwo / dataTwo[dataTwo.length - 1].Total).toFixed(2)
-                var MOMPercentTwo = (100 * MOMRawTwo / dataTwo[dataTwo.length - 1].Total).toFixed(2)
-
-                d3.select(idname).select('.svgBase')
-                    .append('text')
-                    .text("May, 2015")
-                    .attr("text-anchor", "end")
-                    .attr("x", width - 100)
-                    .attr("y", 45)
-                    .attr("font-family", "Georgia")
-                    .attr("font-size", 32)
-                    .attr("fill", "#ccc");
-
-                //TODO Figure out a way to put italics into the svg without cutting the edge off.
-                d3.select(idname).select('.svgBase')
-                    .append('text')
-                    .text(numberWithSpaces(data[data.length - 1].Total))
-                    .attr("x", 20)
-                    .attr("y", 400)
-                    .attr("font-family", "Roboto Mono")
-                    .attr("font-size", function(d) {
-                        return "80px"
-                    })
-                    .attr("font-weight", "500")
-                    .attr("fill", "#eee")
-
-                // d3.select(idname).select('.svgBase')
-                //     .append('text')
-                //     .text(function() {
-                //         if (YOYPercentOne.indexOf("-") > -1) {
-                //             return YOYPercentOne + "%"
-                //         } else {
-                //             return "+" + YOYPercentOne + "%"
-                //         }
-                //     })
-                //     .attr("x", 600)
-                //     .attr("y", 400)
-                //     // .attr("text-anchor", "right")
-                //     .attr("font-family", "Roboto Mono")
-                //     .attr("font-size", 80)
-                //     .attr("font-weight", "500")
-                //     .attr("fill", function() {
-                //         if (YOYPercentOne.indexOf("-") > -1) {
-                //             return "rgb(247, 139, 139)"
-                //         } else {
-                //             return "rgb(149, 248, 150)"
-                //         }
-                //     })
-
-                d3.select(idname).select('.svgBase')
-                    .append('text')
-                    .text("New Editors per Month")
-                    .attr("x", 30)
-                    .attr("font-family", "Georgia")
-                    .attr("letter-spacing", "1px")
-                    .attr("y", 450)
-                    .attr("font-size", function(d) {
-                        return "30px"
-                    })
-                    .attr("font-weight", "100")
-                    .attr("fill", "white")
-                    .attr('opacity', "0.8");
-
-                d3.select(idname).select('.svgBase')
-                    .append('text')
-                    .text(numberWithSpaces(dataTwo[dataTwo.length - 1].Total))
-                    .attr("x", 20)
-                    .attr("y", 200)
-                    .attr("font-family", "Roboto Mono")
-                    .attr("font-size", function(d) {
-                        return "80px"
-                    })
-                    .attr("font-weight", "500")
-                    .attr("fill", "#eee")
-
-                // d3.select(idname).select('.svgBase')
-                //     .append('text')
-                //     .text(function() {
-                //         if (YOYPercentTwo.indexOf("-") > -1) {
-                //             return YOYPercentTwo + "%"
-                //         } else {
-                //             return "+" + YOYPercentTwo + "%"
-                //         }
-                //     })
-                //     .attr("x", 600)
-                //     .attr("y", 200)
-                //     // .attr("text-anchor", "right")
-                //     .attr("font-family", "Roboto Mono")
-                //     .attr("font-size", 80)
-                //     .attr("font-weight", "500")
-                //     .attr("fill", function() {
-                //         if (YOYPercentTwo.indexOf("-") > -1) {
-                //             return "rgb(247, 139, 139)"
-                //         } else {
-                //             return "rgb(149, 248, 150)"
-                //         }
-                //     })
-
-                d3.select(idname).select('.svgBase')
-                    .append('text')
-                    .text("Very Active Editors")
-                    .attr("x", 30)
-                    .attr("y", 250)
-                    .attr("font-family", "Georgia")
-                    .attr("letter-spacing", "2px")
-                    .attr("font-size", function(d) {
-                        return "30px"
-                    })
-                    .attr("font-weight", "100")
-                    .attr("fill", "white")
-                    .attr('opacity', "0.8");
-
-                var parseDate = d3.time.format("%Y-%m-%d").parse;
-
-                data.splice(0, data.length - 13)
-
-                data.forEach(function(d, i) {
-                    d.Month = (d.Month).replace('/', '-').replace('/', '-').replace('/', '-')
-                    d.Month = parseDate(d.Month)
-                })
-
-
-                var x = d3.time.scale()
-                    .range([440, width - 20]);
-
-                var y = d3.scale.linear()
-                    .range([height - 50, height - 200]);
-
-                var xAxis = d3.svg.axis()
-                    .scale(x)
-                    .orient("bottom")
-                    .ticks(3);
-
-                var yAxis = d3.svg.axis()
-                    .scale(y)
-                    .orient("left")
-                    .ticks(2);
-
-                var line = d3.svg.line()
-                    .tension(0.92)
-                    .interpolate("bundle")
-                    .x(function(d) {
-                        return x(d.Month);
-                    })
-                    .y(function(d) {
-                        return y(d.Total);
-                    });
-
-                x.domain(d3.extent(data, function(d) {
-                    return d.Month;
-                }));
-                y.domain(d3.extent(data, function(d) {
-                    return d.Total;
-                }));
-
-                svgBase.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(0," + (height - 50) + ")")
-                    .call(xAxis);
-
-                // svgBase.append("g")
-                //   .attr("class", "y axis")
-                //                 .attr("transform", "translate(" + (height-50) + ", 0) ")
-                //   .call(yAxis)
-                // .append("text")
-                //   .attr("transform", "rotate(-90)")
-                //   .attr("y", 6)
-                //   .attr("dy", ".71em")
-                //   .style("text-anchor", "end")
-
-                svgBase.append("path")
-                    .datum(data)
-                    .attr("class", "linea")
-                    .attr("d", line)
-                    .attr("stroke", "white")
-                    .attr("stroke-width", "2.5px");
-
-
-                d3.select(idname).select('.svgBase')
-                    .append('text')
-                    .text("Very Active Editors")
-                    .attr("x", 30)
-                    .attr("y", 250)
-                    .attr("font-family", "Georgia")
-                    .attr("letter-spacing", "2px")
-                    .attr("font-size", function(d) {
-                        return "30px"
-                    })
-                    .attr("font-weight", "100")
-                    .attr("fill", "white")
-                    .attr('opacity', "0.8");
-
-                var parseDate = d3.time.format("%Y-%m-%d").parse;
-
-                dataTwo.splice(0, dataTwo.length - 13)
-
-                dataTwo.forEach(function(d, i) {
-                    d.Month = (d.Month).replace('/', '-').replace('/', '-').replace('/', '-')
-                    d.Month = parseDate(d.Month)
-                        // console.log(d.Month)
-                })
-
-
-                var x = d3.time.scale()
-                    .range([440, width - 20]);
-
-                var y = d3.scale.linear()
-                    .range([height - 290, height - 440]);
-
-                var xAxis = d3.svg.axis()
-                    .scale(x)
-                    .orient("bottom")
-                    .ticks(3);
-
-                var yAxis = d3.svg.axis()
-                    .scale(y)
-                    .orient("left")
-                    .ticks(2);
-
-                var lineTwo = d3.svg.line()
-                    .tension(0.92)
-                    .interpolate("bundle")
-                    .x(function(d) {
-                        return x(d.Month);
-                    })
-                    .y(function(d) {
-                        return y(d.Total);
-                    });
-
-                x.domain(d3.extent(dataTwo, function(d) {
-                    return d.Month;
-                }));
-                y.domain(d3.extent(dataTwo, function(d) {
-                    // console.log(d.Total)
-                    return d.Total;
-                }));
-
-                svgBase.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(0," + (height - 290) + ")")
-                    .call(xAxis);
-
-                svgBase.append("path")
-                    .datum(dataTwo)
-                    .attr("class", "linea")
-                    .attr("d", lineTwo)
-                    .attr("stroke", "white")
-                    .attr("stroke-width", "2.5px");
-            });
-
-        });
-    }
-
-    function monthlyStatsMobileDesktop(idname, urlOne, urlTwo, interpolation, picUrl, picWidth, picHeight) {
-
-        d3.csv(urlOne, function(error, data) {
-
-            d3.csv(urlTwo, function(error, dataTwo) {
-
-                // console.log(data)
-
-                var previousSize;
-
-                $('#loader').html('');
-                $(idname).html('')
-
-                var fullBleedWidth = 1008;
-                var fullBleedHeight = 572;
-
-                var margin = {
-                        top: 20,
-                        right: 20,
-                        bottom: 30,
-                        left: 50
-                    },
-                    width = fullBleedWidth - margin.left - margin.right,
-                    height = fullBleedHeight - margin.top - margin.bottom;
-
-                var svgBase = d3.select("body").select(idname).append("svg")
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom)
-                    .append("g")
-                    .attr('class', 'svgBase')
-
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-                var svgFull = svgBase.append("g")
-                    .attr('class', 'svgFull')
-                    .attr("transform", "translate(" + (-1) * margin.left + "," + (-1) * margin.top + ")");
-
-
-                var imageBase64 = "";
-
-                if (picUrl === undefined) {
-                    picUrl = "http://wikitrends.github.io/assets/defaultImage.jpg"
-                } else {}
-
-                convertImgToBase64(picUrl, picHeight, picWidth, function(base64Img) {
-
-                    imageBase64 = base64Img
-
-                    // Image Bleed Stuff
-                    var imgs = svgFull.selectAll("image").data([0]);
-                    imgs.enter()
-                        .append("svg:image")
-                        .attr('class', "images")
-                        .attr('id', "image" + idname.slice(1))
-                        .attr("xlink:href", function(d) {
-                            return imageBase64
-                        })
-                        .attr("x", 0)
-                        .attr("y", 0)
-                        .attr("width", fullBleedWidth)
-                        .attr("height", fullBleedHeight);
-
-                })
-
-                // Adding Wikipedia Logo
-                d3.select(idname).select('.svgBase')
-                    .append("svg:image")
-                    .attr("xlink:href", "assets/wikipediaW.png")
-                    .attr("x", width - 80)
-                    .attr("y", 0)
-                    .attr("width", 70)
-                    .attr("height", 70);
-
-                var YOYRawOne = data[data.length - 1]["All Wikipedias (+Mobile)"] - data[data.length - 13]["All Wikipedias (+Mobile)"]
-                var MOMRawOne = data[data.length - 1]["All Wikipedias (+Mobile)"] - data[data.length - 2]["All Wikipedias (+Mobile)"]
-
-                var YOYPercentOne = (100 * YOYRawOne / data[data.length - 1]["All Wikipedias (+Mobile)"]).toFixed(2)
-                var MOMPercentOne = (100 * MOMRawOne / data[data.length - 1]["All Wikipedias (+Mobile)"]).toFixed(2)
-
-                var YOYRawTwo = dataTwo[dataTwo.length - 1]["All Wikipedias (+Mobile)"] - dataTwo[dataTwo.length - 13]["All Wikipedias (+Mobile)"]
-                var MOMRawTwo = dataTwo[dataTwo.length - 1]["All Wikipedias (+Mobile)"] - dataTwo[dataTwo.length - 2]["All Wikipedias (+Mobile)"]
-
-                var YOYPercentTwo = (100 * YOYRawTwo / dataTwo[dataTwo.length - 1]["All Wikipedias (+Mobile)"]).toFixed(2)
-                var MOMPercentTwo = (100 * MOMRawTwo / dataTwo[dataTwo.length - 1]["All Wikipedias (+Mobile)"]).toFixed(2)
-
-                d3.select(idname).select('.svgBase')
-                    .append('text')
-                    .text("May, 2015")
-                    .attr("text-anchor", "end")
-                    .attr("x", width - 100)
-                    .attr("y", 45)
-                    .attr("font-family", "Georgia")
-                    .attr("font-size", 32)
-                    .attr("fill", "#ccc");
-
-                //TODO Figure out a way to put italics into the svg without cutting the edge off.
-                d3.select(idname).select('.svgBase')
-                    .append('text')
-                    .text(function() {
-                        var number = parseInt(data[data.length - 1]["All Wikipedias (+Mobile)"] - dataTwo[dataTwo.length - 1]["Total Mobile"])
-                        number = number / 100000000
-                        var flooredNumber = Math.floor(number)
-                        return (flooredNumber / 10) + " BILLION"
-                    })
-                    .attr("x", 20)
-                    .attr("y", 400)
-                    .attr("font-family", "Helvetica Neue")
-                    .attr("font-size", function(d) {
-                        return "60px"
-                    })
-                    .attr("letter-spacing", "1px")
-                    .attr("font-weight", "500")
-                    .attr("fill", "#eee")
-
-                d3.select(idname).select('.svgBase')
-                    .append('text')
-                    .text("Desktop PageViews")
-                    .attr("x", 30)
-                    .attr("font-family", "Georgia")
-                    .attr("letter-spacing", "1px")
-                    .attr("y", 450)
-                    .attr("font-size", function(d) {
-                        return "25px"
-                    })
-                    .attr("font-weight", "100")
-                    .attr("fill", "white")
-                    .attr('opacity', "0.8");
-
-                d3.select(idname).select('.svgBase')
-                    .append('text')
-                    .text(function() {
-                        var number = parseInt(dataTwo[dataTwo.length - 1]["Total Mobile"])
-                        number = number / 100000000
-                        var flooredNumber = Math.floor(number)
-                        return (flooredNumber / 10) + " BILLION"
-                    })
-                    .attr("x", 20)
-                    .attr("y", 200)
-                    .attr("font-family", "Helvetica Neue")
-                    .attr("letter-spacing", "1px")
-                    .attr("font-size", function(d) {
-                        return "60px"
-                    })
-                    .attr("font-weight", "500")
-                    .attr("fill", "#eee")
-
-                // d3.select(idname).select('.svgBase')
-                //     .append('text')
-                //     .text(function() {
-                //         if (YOYPercentTwo.indexOf("-") > -1) {
-                //             return YOYPercentTwo + "%"
-                //         } else {
-                //             return "+" + YOYPercentTwo + "%"
-                //         }
-                //     })
-                //     .attr("x", 600)
-                //     .attr("y", 200)
-                //     // .attr("text-anchor", "right")
-                //     .attr("font-family", "Roboto Mono")
-                //     .attr("font-size", 80)
-                //     .attr("font-weight", "500")
-                //     .attr("fill", function() {
-                //         if (YOYPercentTwo.indexOf("-") > -1) {
-                //             return "rgb(247, 139, 139)"
-                //         } else {
-                //             return "rgb(149, 248, 150)"
-                //         }
-                //     })
-
-                d3.select(idname).select('.svgBase')
-                    .append('text')
-                    .text("Mobile PageViews")
-                    .attr("x", 30)
-                    .attr("y", 250)
-                    .attr("font-family", "Georgia")
-                    .attr("letter-spacing", "2px")
-                    .attr("font-size", function(d) {
-                        return "25px"
-                    })
-                    .attr("font-weight", "100")
-                    .attr("fill", "white")
-                    .attr('opacity', "0.8");
-
-                var parseDate = d3.time.format("%Y-%m-%d").parse;
-
-                data.splice(0, data.length - 13)
-                dataTwo.splice(0, dataTwo.length - 13)
-
-
-                data.forEach(function(d, i) {
-                    d.Month = (d.Month).replace('/', '-').replace('/', '-').replace('/', '-')
-                    d.Month = parseDate(d.Month)
-                })
-
-
-                var x = d3.time.scale()
-                    .range([440, width - 20]);
-
-                var y = d3.scale.linear()
-                    .range([height - 50, height - 200]);
-
-                var xAxis = d3.svg.axis()
-                    .scale(x)
-                    .orient("bottom")
-                    .ticks(3);
-
-                var yAxis = d3.svg.axis()
-                    .scale(y)
-                    .orient("left")
-                    .ticks(2);
-
-                var line = d3.svg.line()
-                    .tension(0.92)
-                    .interpolate("bundle").x(function(d) {
-                        return x(d.Month);
-                    })
-                    .y(function(d, i) {
-                        // console.log(d["All Wikipedias (+Mobile)"])
-                        // console.log(dataTwo[i]["Total Mobile"])
-                        return y(d["All Wikipedias (+Mobile)"] - dataTwo[i]["Total Mobile"]);
-                        // return y(d["All Wikipedias (+Mobile)"]);
-                    });
-
-                x.domain(d3.extent(data, function(d) {
-                    return d.Month;
-                }));
-                y.domain(d3.extent(data, function(d, i) {
-                    return d["All Wikipedias (+Mobile)"] - dataTwo[i]["Total Mobile"];
-                    // return d["All Wikipedias (+Mobile)"];
-                }));
-
-                svgBase.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(0," + (height - 50) + ")")
-                    .call(xAxis);
-
-                // svgBase.append("g")
-                //   .attr("class", "y axis")
-                //                 .attr("transform", "translate(" + (height-50) + ", 0) ")
-                //   .call(yAxis)
-                // .append("text")
-                //   .attr("transform", "rotate(-90)")
-                //   .attr("y", 6)
-                //   .attr("dy", ".71em")
-                //   .style("text-anchor", "end")
-
-                svgBase.append("path")
-                    .datum(data)
-                    .attr("class", "linea")
-                    .attr("d", line)
-                    .attr("stroke", "white")
-                    .attr("stroke-width", "2.5px");
-
-                var parseDate = d3.time.format("%Y-%m-%d").parse;
-
-                dataTwo.forEach(function(d, i) {
-                    d.Month = (d.Month).replace('/', '-').replace('/', '-').replace('/', '-')
-                    d.Month = parseDate(d.Month)
-                        // console.log(d.Month)
-                })
-
-
-                var x = d3.time.scale()
-                    .range([440, width - 20]);
-
-                var y = d3.scale.linear()
-                    .range([height - 290, height - 440]);
-
-                var xAxis = d3.svg.axis()
-                    .scale(x)
-                    .orient("bottom")
-                    .ticks(3);
-
-                var yAxis = d3.svg.axis()
-                    .scale(y)
-                    .orient("left")
-                    .ticks(2);
-
-                var lineTwo = d3.svg.line()
-                    .tension(0.92)
-                    .interpolate("bundle").x(function(d) {
-                        return x(d.Month);
-                    })
-                    .y(function(d) {
-                        return y(d["Total Mobile"]);
-                    });
-
-                x.domain(d3.extent(dataTwo, function(d) {
-                    return d.Month;
-                }));
-                y.domain(d3.extent(dataTwo, function(d) {
-                    // console.log(d["Total Mobile"])
-                    return d["Total Mobile"];
-                }));
-
-                svgBase.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(0," + (height - 290) + ")")
-                    .call(xAxis);
-
-                svgBase.append("path")
-                    .datum(dataTwo)
-                    .attr("class", "linea")
-                    .attr("d", lineTwo)
-                    .attr("stroke", "white")
-                    .attr("stroke-width", "2.5px");
-            });
-
-        });
-    }
 
     function pageViewsPlotter(dataSource, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight) {
 
@@ -5008,7 +3833,7 @@ function grandPlotter(pageIDin, pageTitlein) {
             image.onload = function() {
 
                 canvas.height = 572;
-                canvas.width = 1008;
+                canvas.width = 1095;
 
                 context.drawImage(image, 0, 0);
 
@@ -6303,7 +5128,7 @@ function grandPlotter(pageIDin, pageTitlein) {
             image.onload = function() {
 
                 canvas.height = 572;
-                canvas.width = 1008;
+                canvas.width = 1095;
 
                 context.drawImage(image, 0, 0);
 

@@ -1581,7 +1581,7 @@
             image.onload = function() {
 
                 canvas.height = 572;
-                canvas.width = 1008;
+                canvas.width = 1095;
 
                 context.drawImage(image, 0, 0);
 

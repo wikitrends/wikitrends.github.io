@@ -13,8 +13,7 @@
     <!-- StyleSheets -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/newStyle.css" rel="stylesheet">
-    <!--     <link href="css/style.css" rel="stylesheet">
- -->
+    <!--   <link href="css/style.css" rel="stylesheet">   -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
     <!-- Core D3 files -->
     <script src="js/d3.min.js"></script>
@@ -31,7 +30,9 @@
 
     <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
 
+ 
     <script src="junk/geo.js"></script>
+
 
 </head>
 
@@ -83,6 +84,7 @@
                 <!-- /btn-group -->
                 <input type="text" class="form-control" name='searchQuery' placeholder='Search Articles' />
             </div>
+            <div style="display: none">
              <label class="input-labels">DATES SELECTOR</label>
             <div class="input-group  col-md-12">
                 <div class="datesSectionOne col-md-5 input-half-one">
@@ -104,7 +106,9 @@
                 <div class="col-md-2 input-half-two">
                     <button class="btn btn-default input-button button-half-one" id="imageRefresher" type="submit"><i style="  margin-left: -6px;" class="fa fa-arrow-right"></i></button>
                 </div>
-            </div>
+            </div> 
+                        </div>
+
             <label class="input-labels">POPULAR ARTICLES (EDITS)</label>
             <button id="mostEdits" class="btn btn-default input-button button-half-one" onclick="weeklyPedia('Most Edits')" type="submit">All Articles</button>
             <button id="mostNewEdits" class="btn btn-default input-button button-half-two" onclick="weeklyPedia('Most New Edits')" type="submit">New Articles</button>
@@ -161,15 +165,30 @@
                             </div>
                         </div>
                     </div>
-                    <div class="graphPlace" id="one" style="margin-top: 150px;width: 900px;height: 500px"></div>
+                    <div style="width: 900px;height: 500px" id="oneIn">
+                        <div id="spinnerOne" style="position: absolute"></div>
+                        <img class="graphPlace"style="width: 900px;height: 500px" id="one" ></div>
+                    </div>
                 </div>
 
-                <div class="col-md-12">
-                    <h1 class="graphTitle" class="graphHeader"> Daily Aggregated Edits 
-                    <a id="twoPop" href="#" data-toggle="popover" title="Popover Header"><i class="fa fa-info-circle"></i></a></h1>
-                    <div id="twoControls"></div>
-                    <div class="graphPlace" id="two"></div>
+                <div style="margin-top: 120px" class="col-md-12">
+                    <h1 class="graphTitle" class="graphHeader"> GeoPlot: Torque 
+                    <a id="twoPop" href="#" data-toggle="popover"><i class="fa fa-info-circle"></i></a></h1>
+                    <div id="twoControls">
+                        <div id="controlstwo"></div>
+                        <div class="sliderSections">
+                            <label class="input-labels-graph">PLOT</label>
+                            <div class="btn-group" data-toggle="buttons">
+                                <button class="btn btn-default input-button" id="twoB">Woohoo!</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 900px;height: 500px" id="oneIn">
+                        <div id="spinnerTwo" style="position: absolute"></div>
+                        <div class="graphPlace"style="margin-top: 120px;width: 900px;height: 500px" id="two" ></div>
+                    </div>
                 </div>
+
                 <canvas width="960" height="500" style="display:none"></canvas>
             </div>
         </div>

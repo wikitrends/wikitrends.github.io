@@ -155,29 +155,6 @@ var updateDisplay = function(queryResult) {
     }
 }
 
-function imageChanger(id) {
-
-    // console.log(id)
-
-    var imageURL = d3.select("#" + "imageChanger" + id)
-
-    // var zy = "#" + "imageChanger" + id
-
-    // newImageURL = $(zy).val()
-    // console.log(imageURL)
-
-    // d3.select("#" + "rect" + xyz.slice(1))
-    //     .data([0])
-    //     .attr("opacity", function(d) {
-    //         if (opacity == "increase") {
-    //             return parseFloat(currentOpacity) + 0.05
-    //         } else {
-    //             return parseFloat(currentOpacity) - 0.05
-    //         }
-    //     })
-
-}
-
 /* Search functionality ends here */
 
 function precurssor(input, globalia, pageTitle) {
@@ -442,24 +419,14 @@ var thereIs;
     /* Loader Section ends */
 
     //// You mad, bro? 
-    var pageID = pageIDin;
+
     var pageTitle
 
     var jsonObject;
     var lastRevID;
     var objectTwo = []
 
-    var linkInitialPageEdits = "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&pageids=" + pageID + "&format=json&callback=?"
-
-    var linkSubsequentPageEdits = "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?"
-
-    // The limit of results returned currently set to 300. Total number of Wikipedias is 277 ( as of 16/6/15 )
-    var linkInitialWordCloud = "https://en.wikipedia.org/w/api.php?action=query&prop=langlinks&format=json&llprop=url%7Clangname%7Cautonym&lllimit=300&iwurl=" + "&pageids=" + pageID + "&format=json&callback=?"
-
     var linkInitialFeaturedArticle = "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&titles=Wikipedia%3A" + "Today\'s featured article/July 5, 2015"
-
-    var linkInitialPageViews = "http://stats.grok.se/json/es/latest90/" + encodeURI(pageTitlein)
-
     var linkInitialEditorOfTheWeek = "https://en.wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=timestamp%7Cuser%7Ccomment%7Ccontent&titles=Wikipedia%3AWikiProject_Editor_Retention%2FEditor_of_the_Week"
 
     //**// Variable Name
@@ -1403,8 +1370,11 @@ var thereIs;
                     .datum(dataTwo)
                     .attr("class", "linea")
                     .attr("d", lineTwo)
-                    .attr("stroke", "white")
-                    .attr("stroke-width", "2.5px");
+                    .attr("fill", "none")
+                    .attr("stroke", function() {
+                            return "#e74c3c"
+                    })
+                    .attr("stroke-width", "3px")
             });
 
         });
@@ -1720,6 +1690,7 @@ var thereIs;
 
         });
     }
+
 
     featuredArticle(linkInitialFeaturedArticle)
 

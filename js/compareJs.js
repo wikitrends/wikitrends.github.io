@@ -24,6 +24,8 @@ $(document).ready(function() {
 
     $('#element').tooltip('show')
 
+    $(".graphs").hide()
+
     // langCode = langCode.replace(" <span class='caret'></span>", "").toLowerCase();
 
     var currFFZoom = 1;
@@ -118,11 +120,12 @@ var search = function(query) {
 function closeThis(idname){
     idname = "[id='" + idname + "']"
     $(idname).remove()
-    console.log('asd')
 }    
 
 var requestArticleExtracts = function(queryResult) {
     // Request extracts for each of the articles found in the search
+
+    console.log('asd')
 
     var langCode = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
     langCode = langCode.replace(" <span class='caret'></span>", "").toLowerCase();
@@ -159,7 +162,7 @@ var resetDisplay = function() {
 }
 
 var updateDisplay = function(queryResult) {
-    //console.log(queryResult);
+    // console.log(queryResult);
     var pages = queryResult.query.pages;
 
     var langCode = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
@@ -173,20 +176,17 @@ var updateDisplay = function(queryResult) {
         // htmlToAdd += "<a target='_' "  href='https://en.wikipedia.org/?curid=" + pages[pId].pageid + "'>";
 
         // Using pages[pId].title doesn't work in API call. Hence use pageID
-        // console.log(pages[pId].title)
         var pageDetails = [pages[pId].pageid, pages[pId].title]
-            // console.log(globali)
             // htmlToAdd += "<a nohref onClick=\"grandPlotter(" + pages[pId].pageid + "," + "\'" + pages[pId].title + "\'" + ")\">"
         htmlToAdd += "<a nohref onClick=\"precurssor(" + pages[pId].pageid +
             "," + globali + "," + "\'" + langCode + "\'" +
             "," + "\'" + (pages[pId].title).replace('\'', '\\\'') + "\'" +
             ")\">"
 
-        //console.log(pages[pId].title)
         //test(pages[pId].title)
         //htmlToAdd += "<a href='javascript:grandPlotter(" + pages[pId].title + ")'>";
         htmlToAdd += "<p>" + pages[pId].title + "</p>";
-        //htmlToAdd += "<p>" + pages[pId].extract + "</p></a></div>";
+        htmlToAdd += "<p>" + pages[pId].extract + "</p></a></div>";
 
         $('#suggestionsPane').find('.mostEdits').html('');
         $('#suggestionsPane').find('.mostNewEdits').html('');
@@ -195,28 +195,6 @@ var updateDisplay = function(queryResult) {
         $("#mostNewEdits").removeClass("active")
         $("#mostEdits").removeClass("active")
     }
-}
-
-function imageChanger(id) {
-
-    // console.log(id)
-
-    var imageURL = d3.select("#" + "imageChanger" + id)
-
-    // var zy = "#" + "imageChanger" + id
-
-    // newImageURL = $(zy).val()
-    // console.log(imageURL)
-
-    // d3.select("#" + "rect" + xyz.slice(1))
-    //     .data([0])
-    //     .attr("opacity", function(d) {
-    //         if (opacity == "increase") {
-    //             return parseFloat(currentOpacity) + 0.05
-    //         } else {
-    //             return parseFloat(currentOpacity) - 0.05
-    //         }
-    //     })
 }
 
 /* Search functionality ends here */
@@ -498,6 +476,8 @@ var thereIs;
 // This is the main place where everything works. All the calls the the APIs ( except for the article seach and weeklypedia suggestions ), pretty much everything lies here. 
 
 function grandPlotter(graphOne, graphTwo) {
+
+    $(".graphs").hide()
 
     document.getElementById('datepicker').value='';
     document.getElementById('datepickerTwo').value='';
