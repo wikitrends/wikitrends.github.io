@@ -280,7 +280,7 @@ function getImageDimensions(url, callback) {
 
 // Puts spaces in the number!
 function numberWithSpaces(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function convertImgToBase64(url, heightParam, widthParam, callback, outputFormat) {
@@ -361,7 +361,7 @@ var thereIs;
                 })
                 .style("fill", "#4D4D4D")
                 .attr("d", arc)
-                .call(spin, 1500)
+                .call(spin, 1600)
 
             function spin(selection, duration) {
                 selection.transition()
@@ -378,7 +378,7 @@ var thereIs;
 
             function transitionFunction(path) {
                 path.transition()
-                    .duration(7500)
+                    .duration(7600)
                     .attrTween("stroke-dasharray", tweenDash)
                     .each("end", function() {
                         d3.select(this).call(transition);
@@ -389,28 +389,28 @@ var thereIs;
 
     var myLoader = loader({
         width: 960,
-        height: 500,
+        height: 600,
         container: "#one",
         id: "one"
     });
     myLoader();
     var myLoader = loader({
         width: 960,
-        height: 500,
+        height: 600,
         container: "#two",
         id: "one"
     });
     myLoader();
     var myLoader = loader({
         width: 960,
-        height: 500,
+        height: 600,
         container: "#three",
         id: "one"
     });
     myLoader();
     var myLoader = loader({
         width: 960,
-        height: 500,
+        height: 600,
         container: "#four",
         id: "one"
     });
@@ -529,7 +529,7 @@ var thereIs;
                     );
 
                 } else {
-                    featuredArticlePlotter(articleTitle, extract, "#twelve", "assets/defaultImage.jpg", 1000, 500)
+                    featuredArticlePlotter(articleTitle, extract, "#twelve", "assets/defaultImage.jpg", 1000, 600)
 
                 }
 
@@ -594,7 +594,7 @@ var thereIs;
 
             }
 
-            editorOfTheWeekPlotter(EOWs, reasonsEOWs, dateEOWs, "#thirteen", "assets/defaultImage.jpg", 1000, 500)
+            editorOfTheWeekPlotter(EOWs, reasonsEOWs, dateEOWs, "#thirteen", "assets/defaultImage.jpg", 1000, 600)
         })
     }
 
@@ -1143,11 +1143,11 @@ var thereIs;
                     .text(numberWithSpaces(data[data.length - 1].Total))
                     .attr("x", 20)
                     .attr("y", 400)
-                    .attr("font-family", "Roboto Mono")
+                    .attr("font-family", "Open Sans")
                     .attr("font-size", function(d) {
                         return "80px"
                     })
-                    .attr("font-weight", "500")
+                    .attr("font-weight", "600")
                     .attr("fill", "#eee")
 
                 // d3.select(idname).select('.svgBase')
@@ -1162,9 +1162,9 @@ var thereIs;
                 //     .attr("x", 600)
                 //     .attr("y", 400)
                 //     // .attr("text-anchor", "right")
-                //     .attr("font-family", "Roboto Mono")
+                //     .attr("font-family", "Open Sans")
                 //     .attr("font-size", 80)
-                //     .attr("font-weight", "500")
+                //     .attr("font-weight", "600")
                 //     .attr("fill", function() {
                 //         if (YOYPercentOne.indexOf("-") > -1) {
                 //             return "rgb(247, 139, 139)"
@@ -1192,11 +1192,11 @@ var thereIs;
                     .text(numberWithSpaces(dataTwo[dataTwo.length - 1].Total))
                     .attr("x", 20)
                     .attr("y", 200)
-                    .attr("font-family", "Roboto Mono")
+                    .attr("font-family", "Open Sans")
                     .attr("font-size", function(d) {
                         return "80px"
                     })
-                    .attr("font-weight", "500")
+                    .attr("font-weight", "600")
                     .attr("fill", "#eee")
 
                 // d3.select(idname).select('.svgBase')
@@ -1211,9 +1211,9 @@ var thereIs;
                 //     .attr("x", 600)
                 //     .attr("y", 200)
                 //     // .attr("text-anchor", "right")
-                //     .attr("font-family", "Roboto Mono")
+                //     .attr("font-family", "Open Sans")
                 //     .attr("font-size", 80)
-                //     .attr("font-weight", "500")
+                //     .attr("font-weight", "600")
                 //     .attr("fill", function() {
                 //         if (YOYPercentTwo.indexOf("-") > -1) {
                 //             return "rgb(247, 139, 139)"
@@ -1298,8 +1298,11 @@ var thereIs;
                     .datum(data)
                     .attr("class", "linea")
                     .attr("d", line)
-                    .attr("stroke", "white")
-                    .attr("stroke-width", "2.5px");
+                    .attr("fill", "none")
+                    .attr("stroke", function() {
+                            return "#FFAB00"
+                    })
+                    .attr("stroke-width", "3px")
 
 
                 d3.select(idname).select('.svgBase')
@@ -1372,7 +1375,7 @@ var thereIs;
                     .attr("d", lineTwo)
                     .attr("fill", "none")
                     .attr("stroke", function() {
-                            return "#e74c3c"
+                            return "#FFAB00"
                     })
                     .attr("stroke-width", "3px")
             });
@@ -1486,12 +1489,12 @@ var thereIs;
                     })
                     .attr("x", 20)
                     .attr("y", 400)
-                    .attr("font-family", "Helvetica Neue")
+                    .attr("font-family", "Open Sans")
                     .attr("font-size", function(d) {
                         return "60px"
                     })
                     .attr("letter-spacing", "1px")
-                    .attr("font-weight", "500")
+                    .attr("font-weight", "600")
                     .attr("fill", "#eee")
 
                 d3.select(idname).select('.svgBase')
@@ -1518,12 +1521,12 @@ var thereIs;
                     })
                     .attr("x", 20)
                     .attr("y", 200)
-                    .attr("font-family", "Helvetica Neue")
+                    .attr("font-family", "Open Sans")
                     .attr("letter-spacing", "1px")
                     .attr("font-size", function(d) {
                         return "60px"
                     })
-                    .attr("font-weight", "500")
+                    .attr("font-weight", "600")
                     .attr("fill", "#eee")
 
                 // d3.select(idname).select('.svgBase')
@@ -1538,9 +1541,9 @@ var thereIs;
                 //     .attr("x", 600)
                 //     .attr("y", 200)
                 //     // .attr("text-anchor", "right")
-                //     .attr("font-family", "Roboto Mono")
+                //     .attr("font-family", "Open Sans")
                 //     .attr("font-size", 80)
-                //     .attr("font-weight", "500")
+                //     .attr("font-weight", "600")
                 //     .attr("fill", function() {
                 //         if (YOYPercentTwo.indexOf("-") > -1) {
                 //             return "rgb(247, 139, 139)"
@@ -1696,9 +1699,9 @@ var thereIs;
 
     editorOfTheWeek(linkInitialEditorOfTheWeek)
 
-    monthlyStats("#fourteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_new_editors_count.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
+    monthlyStats("#fourteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_new_editors_count.csv", "bundle", "assets/defaultImage.jpg", 1000, 600)
 
-    monthlyStatsMobileDesktop("#fifteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests.csv", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests_mobile.csv", "bundle", "assets/defaultImage.jpg", 1000, 500)
+    monthlyStatsMobileDesktop("#fifteen", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests.csv", "http://reportcard.wmflabs.org/data/datafiles/rc/rc_page_requests_mobile.csv", "bundle", "assets/defaultImage.jpg", 1000, 600)
 
 
 
