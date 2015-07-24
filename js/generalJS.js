@@ -916,10 +916,23 @@ var thereIs;
         d3.select(idname).select('.svgBase')
             .append("svg:image")
             .attr("xlink:href", "assets/wikipediaW.png")
-            .attr("x", width - 80)
-            .attr("y", 0)
-            .attr("width", 70)
-            .attr("height", 70);
+            .attr("x", 0)
+                .attr("y", 15)
+                .attr("width", 80)
+                .attr("height", 80);
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text("Editor of the Week (Past Month)")
+            // .attr("text-anchor", "end")
+            .attr("x", 100)
+            .attr("y", 60)
+            .attr("font-family", "Georgia")
+            .attr("font-size", function(d) {
+                return "29px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "1");
 
 
         var circle = svgBase.selectAll("circle")

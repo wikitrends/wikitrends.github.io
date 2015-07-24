@@ -2579,7 +2579,6 @@ function grandPlotter(pageIDin, pageTitlein) {
                     }
                 })
                 .attr("height", 20);
-
         })
 
         // d3.select(idname).select('.svgBase')
@@ -2619,7 +2618,7 @@ function grandPlotter(pageIDin, pageTitlein) {
         d3.select(idname).select('.svgBase')
             .append('text')
             .attr('id', 'textHeader')
-            .text("Total page edits")
+            .text("Page Edits")
             .attr("x", function(d) {
                 var length = numberWithSpaces(totalEdits).length
                 return width - (24 * length) - 45 + 5
@@ -2672,6 +2671,27 @@ function grandPlotter(pageIDin, pageTitlein) {
             .attr("font-size", function(d) {
                 return "17.5px"
             })
+            .attr("fill", "white")
+            .attr('opacity', "1");
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .attr('id', "author" + idname.slice(1))
+            .text("Author")
+            // .attr("text-anchor", "end")
+            .attr("y", 100)
+            .attr("x", function() {
+                if (atribution == "CCSA") {
+                    return 38.2417582418 + 120
+                } else {
+                    return 57.6923076923+ 120
+                }
+            })
+            .attr("font-family", "Helvetica Neue")
+            .attr("font-size", function(d) {
+                return "17.5px"
+            })
+            .attr("font-weight", "400")
             .attr("fill", "white")
             .attr('opacity', "1");
 
@@ -2986,6 +3006,21 @@ function grandPlotter(pageIDin, pageTitlein) {
                             .style("width", "180px")
                             .attr("id", "imageHeightSlider" + idname.slice(1))
                     });
+
+                d3.select(this).append("div")
+                    .attr("class", "sliderSections")
+                    .each(function(d) {
+                        d3.select(this).append("label")
+                            .attr("class", "input-labels-graph")
+                            .text('Author')
+                        d3.select(this).append("input")
+                            .attr("type", "text")
+                            .attr("class", "form-control")
+                            .attr("placeholder", "Graph Title")
+                            .style("width", "180px")
+                            .attr("id", "authorName" + idname.slice(1))
+
+                    });
             })
 
         // controlsInsertor.append("label")
@@ -3111,10 +3146,10 @@ function grandPlotter(pageIDin, pageTitlein) {
                 })
                 .attr("width", function() {
 
-                    return (width / difference) - ((width / difference) / 5)
+                    return (width / difference) - ((width / difference) / 3)
                 })
                 .attr("y", function(d) {
-                    return y(d.values) + 100
+                    return y(d.values) - 30
                 })
                 .attr("height", function(d) {
 
@@ -3259,6 +3294,12 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr('opacity', "1");
         });
 
+        d3.select("#" + "authorName" + idname.slice(1)).on("input", function() {
+            console.log(this.value)
+            d3.select("#" + "author" + idname.slice(1))
+                .text(this.value);
+        });
+
         function updateOpacity(ina) {
             d3.select("#" + "rect" + idname.slice(1))
                 .data([0])
@@ -3390,6 +3431,16 @@ function grandPlotter(pageIDin, pageTitlein) {
             timeLimitUpper = pickerTwo.getDate()
             initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight, "CCBYSA")
         })
+
+        d3.select("#author").on("input", function() {
+            // d3.selectAll('author').text('Hello')
+            // console.log('asd')
+            // console.log('asd')
+            // timeLimit = picker.getDate()
+            // timeLimitUpper = pickerTwo.getDate()
+            // initializer(finaljsonObject, pageTitle, picUrl, picWidth, picHeight, "CCBYSA")
+        })
+
     }
 
     var EOWs;

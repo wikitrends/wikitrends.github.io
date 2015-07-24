@@ -428,7 +428,7 @@ function getImageDimensions(url, callback) {
 
 // Puts spaces in the number!
 function numberWithSpaces(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
 function convertImgToBase64(url, heightParam, widthParam, callback, outputFormat) {
@@ -2395,7 +2395,7 @@ function grandPlotter(graphOne, graphTwo) {
             .attr("font-size", function(d) {
                 return "46px"
             })
-            .attr("fill", "white")
+            .attr("fill", "rgb(29, 177, 252)")
             .attr('opacity', "1");
 
         // d3.select(idname).select('.svgBase')
@@ -2581,19 +2581,19 @@ function grandPlotter(graphOne, graphTwo) {
         controlsInsertor
             .each(function(d) {
         
-                d3.select(this).append("div")
-                    .attr("class", "sliderSections")
-                    .each(function(d) {
-                        d3.select(this).append("label")
-                            .attr("class", "input-labels-graph")
-                            .text('CHART TYPE')
-                        d3.select(this).append("div")
-                            .attr("class", "btn-group")
-                            .attr("data-toggle", "buttons")
-                            .html(function(d) {
-                                return "<label class='btn btn-primary'  id='cover" + idname.slice(1) + "' ><input type='radio' name='options' autocomplete='off' checked=''>Cover</label><label class='btn btn-primary active' id='stretch" + idname.slice(1) + "'><input type='radio' name='options' autocomplete='off' checked=''>Stretch</label>"
-                            })
-                    });
+                // d3.select(this).append("div")
+                //     .attr("class", "sliderSections")
+                //     .each(function(d) {
+                //         d3.select(this).append("label")
+                //             .attr("class", "input-labels-graph")
+                //             .text('CHART TYPE')
+                //         d3.select(this).append("div")
+                //             .attr("class", "btn-group")
+                //             .attr("data-toggle", "buttons")
+                //             .html(function(d) {
+                //                 return "<label class='btn btn-primary'  id='cover" + idname.slice(1) + "' ><input type='radio' name='options' autocomplete='off' checked=''>Cover</label><label class='btn btn-primary active' id='stretch" + idname.slice(1) + "'><input type='radio' name='options' autocomplete='off' checked=''>Stretch</label>"
+                //             })
+                //     });
 
                 d3.select(this).append("div")
                     .attr("class", "sliderSections")
@@ -2609,21 +2609,6 @@ function grandPlotter(graphOne, graphTwo) {
                             .attr("id", "graphTitle" + idname.slice(1))
 
                     });
-
-                d3.select(this).append("div")
-                    .attr("class", "sliderSections")
-                    .each(function(d) {
-                        d3.select(this).append("label")
-                            .attr("class", "input-labels-graph")
-                            .text('Title')
-                        d3.select(this).append("div")
-                            .attr("class", "btn-group")
-                            .attr("data-toggle", "buttons")
-                            .html(function(d) {
-                                return "<label class='btn btn-primary'  id='cover" + idname.slice(1) + "' ><input type='radio' name='options' autocomplete='off' checked=''>Cover</label><label class='btn btn-primary active' id='stretch" + idname.slice(1) + "'><input type='radio' name='options' autocomplete='off' checked=''>Stretch</label>"
-                            })
-                    });
-
                 d3.select(this).append("div")
                     .attr("class", "sliderSections")
                     .each(function(d) {

@@ -51,8 +51,8 @@
             </ul>
         </div>
     </nav>
-    <div class="container">
-        <div class="controls">
+    <div class="container" >
+        <div class="controls"style="display: none">
             <label class="input-labels">ARTICLE SELECTOR</label>
             <div class="input-group">
                 <div class="input-group-btn">
@@ -204,53 +204,26 @@
                     <p class="graphDescription">Since the day the article was created. </p>
                     <div class="graphPlace" id="three"></div>
                 </div>
-                -->
+                --><!-- 
 
                 <div class="col-md-12">
                     <h1 class="graphTitle" class="graphHeader"> Editors of the Week (Past Month)
                     <a id="fourPop" href="#" data-toggle="popover" title="Popover Header"><i class="fa fa-info-circle"></i></a></h1>
                     <div id="fourControls"></div>
-                    <div class="graphPlace" id="four"></div>
-                </div>
+                </div> -->
 
-                <h1 class="graphTitle" class="graphHeader"> Today's featured article</h1>
-                <!-- <p class="graphDescription">For the past 90 days (stat.grok.se)</p> -->
+<!--                 <h1 class="graphTitle" class="graphHeader"> Today's featured article</h1>
+ -->                <!-- <p class="graphDescription">For the past 90 days (stat.grok.se)</p> -->
                 <div id="twelve"></div>
                 <h1 class="graphTitle" class="graphHeader"> Editors of the Month</h1>
+                                    <div class="graphPlace" id="four"></div>
+
                 <!-- <p class="graphDescription">For the past 90 days (stat.grok.se)</p> -->
                 <div id="thirteen"></div>
                 <h1 class="graphTitle" class="graphHeader"> Monthly Statistics</h1>
                 <!-- <p class="graphDescription">For the past 90 days (stat.grok.se)</p> -->
                 <div id="fourteen"></div>
                 <div id="fifteen"></div>
-                <h1 class="graphTitle" class="graphHeader"> WordCloud Graph (Page Titles)</h1>
-                <p class="graphDescription">Since the day the article was created. </p>
-                <div id="three"></div>
-                <h1 class="graphTitle" class="graphHeader"> WordCloud Graph (Language Name)</h1>
-                <p class="graphDescription">Since the day the article was created. </p>
-                <div id="four"></div>
-                <h1 class="graphTitle" class="graphHeader"> Pie Chart (By Language)</h1>
-                <p class="graphDescription">Since the day the article was created. </p>
-                <div id="five"></div>
-                <h1 class="graphTitle" class="graphHeader"> PageViews</h1>
-                <p class="graphDescription">For the past 90 days (stat.grok.se)</p>
-                <div id="seven"></div>
-                <h1 class="graphTitle" class="graphHeader"> PageViews (Interpolated)</h1>
-                <p class="graphDescription">For the past 90 days (stat.grok.se)</p>
-                <div id="eight"></div>
-                <h1 class="graphTitle" class="graphHeader"> Geo-Plot (Number of Edits) <button style="margin-left: 80px" id="nineB">Tada!</button></h1>
-                <p class="graphDescription">Uses CartoDB</p>
-                <div id="nine"></div>
-                <h1 class="graphTitle" class="graphHeader"> Geo-Plot (Edits Torque Timeplot) <button style="margin-left: 80px" id="tenB">Tada!</button></h1>
-                <p class="graphDescription">Uses CartoDB</p>
-                <div id="ten"></div>
-                <h1 class="graphTitle" class="graphHeader"> Geo-Plot (Edits Clustermap) <button style="margin-left: 80px" id="elevenB">Tada!</button></h1>
-                <p class="graphDescription">Uses CartoDB</p>
-                <div id="eleven"></div>
-                <div id="svgdataurl"></div>
-                <div id="pngdataurl"></div>
-                <div id="pngdataurl"></div>
-
                 <canvas width="960" height="500" style="display:none"></canvas>
             </div>
         </div>
@@ -259,66 +232,66 @@
 <script>
 $(document).ready(function() {
 
-    $('#onePop').popover({
-        title: "INFO",
-        content: "Some important points to be noted: </br> - This visualization contains the edits only from the English Wikipedia. The edits are aggregated weekly.",
-        html: true,
-        placement: "right"
-    });
-    $('#twoPop').popover({
-        title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
-        content: "Blabla <br> <h2>Cool stuff!</h2>",
-        html: true,
-        placement: "right"
-    });
-    $('#threePop').popover({
-        title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
-        content: "Blabla <br> <h2>Cool stuff!</h2>",
-        html: true,
-        placement: "right"
-    });
-    $('#fourPop').popover({
-        title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
-        content: "Blabla <br> <h2>Cool stuff!</h2>",
-        html: true,
-        placement: "right"
-    });
-    $('#fivePop').popover({
-        title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
-        content: "Blabla <br> <h2>Cool stuff!</h2>",
-        html: true,
-        placement: "right"
-    });
-    $('#sixPop').popover({
-        title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
-        content: "Blabla <br> <h2>Cool stuff!</h2>",
-        html: true,
-        placement: "right"
-    });
-    $('#sevenPop').popover({
-        title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
-        content: "Blabla <br> <h2>Cool stuff!</h2>",
-        html: true,
-        placement: "right"
-    });
-    $('#eightPop').popover({
-        title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
-        content: "Blabla <br> <h2>Cool stuff!</h2>",
-        html: true,
-        placement: "right"
-    });
-    $('#ninePop').popover({
-        title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
-        content: "Blabla <br> <h2>Cool stuff!</h2>",
-        html: true,
-        placement: "right"
-    });
-    $('#tenPop').popover({
-        title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
-        content: "Blabla <br> <h2>Cool stuff!</h2>",
-        html: true,
-        placement: "right"
-    });
+    // $('#onePop').popover({
+    //     title: "INFO",
+    //     content: "Some important points to be noted: </br> - This visualization contains the edits only from the English Wikipedia. The edits are aggregated weekly.",
+    //     html: true,
+    //     placement: "right"
+    // });
+    // $('#twoPop').popover({
+    //     title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
+    //     content: "Blabla <br> <h2>Cool stuff!</h2>",
+    //     html: true,
+    //     placement: "right"
+    // });
+    // $('#threePop').popover({
+    //     title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
+    //     content: "Blabla <br> <h2>Cool stuff!</h2>",
+    //     html: true,
+    //     placement: "right"
+    // });
+    // $('#fourPop').popover({
+    //     title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
+    //     content: "Blabla <br> <h2>Cool stuff!</h2>",
+    //     html: true,
+    //     placement: "right"
+    // });
+    // $('#fivePop').popover({
+    //     title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
+    //     content: "Blabla <br> <h2>Cool stuff!</h2>",
+    //     html: true,
+    //     placement: "right"
+    // });
+    // $('#sixPop').popover({
+    //     title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
+    //     content: "Blabla <br> <h2>Cool stuff!</h2>",
+    //     html: true,
+    //     placement: "right"
+    // });
+    // $('#sevenPop').popover({
+    //     title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
+    //     content: "Blabla <br> <h2>Cool stuff!</h2>",
+    //     html: true,
+    //     placement: "right"
+    // });
+    // $('#eightPop').popover({
+    //     title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
+    //     content: "Blabla <br> <h2>Cool stuff!</h2>",
+    //     html: true,
+    //     placement: "right"
+    // });
+    // $('#ninePop').popover({
+    //     title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
+    //     content: "Blabla <br> <h2>Cool stuff!</h2>",
+    //     html: true,
+    //     placement: "right"
+    // });
+    // $('#tenPop').popover({
+    //     title: "<h1><strong>HTML</strong> inside <code>the</code> <em>popover</em></h1>",
+    //     content: "Blabla <br> <h2>Cool stuff!</h2>",
+    //     html: true,
+    //     placement: "right"
+    // });
 
 });
 
