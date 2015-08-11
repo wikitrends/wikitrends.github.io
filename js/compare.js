@@ -22,9 +22,8 @@ var pickerTwo = new Pikaday({
 // This part simply changes the UI. Just to add the the cross button when the WeeklyPedia section is used etc. 
 $(document).ready(function() {
 
-        $('.graphs').hide()
-
-
+    $('.graphs').hide()
+    
     $('#element').tooltip('show')
 
     $(".graphs").hide()
@@ -303,7 +302,7 @@ function grandPlotterPrecurssor() {
 // Automatic Most Editted and most recently editted pages are fetched and displayed. 
 function weeklyPedia(parameter) {
 
-    var lastFriday = moment().startOf('week').subtract(2, 'days')
+    var lastFriday = moment().startOf('isoweek').subtract(2, 'days')
     lastFriday = JSON.stringify(lastFriday).slice(1, 11).replace(/-/g, "")
 
     var langCode = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()

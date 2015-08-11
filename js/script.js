@@ -6351,7 +6351,6 @@ function grandPlotter(pageIDin, pageTitlein) {
     // This gets the pageview stats from Stats.grok.se
     pageViews(linkInitialPageViews)
 
-
 }
 
 

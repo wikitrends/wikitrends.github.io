@@ -72,24 +72,12 @@ $(document).ready(function() {
         $("#closeMostNewEdits").hide()
     });
 
-    $('#tenB').click(function() {
-        cartodb.createVis('ten', 'https://dpatel.cartodb.com/api/v2/viz/7f6c716a-1a1e-11e5-9539-0e4fddd5de28/viz.json');
-    })
-
-    $('#nineB').click(function() {
-        cartodb.createVis('nine', 'https://dpatel.cartodb.com/api/v2/viz/771e43ca-1a38-11e5-a03e-0e0c41326911/viz.json');
-    })
-
-    $('#elevenB').click(function() {
-        cartodb.createVis('eleven', '    https://dpatel.cartodb.com/api/v2/viz/df71869c-2020-11e5-8a62-0e018d66dc29/viz.json');
-    })
 });
 
 
 
 // Starts the search functionality of the article section. It then calls the next 4 functions (requestArticleExtracts, updateNumResults, resetDisplay, updateDisplay)
 var search = function(query) {
-
 
     var langCode = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
     langCode = langCode.replace(" <span class='caret'></span>", "").toLowerCase();
@@ -198,7 +186,8 @@ function weeklyPedia(parameter) {
     var printer = $("#datepicker")
     console.log(printer)
 
-    var lastFriday = moment().startOf('week').subtract(2, 'days')
+
+    var lastFriday = moment().startOf('isoweek').subtract(2, 'days')
     lastFriday = JSON.stringify(lastFriday).slice(1, 11).replace(/-/g, "")
     var textCheck = $(".lang-selector li a").parents(".input-group-btn").find('.btn').text()
     console.log(textCheck.replace("<span class='caret'></span>", "").toLowerCase());
@@ -488,17 +477,12 @@ function grandPlotter(pageIDin, pageTitlein) {
     langCode = langCode.replace(" <span class='caret'></span>", "").toLowerCase();
 
     var linkInitialPageEdits = "https://" + langCode + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&pageids=" + pageID + "&format=json&callback=?"
-
     var linkSubsequentPageEdits = "https://" + langCode + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=ids%7Ctimestamp%7Cuser%7Cuserid%7Csize&rvlimit=1000&rvcontentformat=text%2Fplain" + "&rvstartid=" + lastRevID + "&pageids=" + pageID + "&format=json&callback=?"
 
     // The limit of results returned currently set to 300. Total number of Wikipedias is 277 ( as of 16/6/15 )
     var linkInitialWordCloud = "https://" + langCode + ".wikipedia.org/w/api.php?action=query&prop=langlinks&format=json&llprop=url%7Clangname%7Cautonym&lllimit=300&iwurl=" + "&pageids=" + pageID + "&format=json&callback=?"
 
-    var linkInitialFeaturedArticle = "https://" + langCode + ".wikipedia.org/w/api.php?action=query&prop=extracts&format=json&titles=Wikipedia%3A" + "Today\'s featured article/July 5, 2015"
-
     var linkInitialPageViews = "http://stats.grok.se/json/es/latest90/" + encodeURI(pageTitlein)
-
-    var linkInitialEditorOfTheWeek = "https://" + langCode + ".wikipedia.org/w/api.php?action=query&prop=revisions&format=json&rvprop=timestamp%7Cuser%7Ccomment%7Ccontent&titles=Wikipedia%3AWikiProject_Editor_Retention%2FEditor_of_the_Week"
 
     //**// Variable Name
     // It is used by just the pageEdits function and the graph plotter. 
@@ -926,8 +910,6 @@ function grandPlotter(pageIDin, pageTitlein) {
     function pageViews(url, callback) {
         getDataNoCrossOrigin(url, function(data) {
             var arrayData = []
-                // console.log(url)
-                // console.log(data)
 
             var requiredData = data.query.results.json.daily_views
             typeof requiredData;
@@ -950,8 +932,6 @@ function grandPlotter(pageIDin, pageTitlein) {
             });
 
             getData("https://en.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original" + "&titles=" + pageTitlein + "&format=json&callback=?", function(data) {
-
-                // console.log(arrayData)
 
                 linkAddress = data;
 
@@ -3614,7 +3594,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr("x", function(d) {
                     // console.log(picHeight)
                     // console.log(picWidth)
-                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg" ) {
                         if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
                             return (((0.5) * (fullBleedHeight / picHeight) * picWidth) - (fullBleedWidth / 2))
                         } else {
@@ -5226,6 +5206,8 @@ function grandPlotter(pageIDin, pageTitlein) {
 
     // This gets the pageview stats from Stats.grok.se
     pageViews(linkInitialPageViews)
+
+    // <script type="text/javascript" src="first.js"></script>
 
 
 }
