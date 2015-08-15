@@ -1617,95 +1617,33 @@ function grandPlotter(pageIDin, pageTitlein) {
         d3.select(idname + "Controls").selectAll("*")
             .remove()
 
-// dataTemp.sort(function(a, b) {
-//     var c = new Date(a.timestamp);
-//     var d = new Date(b.timestamp);
-//     return d - c;
-// });
-
-// console.log(dataTemp)
-
-// var editors = []
-// var editorsCount = 0;
-
-// dataTemp.forEach(function(d, i) {
-
-//     var user = d.user
-
-//     if (editors.indexOf(user) > -1) {
-//         d.editorsCount = editorsCount
-//     } else {
-//         editorsCount = editorsCount + 1;
-//         editors.push(user)
-//         d.editorsCount = editorsCount
-//     }
-
-// })
-
-
-// dataTemp.forEach(function(d, i) {
-
-//     if (i == dataTemp.length - 1) {
-//         d.difference = d.size;
-//     } else {
-//         d.difference = d.size - dataTemp[i + 1].size;
-//     }
-
-// })
-
-
         var totalEdits = 0;
-// var totalEditors;
-        var brokenDownDataSource = []
+
+        // arrayData.sort(function(a, b) {
+        //     var c = new Date(a.date);
+        //     var d = new Date(b.date);
+        //     return c - d;
+        // });
+
+        if (timeLimit == null) {
+            console.log(dataTemp[dataTemp.length-1])
+            timeLimit = dataTemp[dataTemp.length-1].timestamp
+            console.log(timeLimit)
+
+        }
+
+        if (timeLimitUpper == null) {
+            timeLimitUpper = JSON.stringify(moment()).replace(/"/g, "")
+            console.log(timeLimitUpper)
+        }
 
         dataTemp.forEach(function(d) {
-
-            if (timeLimit == null && timeLimitUpper == null) {
+            console.log(moment(d.timestamp).diff(moment(timeLimitUpper)))
+            if (moment(d.timestamp).diff(moment(timeLimitUpper)) < 0 && moment(d.timestamp).diff(moment(timeLimit)) > 0) {
                 totalEdits = totalEdits + 1
-                // brokenDownDataSource.push({
-                //     user: d.user,
-                //     timestamp: d.timestamp
-                // })
-            } else if (timeLimit == null && timeLimitUpper != null) {
-                if (moment(d.timestamp).diff(moment(timeLimitUpper)) < 0) {
-                    totalEdits = totalEdits + 1
-                    // brokenDownDataSource.push({
-                    //     user: d.user,
-                    //     timestamp: d.timestamp
-                    // })
-                }
-            } else if (timeLimit != null && timeLimitUpper == null) {
-                if (moment(d.timestamp).diff(moment(timeLimit)) > 0) {
-                    totalEdits = totalEdits + 1
-                    // brokenDownDataSource.push({
-                    //     user: d.user,
-                    //     timestamp: d.timestamp
-                    // })
-                }
-            } else if (timeLimit != null && timeLimitUpper != null) {
-                if (moment(d.timestamp).diff(moment(timeLimit)) < 0) {} else {
-                    if (moment(d.timestamp).diff(moment(timeLimitUpper)) < 0) {
-                        totalEdits = totalEdits + 1
-                        // brokenDownDataSource.push({
-                        //     user: d.user,
-                        //     timestamp: d.timestamp
-                        // })
-                    }
-                }
+                console.log('asd')
             }
         })
-
-
-
-// var editorLength = {},
-//     e;
-// for (var i = 0, l = brokenDownDataSource.length; i < l; i++) {
-//     e = brokenDownDataSource[i];
-//     editorLength[e.user] = (editorLength[e.user] || 0) + 1;
-// }
-
-
-// var totalEditors = Object.keys(editorLength).length
 
         $('#loader').html('');
         $(idname).html('')
@@ -1751,62 +1689,75 @@ function grandPlotter(pageIDin, pageTitlein) {
         var knotChecker;
 
         var upperline = d3.svg.line()
-            // .tension(0.95)
-            // .interpolate("bundle")
+            .tension(0.95)
+            .interpolate("bundle")
             .x(function(d, i) {
 
-                if (timeLimit == null && timeLimitUpper == null) {
+                if (moment(d.key).diff(moment(timeLimitUpper)) < 0 && moment(d.key).diff(moment(timeLimit)) > 0) {
                     return x(parseDate(d.key));
-                } else if (timeLimit == null && timeLimitUpper != null) {
-                    if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
-                        return x(parseDate(d.key))
-                    }
-                    return x(timeLimitUpper)
-                } else if (timeLimit != null && timeLimitUpper == null) {
-                    if (moment(d.key).diff(moment(timeLimit)) > 0) {
-                        return x(parseDate(d.key))
-                    }
+                } else  {
                     return x(timeLimit)
-                } else if (timeLimit != null && timeLimitUpper != null) {
-                    if (moment(d.key).diff(moment(timeLimit)) < 0) {
-                        return x(timeLimit)
-                    } else {
-                        if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
-                            return x(parseDate(d.key))
-                        } else {
-                            return x(timeLimitUpper)
-                        }
-                    }
                 }
+
+                // if (timeLimit == null && timeLimitUpper == null) {
+                //     return x(parseDate(d.key));
+                // } else if (timeLimit == null && timeLimitUpper != null) {
+                //     if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                //         return x(parseDate(d.key))
+                //     }
+                //     return x(timeLimitUpper)
+                // } else if (timeLimit != null && timeLimitUpper == null) {
+                //     if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                //         return x(parseDate(d.key))
+                //     }
+                //     return x(timeLimit)
+                // } else if (timeLimit != null && timeLimitUpper != null) {
+                //     if (moment(d.key).diff(moment(timeLimit)) < 0) {
+                //         return x(timeLimit)
+                //     } else {
+                //         if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                //             return x(parseDate(d.key))
+                //         } else {
+                //             return x(timeLimitUpper)
+                //         }
+                //     }
+                // }
             })
             .y(function(d, i) {
 
-                if (timeLimit == null && timeLimitUpper == null) {
-                    return y(d.values);
-                } else if (timeLimit == null && timeLimitUpper != null) {
-                    if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
-                        return y(d.values);
-                    } else {
-                        return y(0)
-                    }
-                } else if (timeLimit != null && timeLimitUpper == null) {
-                    if (moment(d.key).diff(moment(timeLimit)) > 0) {
-                        return y(d.values);
-                    } else {
-                        return y(0)
-                    }
-                } else if (timeLimit != null && timeLimitUpper != null) {
 
-                    if (moment(d.key).diff(moment(timeLimit)) < 0) {
-                        return y(0)
-                    } else {
-                        if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
-                            return y(d.values);
-                        } else {
-                            return y(0)
-                        }
-                    }
-                }
+                if (moment(d.key).diff(moment(timeLimitUpper)) < 0 && moment(d.key).diff(moment(timeLimit)) > 0) {
+                    return y(d.values);
+                } else {
+                    return y(0)
+                }                
+
+                // if (timeLimit == null && timeLimitUpper == null) {
+                //     return y(d.values);
+                // } else if (timeLimit == null && timeLimitUpper != null) {
+                //     if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                //         return y(d.values);
+                //     } else {
+                //         return y(0)
+                //     }
+                // } else if (timeLimit != null && timeLimitUpper == null) {
+                //     if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                //         return y(d.values);
+                //     } else {
+                //         return y(0)
+                //     }
+                // } else if (timeLimit != null && timeLimitUpper != null) {
+
+                //     if (moment(d.key).diff(moment(timeLimit)) < 0) {
+                //         return y(0)
+                //     } else {
+                //         if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                //             return y(d.values);
+                //         } else {
+                //             return y(0)
+                //         }
+                //     }
+                // }
             });
 
         var svgBase = d3.select("body").select(idname).append("svg")
