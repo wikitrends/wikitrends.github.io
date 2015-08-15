@@ -1751,8 +1751,8 @@ function grandPlotter(pageIDin, pageTitlein) {
         var knotChecker;
 
         var upperline = d3.svg.line()
-            .tension(0.95)
-            .interpolate("bundle")
+            // .tension(0.95)
+            // .interpolate("bundle")
             .x(function(d, i) {
 
                 if (timeLimit == null && timeLimitUpper == null) {
@@ -3015,7 +3015,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .append('text')
                 .text("Page Edits")
                 .attr("x", function(d) {
-                    var length = numberWithSpaces(totalEditors).length
+                    // var length = numberWithSpaces(totalEditors).length
                     var lengthTwo = numberWithSpaces(totalEdits).length
                     return width - (24 * length) - 90 - (24 * lengthTwo) + 5
                 })
@@ -3086,33 +3086,34 @@ function grandPlotter(pageIDin, pageTitlein) {
                     return (width / difference) - ((width / difference) / 3)
                 })
                 .attr("y", function(d) {
-                    return y(d.values) - 30
+                    console.log(y(0))
+                    return y(d.values)
                 })
                 .attr("height", function(d) {
 
                     if (timeLimit == null && timeLimitUpper == null) {
-                        return height - y(d.values)
+                        return height - y(d.values) - 30
                     } else if (timeLimit == null && timeLimitUpper != null) {
                         if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
-                            return height - y(d.values)
+                            return height - y(d.values) - 30
                         } else {
-                            return height - y(0)
+                            return height - y(0) - 30
                         }
                     } else if (timeLimit != null && timeLimitUpper == null) {
                         if (moment(d.key).diff(moment(timeLimit)) > 0) {
-                            return height - y(d.values)
+                            return height - y(d.values) - 30
                         } else {
-                            return height - y(0)
+                            return height - y(0) - 30
                         }
                     } else if (timeLimit != null && timeLimitUpper != null) {
 
                         if (moment(d.key).diff(moment(timeLimit)) < 0) {
-                            return y(0)
+                            return height - y(0) - 30
                         } else {
                             if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
-                                return height - y(d.values)
+                                return height - y(d.values) - 30
                             } else {
-                                return height - y(0)
+                                return height - y(0) - 30
                             }
                         }
                     }
@@ -3996,10 +3997,10 @@ function grandPlotter(pageIDin, pageTitlein) {
     pageEdits(linkInitialPageEdits)
 
     // This runs the wordCloud graph!ssss
-    wordCloud(linkInitialWordCloud)
+    // wordCloud(linkInitialWordCloud)
 
     // This gets the pageview stats from Stats.grok.se
-    pageViews(linkInitialPageViews)
+    // pageViews(linkInitialPageViews)
 
 }
 
