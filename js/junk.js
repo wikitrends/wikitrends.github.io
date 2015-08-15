@@ -23,20 +23,20 @@ var pickerTwo = new Pikaday({
 // This part simply changes the UI. Just to add the the cross button when the WeeklyPedia section is used etc. 
 $(document).ready(function() {
 
-    $("#weekShow").click(function() {
+    $("#weekShow").click(function(){
         $(".placeholderOne").show()
         $(".placeholderThree").hide()
-        $(".placeholderTwo").hide()
+        $(".placeholderTwo").hide()        
     })
-    $("#dayShow").click(function() {
-        $(".placeholderTwo").show()
+    $("#dayShow").click(function(){
+        $(".placeholderTwo").show()        
         $(".placeholderThree").hide()
-        $(".placeholderOne").hide()
+        $(".placeholderOne").hide()  
     })
-    $("#hourShow").click(function() {
-        $(".placeholderThree").show()
+    $("#hourShow").click(function(){
+        $(".placeholderThree").show()        
         $(".placeholderOne").hide()
-        $(".placeholderTwo").hide()
+        $(".placeholderTwo").hide()  
     })
 
     $('.graphs').hide()
@@ -186,7 +186,7 @@ function weeklyPedia(parameter) {
 
     var lastFriday = moment().startOf('isoweek').subtract(2, 'days')
     lastFriday = JSON.stringify(lastFriday).slice(1, 11).replace(/-/g, "")
-
+    
     if (parameter == 'Most Edits') {
 
         var url = "http://weekly.hatnote.com/archive/en/" + lastFriday + "/weeklypedia_" + lastFriday + ".json"
@@ -838,7 +838,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                             // pageEditsTester(fullOnData, "#one", "none", "", "", "week", pageTitle, photoUrl, width, height)
 
                             runNow(fullOnData, "wordCloud", pageTitle, photoUrl, width, height, "", langLinksJsonObject, 90, "CCBYSA")
-                                // function runNow(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount, atribution) {
+                            // function runNow(origin, pageTitle, picUrl, picWidth, picHeight, dataSource, dataSourceLangLinks, pageEditCount, atribution) {
 
                         }
                     );
@@ -1062,12 +1062,12 @@ function grandPlotter(pageIDin, pageTitlein) {
 
                 }
                 var opacityRect = svgFull.append("rect")
-                    .attr("id", "rectCover" + idname.slice(1))
-                    .attr("width", width + margin.right + margin.left)
-                    .attr("fill", "#f9f9f9")
-                    .attr("opacity", 0)
-                    .attr("y", 155)
-                    .attr("height", height + margin.top + margin.bottom - 155);
+                        .attr("id", "rectCover" + idname.slice(1))
+                        .attr("width", width + margin.right + margin.left)
+                        .attr("fill", "#f9f9f9")
+                        .attr("opacity", 0)
+                        .attr("y", 155)
+                        .attr("height", height + margin.top + margin.bottom - 155);
             });
 
             convertImgToBase64("assets/wikipediaW.png", picHeight, picWidth, function(base64Img) {
@@ -1367,6 +1367,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                     .attr("stroke", function() {
                         if (graphStyle == "cover") {
                             return blue
+                            "#e74c3c"
                         } else {
                             return "rgb(94, 255, 176)"
                         }
@@ -1600,8 +1601,9 @@ function grandPlotter(pageIDin, pageTitlein) {
             }
 
         }
-
+        
         wordCloudLangLinks(totalEditsAllLanguages, langLinksJsonObject, "#four", "autonym", 25, 75, 10)
+
     }
 
     var extract;
@@ -1617,95 +1619,86 @@ function grandPlotter(pageIDin, pageTitlein) {
         d3.select(idname + "Controls").selectAll("*")
             .remove()
 
-// dataTemp.sort(function(a, b) {
-//     var c = new Date(a.timestamp);
-//     var d = new Date(b.timestamp);
-//     return d - c;
-// });
+        dataTemp.sort(function(a, b) {
+            var c = new Date(a.timestamp);
+            var d = new Date(b.timestamp);
+            return d - c;
+        });
 
-// console.log(dataTemp)
+        var editors = []
+        var editorsCount = 0;
 
-// var editors = []
-// var editorsCount = 0;
+        dataTemp.forEach(function(d, i) {
 
-// dataTemp.forEach(function(d, i) {
+            var user = d.user
 
-//     var user = d.user
+            if (editors.indexOf(user) > -1) {
+                d.editorsCount = editorsCount
+            } else {
+                editorsCount = editorsCount + 1;
+                editors.push(user)
+                d.editorsCount = editorsCount
+            }
+        })
 
-//     if (editors.indexOf(user) > -1) {
-//         d.editorsCount = editorsCount
-//     } else {
-//         editorsCount = editorsCount + 1;
-//         editors.push(user)
-//         d.editorsCount = editorsCount
-//     }
+        dataTemp.forEach(function(d, i) {
 
-// })
-
-
-// dataTemp.forEach(function(d, i) {
-
-//     if (i == dataTemp.length - 1) {
-//         d.difference = d.size;
-//     } else {
-//         d.difference = d.size - dataTemp[i + 1].size;
-//     }
-
-// })
-
+            if (i == dataTemp.length - 1) {
+                d.difference = d.size;
+            } else {
+                d.difference = d.size - dataTemp[i + 1].size;
+            }
+        })
 
         var totalEdits = 0;
-// var totalEditors;
+        var totalEditors;
         var brokenDownDataSource = []
 
         dataTemp.forEach(function(d) {
 
             if (timeLimit == null && timeLimitUpper == null) {
                 totalEdits = totalEdits + 1
-                // brokenDownDataSource.push({
-                //     user: d.user,
-                //     timestamp: d.timestamp
-                // })
+                brokenDownDataSource.push({
+                    user: d.user,
+                    timestamp: d.timestamp
+                })
             } else if (timeLimit == null && timeLimitUpper != null) {
                 if (moment(d.timestamp).diff(moment(timeLimitUpper)) < 0) {
                     totalEdits = totalEdits + 1
-                    // brokenDownDataSource.push({
-                    //     user: d.user,
-                    //     timestamp: d.timestamp
-                    // })
+                    brokenDownDataSource.push({
+                        user: d.user,
+                        timestamp: d.timestamp
+                    })
                 }
             } else if (timeLimit != null && timeLimitUpper == null) {
                 if (moment(d.timestamp).diff(moment(timeLimit)) > 0) {
                     totalEdits = totalEdits + 1
-                    // brokenDownDataSource.push({
-                    //     user: d.user,
-                    //     timestamp: d.timestamp
-                    // })
+                    brokenDownDataSource.push({
+                        user: d.user,
+                        timestamp: d.timestamp
+                    })
                 }
             } else if (timeLimit != null && timeLimitUpper != null) {
                 if (moment(d.timestamp).diff(moment(timeLimit)) < 0) {} else {
                     if (moment(d.timestamp).diff(moment(timeLimitUpper)) < 0) {
                         totalEdits = totalEdits + 1
-                        // brokenDownDataSource.push({
-                        //     user: d.user,
-                        //     timestamp: d.timestamp
-                        // })
+                        brokenDownDataSource.push({
+                            user: d.user,
+                            timestamp: d.timestamp
+                        })
                     }
                 }
             }
         })
 
+        var distances = {},
+            e;
+        for (var i = 0, l = brokenDownDataSource.length; i < l; i++) {
+            e = brokenDownDataSource[i];
+            distances[e.user] = (distances[e.user] || 0) + 1;
+        }
 
-
-// var editorLength = {},
-//     e;
-// for (var i = 0, l = brokenDownDataSource.length; i < l; i++) {
-//     e = brokenDownDataSource[i];
-//     editorLength[e.user] = (editorLength[e.user] || 0) + 1;
-// }
-
-
-// var totalEditors = Object.keys(editorLength).length
+        var totalEditors = Object.keys(distances).length
 
         $('#loader').html('');
         $(idname).html('')
@@ -1729,7 +1722,7 @@ function grandPlotter(pageIDin, pageTitlein) {
             .range([25, width - 225]);
 
         var y = d3.scale.linear()
-            .range([height - 28, 180]);
+            .range([height-28, 180]);
 
         var xAxis = d3.svg.axis()
             .scale(x)
@@ -1819,6 +1812,8 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         var svgFull = svgBase.append("g")
             .attr('class', 'svgFull')
+            // .attr("width", width + margin.left + margin.right)
+            // .attr("height", height + margin.top + margin.bottom)
             .attr("transform", "translate(" + (-1) * margin.left + "," + (-1) * margin.top + ")");
 
         var count = 0;
@@ -1909,443 +1904,442 @@ function grandPlotter(pageIDin, pageTitlein) {
         // Attempting to fix the Zero Date problem
         var finale = []
 
-        function timeAxisAggregator() {
-            if (timeDuration == "hour") {
+        if (timeDuration == "hour") {
 
-                var previousDateActual = "";
-                var dayMinusOne;
+            var previousDateActual = "";
+            var dayMinusOne;
 
-                data.forEach(function(d, i) {
+            data.forEach(function(d, i) {
 
-                    var dayPlusOne = moment(d.key).add(1, 'hour')
+                var dayPlusOne = moment(d.key).add(1, 'hour')
 
-                    var theDay = moment(d.key)
+                var theDay = moment(d.key)
 
-                    var previousDate = moment(previousDateActual)
+                var previousDate = moment(previousDateActual)
 
-                    //  console.log(JSON.stringify(dayPlusOne) + "  |  " + JSON.stringify(previousDate) + "  |  " + JSON.stringify(dayMinusOne) + "  |  " + JSON.stringify(d.key))
+                //  console.log(JSON.stringify(dayPlusOne) + "  |  " + JSON.stringify(previousDate) + "  |  " + JSON.stringify(dayMinusOne) + "  |  " + JSON.stringify(d.key))
 
-                    // START: At all costs, this needs to be in front of the second part.
+                // START: At all costs, this needs to be in front of the second part.
 
-                    if (i == 0) {} else {
-                        if (JSON.stringify(dayMinusOne) != JSON.stringify(d.key)) {
+                if (i == 0) {} else {
+                    if (JSON.stringify(dayMinusOne) != JSON.stringify(d.key)) {
 
-                            // tempIn is just of temporary string conversions. '"' need to be removed.å
-                            var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
-                            var smoothner = moment(dayMinusOne).subtract(2, "minutes")
+                        // tempIn is just of temporary string conversions. '"' need to be removed.å
+                        var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
+                        var smoothner = moment(dayMinusOne).subtract(2, "minutes")
 
-                            finale.push({
-                                key: tempIn,
-                                values: 0
-                            })
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
 
 
-                            var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
+                        var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
 
-                            finale.push({
-                                key: tempIn,
-                                values: 0
-                            })
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
 
 
-                            //console.log('two  ' + tempIn)
-
-                        } else {
-
-                        }
-                    }
-
-                    // END
-
-                    if (i != 0) {
-
-                        if (JSON.stringify(dayPlusOne) != JSON.stringify(previousDate)) {
-
-                            var smoothner = moment(dayPlusOne).add(1, "hour")
-
-                            // tempIn is just of temporary string conversions.
-                            var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
-
-                            //console.log(tempIn)
-
-                            finale.push({
-                                key: tempIn,
-                                values: 0
-                            })
-
-                            var smoothner = moment(dayPlusOne).add(2, "minutes")
-
-                            var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
-
-                            finale.push({
-                                key: tempIn,
-                                values: 0
-                            })
-
-                        } else {
-                            finale.push({
-                                key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-                                values: d.values
-                            })
-                        }
-                    } else {}
-
-                    finale.push({
-                        key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-                        values: d.values
-                    })
-
-                    // Checks for the next 
-                    dayMinusOne = moment(d.key).subtract(1, 'hour')
-                        // console.log(i)
-                        // console.log(data.length)
-
-                    // if ( i == data.length - 1 ) {
-                    // //console.log('sadas')
-                    //     finale.push({
-                    //         key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-                    //         values: 0
-                    //     })                
-                    // } 
-                    // // d.key = momen
-                    // if ( i == 0 ) {
-                    // //console.log(JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", ""))
-
-                    //     finale.push({
-                    //         key: JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", ""),
-                    //         values: 0
-                    //     })                
-                    // } 
-                    // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
-                    previousDateActual = d.key;
-                })
-            } else if (timeDuration == "day") {
-
-                // BEWARE BEWARE BEWARE!
-                // Countless hours have been spent trying to get this part to work. 
-                // TLDR; On MediaWiki APIs, time runs backwards!
-
-                var previousDateActual = "";
-                var dayMinusOne;
-
-                data.forEach(function(d, i) {
-
-                    var dayPlusOne = moment(d.key).add(1, 'days')
-
-                    // Daylight Savings (the knot problem)
-                    if (JSON.stringify(dayPlusOne).indexOf("T23:00:01.000Z") > -1) {
-                        dayPlusOne = moment(dayPlusOne).add(1, "hour")
-                    }
-                    if (JSON.stringify(dayPlusOne).indexOf("T01:00:01.000Z") > -1) {
-                        dayPlusOne = moment(dayPlusOne).subtract(1, "hour")
-                    }
-
-                    var theDay = moment(d.key)
-
-                    var previousDate = moment(previousDateActual)
-
-                    //  console.log(JSON.stringify(dayPlusOne) + "  |  " + JSON.stringify(previousDate) + "  |  " + JSON.stringify(dayMinusOne) + "  |  " + JSON.stringify(d.key))
-
-                    // START: At all costs, this needs to be in front of the second part.
-
-                    if (i == 0) {} else {
-                        if (JSON.stringify(dayMinusOne) != JSON.stringify(d.key)) {
-
-                            // tempIn is just of temporary string conversions. '"' need to be removed.å
-                            var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
-                            var smoothner = moment(dayMinusOne).subtract(1, "hour")
-
-                            finale.push({
-                                key: tempIn,
-                                values: 0
-                            })
-
-                            var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
-
-                            finale.push({
-                                key: tempIn,
-                                values: 0
-                            })
-
-                            // console.log('two  ' + tempIn)
-
-                        } else {
-
-                        }
-                    }
-
-                    // END
-
-                    if (i != 0) {
-
-                        if (JSON.stringify(dayPlusOne) != JSON.stringify(previousDate)) {
-
-                            var smoothner = moment(dayPlusOne).add(1, "hour")
-
-                            // tempIn is just of temporary string conversions.
-                            var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
-                                // console.log(tempIn)
-
-                            finale.push({
-                                key: tempIn,
-                                values: 0
-                            })
-
-                            var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
-
-                            finale.push({
-                                    key: tempIn,
-                                    values: 0
-                                })
-                                // console.log('One  ' + tempIn)
-
-                        } else {
-                            finale.push({
-                                key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-                                values: d.values
-                            })
-                        }
-                    } else {}
-
-                    finale.push({
-                        key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-                        values: d.values
-                    })
-
-                    // Checks for the next 
-                    dayMinusOne = moment(d.key).subtract(1, 'days')
-
-                    // Daylight Savings (the knot problem)
-                    if (JSON.stringify(dayMinusOne).indexOf("T23:00:01.000Z") > -1) {
-                        dayMinusOne = moment(dayMinusOne).add(1, "hour")
-
-                        // console.log('asdasd' + JSON.stringify(dayMinusOne))
-                    }
-                    if (JSON.stringify(dayMinusOne).indexOf("T01:00:01.000Z") > -1) {
-                        dayMinusOne = moment(dayMinusOne).subtract(1, "hour")
-
-                        // console.log('asdasd' + JSON.stringify(dayMinusOne))
-                    }
-
-                    // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
-                    previousDateActual = d.key;
-                })
-            } else if (timeDuration == "week") {
-
-                // console.log('asdsa')
-
-                // BEWARE BEWARE BEWARE!
-                // Countless hours have been spent trying to get this part to work. 
-                // TLDR; On MediaWiki APIs, time runs backwards!
-
-                var previousDateActual = "";
-                var dayMinusOne;
-
-                data.forEach(function(d, i) {
-
-                    var dayPlusOne = moment(d.key).add(1, 'week')
-
-                    // Daylight Savings (the knot problem)
-                    if (JSON.stringify(dayPlusOne).indexOf("T23:00:01.000Z") > -1) {
-                        dayPlusOne = moment(dayPlusOne).add(1, "hour")
-                    }
-                    if (JSON.stringify(dayPlusOne).indexOf("T01:00:01.000Z") > -1) {
-                        dayPlusOne = moment(dayPlusOne).subtract(1, "hour")
-                    }
-
-                    var theDay = moment(d.key)
-
-                    var previousDate = moment(previousDateActual)
-
-                    // console.log('Week: ' + JSON.stringify(dayPlusOne) + "  |  " + JSON.stringify(previousDate) + "  |  " + JSON.stringify(dayMinusOne) + "  |  " + JSON.stringify(d.key))
-
-                    // START: At all costs, this needs to be in front of the second part.
-
-                    if (i == 0) {} else {
-                        if (JSON.stringify(dayMinusOne) != JSON.stringify(d.key)) {
-
-                            // tempIn is just of temporary string conversions. '"' need to be removed.å
-                            var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
-
-                            finale.push({
-                                key: tempIn,
-                                values: 0
-                            })
-                        } else {
-
-                        }
-                    }
-                    // END
-
-                    if (i != 0) {
-
-                        if (JSON.stringify(dayPlusOne) != JSON.stringify(previousDate)) {
-
-                            // tempIn is just of temporary string conversions.
-                            var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
-                                // console.log(tempIn)
-
-                            finale.push({
-                                    key: tempIn,
-                                    values: 0
-                                })
-                                //  console.log('One  ' + tempIn)
-
-                        } else {
-                            finale.push({
-                                key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-                                values: d.values
-                            })
-                        }
-                    } else {}
-
-                    finale.push({
-                        key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
-                        values: d.values
-                    })
-
-                    // Checks for the next 
-                    dayMinusOne = moment(d.key).subtract(1, 'week')
-
-                    // Daylight Savings (the knot problem)
-                    if (JSON.stringify(dayMinusOne).indexOf("T23:00:01.000Z") > -1) {
-                        dayMinusOne = moment(dayMinusOne).add(1, "hour")
-                    }
-                    if (JSON.stringify(dayMinusOne).indexOf("T01:00:01.000Z") > -1) {
-                        dayMinusOne = moment(dayMinusOne).subtract(1, "hour")
-                    }
-
-                    // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
-                    previousDateActual = d.key;
-
-                })
-            } else if (timeDuration == "month") {
-
-                // BEWARE BEWARE BEWARE!
-                // Countless hours have been spent trying to get this part to work. 
-                // TLDR; On MediaWiki APIs, time runs backwards!
-
-                var previousDateActual = "";
-                var theDayMisnomerPlus;
-
-                data.forEach(function(d, i) {
-
-                    var theDayMisnomerMonth = (d.key).substr(5, 6)
-
-                    var initialPart = (d.key).substr(0, 4)
-                    var latterPart = "-01T00:00:01.000Z"
-
-                    var theDayMisnomerMinus = parseInt(theDayMisnomerMonth);
-
-                    if (theDayMisnomerMinus == 12) {
-
-                        // Getting year + 1 & month = 01
-                        initialPart = (parseInt(initialPart) + 1).toString()
-                        theDayMisnomerMinus = "01"
-                        theDayMisnomerMinus = initialPart + "-" + theDayMisnomerMinus + latterPart;
+                        //console.log('two  ' + tempIn)
 
                     } else {
-                        theDayMisnomerMinus = theDayMisnomerMinus + 1;
-                        theDayMisnomerMinus = theDayMisnomerMinus.toString()
 
-                        // To add 0 in front of months. String socery.
-                        if (theDayMisnomerMinus.length == 1) {
-                            theDayMisnomerMinus = initialPart + "-0" + theDayMisnomerMinus + latterPart;
-                        } else {
-                            theDayMisnomerMinus = initialPart + "-" + theDayMisnomerMinus + latterPart;
-                        }
                     }
+                }
 
-                    var theDay = moment(d.key)
+                // END
 
-                    var previousDate = moment(previousDateActual)
+                if (i != 0) {
 
-                    if (JSON.stringify(theDayMisnomerMinus) != JSON.stringify(previousDate)) {
+                    if (JSON.stringify(dayPlusOne) != JSON.stringify(previousDate)) {
+
+                        var smoothner = moment(dayPlusOne).add(1, "hour")
 
                         // tempIn is just of temporary string conversions.
-                        var tempIn = JSON.stringify(theDayMisnomerMinus).replace("\"", "").replace("\"", "")
+                        var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
+
+                        //console.log(tempIn)
+
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+
+                        var smoothner = moment(dayPlusOne).add(2, "minutes")
+
+                        var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
+
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+
+                    } else {
+                        finale.push({
+                            key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
+                            values: d.values
+                        })
+                    }
+                } else {}
+
+                finale.push({
+                    key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
+                    values: d.values
+                })
+
+                // Checks for the next 
+                dayMinusOne = moment(d.key).subtract(1, 'hour')
+                    // console.log(i)
+                    // console.log(data.length)
+
+                // if ( i == data.length - 1 ) {
+                // //console.log('sadas')
+                //     finale.push({
+                //         key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
+                //         values: 0
+                //     })                
+                // } 
+                // // d.key = momen
+                // if ( i == 0 ) {
+                // //console.log(JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", ""))
+
+                //     finale.push({
+                //         key: JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", ""),
+                //         values: 0
+                //     })                
+                // } 
+                // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
+                previousDateActual = d.key;
+            })
+        } else if (timeDuration == "day") {
+
+            // BEWARE BEWARE BEWARE!
+            // Countless hours have been spent trying to get this part to work. 
+            // TLDR; On MediaWiki APIs, time runs backwards!
+
+            var previousDateActual = "";
+            var dayMinusOne;
+
+            data.forEach(function(d, i) {
+
+                var dayPlusOne = moment(d.key).add(1, 'days')
+
+                // Daylight Savings (the knot problem)
+                if (JSON.stringify(dayPlusOne).indexOf("T23:00:01.000Z") > -1) {
+                    dayPlusOne = moment(dayPlusOne).add(1, "hour")
+                }
+                if (JSON.stringify(dayPlusOne).indexOf("T01:00:01.000Z") > -1) {
+                    dayPlusOne = moment(dayPlusOne).subtract(1, "hour")
+                }
+
+                var theDay = moment(d.key)
+
+                var previousDate = moment(previousDateActual)
+
+                //  console.log(JSON.stringify(dayPlusOne) + "  |  " + JSON.stringify(previousDate) + "  |  " + JSON.stringify(dayMinusOne) + "  |  " + JSON.stringify(d.key))
+
+                // START: At all costs, this needs to be in front of the second part.
+
+                if (i == 0) {} else {
+                    if (JSON.stringify(dayMinusOne) != JSON.stringify(d.key)) {
+
+                        // tempIn is just of temporary string conversions. '"' need to be removed.å
+                        var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
+                        var smoothner = moment(dayMinusOne).subtract(1, "hour")
+
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+
+                        var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
+
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+
+                        // console.log('two  ' + tempIn)
+
+                    } else {
+
+                    }
+                }
+
+                // END
+
+                if (i != 0) {
+
+                    if (JSON.stringify(dayPlusOne) != JSON.stringify(previousDate)) {
+
+                        var smoothner = moment(dayPlusOne).add(1, "hour")
+
+                        // tempIn is just of temporary string conversions.
+                        var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
                             // console.log(tempIn)
 
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+
+                        var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
+
+                        finale.push({
+                                key: tempIn,
+                                values: 0
+                            })
+                            // console.log('One  ' + tempIn)
+
+                    } else {
+                        finale.push({
+                            key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
+                            values: d.values
+                        })
+                    }
+                } else {}
+
+                finale.push({
+                    key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
+                    values: d.values
+                })
+
+                // Checks for the next 
+                dayMinusOne = moment(d.key).subtract(1, 'days')
+
+                // Daylight Savings (the knot problem)
+                if (JSON.stringify(dayMinusOne).indexOf("T23:00:01.000Z") > -1) {
+                    dayMinusOne = moment(dayMinusOne).add(1, "hour")
+
+                    // console.log('asdasd' + JSON.stringify(dayMinusOne))
+                }
+                if (JSON.stringify(dayMinusOne).indexOf("T01:00:01.000Z") > -1) {
+                    dayMinusOne = moment(dayMinusOne).subtract(1, "hour")
+
+                    // console.log('asdasd' + JSON.stringify(dayMinusOne))
+                }
+
+                // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
+                previousDateActual = d.key;
+            })
+        } else if (timeDuration == "week") {
+
+            // console.log('asdsa')
+
+            // BEWARE BEWARE BEWARE!
+            // Countless hours have been spent trying to get this part to work. 
+            // TLDR; On MediaWiki APIs, time runs backwards!
+
+            var previousDateActual = "";
+            var dayMinusOne;
+
+            data.forEach(function(d, i) {
+
+                var dayPlusOne = moment(d.key).add(1, 'week')
+
+                // Daylight Savings (the knot problem)
+                if (JSON.stringify(dayPlusOne).indexOf("T23:00:01.000Z") > -1) {
+                    dayPlusOne = moment(dayPlusOne).add(1, "hour")
+                }
+                if (JSON.stringify(dayPlusOne).indexOf("T01:00:01.000Z") > -1) {
+                    dayPlusOne = moment(dayPlusOne).subtract(1, "hour")
+                }
+
+                var theDay = moment(d.key)
+
+                var previousDate = moment(previousDateActual)
+
+                // console.log('Week: ' + JSON.stringify(dayPlusOne) + "  |  " + JSON.stringify(previousDate) + "  |  " + JSON.stringify(dayMinusOne) + "  |  " + JSON.stringify(d.key))
+
+                // START: At all costs, this needs to be in front of the second part.
+
+                if (i == 0) {} else {
+                    if (JSON.stringify(dayMinusOne) != JSON.stringify(d.key)) {
+
+                        // tempIn is just of temporary string conversions. '"' need to be removed.å
+                        var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
+
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+                    } else {
+
+                    }
+                }
+                // END
+
+                if (i != 0) {
+
+                    if (JSON.stringify(dayPlusOne) != JSON.stringify(previousDate)) {
+
+                        // tempIn is just of temporary string conversions.
+                        var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
+                            // console.log(tempIn)
+
+                        finale.push({
+                                key: tempIn,
+                                values: 0
+                            })
+                            //  console.log('One  ' + tempIn)
+
+                    } else {
+                        finale.push({
+                            key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
+                            values: d.values
+                        })
+                    }
+                } else {}
+
+                finale.push({
+                    key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
+                    values: d.values
+                })
+
+                // Checks for the next 
+                dayMinusOne = moment(d.key).subtract(1, 'week')
+
+                // Daylight Savings (the knot problem)
+                if (JSON.stringify(dayMinusOne).indexOf("T23:00:01.000Z") > -1) {
+                    dayMinusOne = moment(dayMinusOne).add(1, "hour")
+                }
+                if (JSON.stringify(dayMinusOne).indexOf("T01:00:01.000Z") > -1) {
+                    dayMinusOne = moment(dayMinusOne).subtract(1, "hour")
+                }
+
+                // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
+                previousDateActual = d.key;
+
+            })
+        } else if (timeDuration == "month") {
+
+            // BEWARE BEWARE BEWARE!
+            // Countless hours have been spent trying to get this part to work. 
+            // TLDR; On MediaWiki APIs, time runs backwards!
+
+            var previousDateActual = "";
+            var theDayMisnomerPlus;
+
+            data.forEach(function(d, i) {
+
+                var theDayMisnomerMonth = (d.key).substr(5, 6)
+
+                var initialPart = (d.key).substr(0, 4)
+                var latterPart = "-01T00:00:01.000Z"
+
+                var theDayMisnomerMinus = parseInt(theDayMisnomerMonth);
+
+                if (theDayMisnomerMinus == 12) {
+
+                    // Getting year + 1 & month = 01
+                    initialPart = (parseInt(initialPart) + 1).toString()
+                    theDayMisnomerMinus = "01"
+                    theDayMisnomerMinus = initialPart + "-" + theDayMisnomerMinus + latterPart;
+
+                } else {
+                    theDayMisnomerMinus = theDayMisnomerMinus + 1;
+                    theDayMisnomerMinus = theDayMisnomerMinus.toString()
+
+                    // To add 0 in front of months. String socery.
+                    if (theDayMisnomerMinus.length == 1) {
+                        theDayMisnomerMinus = initialPart + "-0" + theDayMisnomerMinus + latterPart;
+                    } else {
+                        theDayMisnomerMinus = initialPart + "-" + theDayMisnomerMinus + latterPart;
+                    }
+                }
+
+                var theDay = moment(d.key)
+
+                var previousDate = moment(previousDateActual)
+
+                if (JSON.stringify(theDayMisnomerMinus) != JSON.stringify(previousDate)) {
+
+                    // tempIn is just of temporary string conversions.
+                    var tempIn = JSON.stringify(theDayMisnomerMinus).replace("\"", "").replace("\"", "")
+                        // console.log(tempIn)
+
+                    // Adding the new Zeroed entry at relevant location so as to avoid sorting.
+                    data.splice(i, 1, {
+                        key: tempIn,
+                        values: 0
+                    })
+
+                } else {}
+
+                // START: At all costs, this needs to be in front before -> theDayMisnomerPlus = moment(d.key).subtract(1, 'days')
+                if (i != 0) {
+                    if (JSON.stringify(theDayMisnomerPlus) != JSON.stringify(d.key)) {
+
+                        // tempIn is just of temporary string conversions. '"' need to be removed.å
+                        var tempIn = JSON.stringify(theDayMisnomerPlus).replace("\"", "").replace("\"", "")
+
                         // Adding the new Zeroed entry at relevant location so as to avoid sorting.
-                        data.splice(i, 1, {
+                        data.splice(i - 1, 1, {
                             key: tempIn,
                             values: 0
                         })
 
                     } else {}
+                }
 
-                    // START: At all costs, this needs to be in front before -> theDayMisnomerPlus = moment(d.key).subtract(1, 'days')
-                    if (i != 0) {
-                        if (JSON.stringify(theDayMisnomerPlus) != JSON.stringify(d.key)) {
+                // END
 
-                            // tempIn is just of temporary string conversions. '"' need to be removed.å
-                            var tempIn = JSON.stringify(theDayMisnomerPlus).replace("\"", "").replace("\"", "")
+                // Checks for the next 
 
-                            // Adding the new Zeroed entry at relevant location so as to avoid sorting.
-                            data.splice(i - 1, 1, {
-                                key: tempIn,
-                                values: 0
-                            })
+                var theDayMisnomerMonth = (d.key).substr(5, 6)
 
-                        } else {}
-                    }
+                var initialPart = (d.key).substr(0, 4)
+                var latterPart = "-01T00:00:01.000Z"
 
-                    // END
+                var theDayMisnomerPlus = parseInt(theDayMisnomerMonth);
 
-                    // Checks for the next 
+                if (theDayMisnomerPlus == 1) {
 
-                    var theDayMisnomerMonth = (d.key).substr(5, 6)
+                    // Getting year + 1 & month = 01
+                    initialPart = (parseInt(initialPart) - 1).toString()
+                    theDayMisnomerPlus = "12"
 
-                    var initialPart = (d.key).substr(0, 4)
-                    var latterPart = "-01T00:00:01.000Z"
+                    theDayMisnomerPlus = initialPart + "-" + theDayMisnomerPlus + latterPart;
+                    // console.log(theDayMisnomerPlus)
 
-                    var theDayMisnomerPlus = parseInt(theDayMisnomerMonth);
+                } else {
+                    theDayMisnomerPlus = theDayMisnomerPlus - 1;
+                    theDayMisnomerPlus = theDayMisnomerPlus.toString()
 
-                    if (theDayMisnomerPlus == 1) {
-
-                        // Getting year + 1 & month = 01
-                        initialPart = (parseInt(initialPart) - 1).toString()
-                        theDayMisnomerPlus = "12"
-
-                        theDayMisnomerPlus = initialPart + "-" + theDayMisnomerPlus + latterPart;
-                        // console.log(theDayMisnomerPlus)
-
+                    // To add 0 in front of months. String socery.
+                    if (theDayMisnomerPlus.length == 1) {
+                        theDayMisnomerPlus = initialPart + "-0" + theDayMisnomerPlus + latterPart;
                     } else {
-                        theDayMisnomerPlus = theDayMisnomerPlus - 1;
-                        theDayMisnomerPlus = theDayMisnomerPlus.toString()
-
-                        // To add 0 in front of months. String socery.
-                        if (theDayMisnomerPlus.length == 1) {
-                            theDayMisnomerPlus = initialPart + "-0" + theDayMisnomerPlus + latterPart;
-                        } else {
-                            theDayMisnomerPlus = initialPart + "-" + theDayMisnomerPlus + latterPart;
-                        }
-
-                        // console.log(theDayMisnomerMinus)
+                        theDayMisnomerPlus = initialPart + "-" + theDayMisnomerPlus + latterPart;
                     }
-                    theDayMisnomerPlus = moment(d.key).subtract(1, 'month')
-                        // console.log(theDayMisnomerPlus)
 
-                    // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
-                    previousDateActual = d.key;
+                    // console.log(theDayMisnomerMinus)
+                }
+                theDayMisnomerPlus = moment(d.key).subtract(1, 'month')
+                    // console.log(theDayMisnomerPlus)
 
-                })
-            }
+                // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
+                previousDateActual = d.key;
+
+            })
         }
-
-        timeAxisAggregator();
-
-        var maxum = d3.max(finale, function(d){
-            return d.values
-        })
-
-        console.log(maxum)
 
         finale.sort(function(a, b) {
             var c = new Date(a.key);
             var d = new Date(b.key);
             return d - c;
         });
+
+        var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([-10, 0])
+            .html(function(d) {
+                return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+            })
+
+        svgBase.call(tip);
 
         x.domain(d3.extent(finale, function(d) {
 
@@ -2625,7 +2619,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 if (atribution == "CCSA") {
                     return 38.2417582418 + 120
                 } else {
-                    return 57.6923076923 + 120
+                    return 57.6923076923+ 120
                 }
             })
             .attr("font-family", "Helvetica Neue")
@@ -2681,6 +2675,19 @@ function grandPlotter(pageIDin, pageTitlein) {
                     "opacity": "0.4"
                 });
         }
+
+        var drag = d3.behavior.drag()
+            .on('dragstart', function() {
+                rectangle.style('fill', 'red');
+            })
+            .on('drag', function() {
+                rectangle.attr('x', d3.mouse(this)[0])
+                    .attr('y', d3.mouse(this)[1]);
+
+            })
+            .on('dragend', function() {
+                rectangle.style('fill', 'black');
+            });
 
         if (chartType == "barChart") {
 
@@ -2795,6 +2802,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .append('text')
                 .text("Page Edits")
                 .attr("x", function(d) {
+                    var length = numberWithSpaces(totalEditors).length
                     var lengthTwo = numberWithSpaces(totalEdits).length
                     return width - (24 * length) - 90 - (24 * lengthTwo) + 5
                 })
@@ -2807,16 +2815,6 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr("fill", "#DCDCDC")
                 .attr('opacity', "1");
         }
-
-
-        dataTemp.sort(function(a, b) {
-            var c = new Date(a.values);
-            var d = new Date(b.values);
-            return d - c;
-        });
-
-        
-
 
         // var rectangle = svgBase.append("rect")
         //     // .attr("x", d3.mouse(this)[0])
@@ -3006,10 +3004,10 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr("fill", "none")
                 .attr("stroke", function() {
                     // if (graphStyle == "cover") {
-                    return blue
-                        // } else {
-                        //     return "rgb(94, 255, 176)"
-                        // }
+                        return blue
+                    // } else {
+                    //     return "rgb(94, 255, 176)"
+                    // }
                 })
                 .attr("stroke-width", "3px")
                 .append('text')
@@ -3026,7 +3024,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 })
                 .attr("font-weight", "500")
                 .attr("fill", "#DCDCDC")
-                .attr('opacity', "1");
+                .attr('opacity', "1");      
         });
 
         d3.select("#barChart" + idname.slice(1)).on("click", function() {
@@ -3175,7 +3173,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 })
                 .attr("font-weight", "500")
                 .attr("fill", "#DCDCDC")
-                .attr('opacity', "1");
+                .attr('opacity', "1");  
         });
 
         d3.select("#cover" + idname.slice(1)).on("click", function() {
@@ -3208,10 +3206,10 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr("fill", "none")
                 .attr("stroke", function() {
                     // if (graphStyle == "cover") {
-                    return blue
-                        // } else {
-                        //     return "rgb(94, 255, 176)"
-                        // }
+                        return blue
+                    // } else {
+                    //     return "rgb(94, 255, 176)"
+                    // }
                 })
                 .attr("stroke-width", "4px")
                 .append('text')
@@ -3546,7 +3544,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr("x", function(d) {
                     // console.log(picHeight)
                     // console.log(picWidth)
-                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg" ) {
                         if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
                             return (((0.5) * (fullBleedHeight / picHeight) * picWidth) - (fullBleedWidth / 2))
                         } else {
@@ -3620,6 +3618,7 @@ function grandPlotter(pageIDin, pageTitlein) {
                 .attr("y", 0)
                 .attr("width", 70)
                 .attr("height", 70);
+
         })
 
 
@@ -3990,6 +3989,1163 @@ function grandPlotter(pageIDin, pageTitlein) {
         //             return ina
         //         })
         // }
+    }
+
+    function pageEditsSize(dataSource, idname, interpolation, parameter, plotParameter, timeDuration, pageTitle, picUrl, picWidth, picHeight) {
+
+        var data = dataSource
+
+        var editors = []
+        var editorsCount = 0;
+
+        dataSource.forEach(function(d, i) {
+
+            var user = d.user
+
+            if (editors.indexOf(user) > -1) {
+                d.editorsCount = editorsCount
+            } else {
+                editorsCount = editorsCount + 1;
+                editors.push(user)
+                d.editorsCount = editorsCount
+                    //console.log(editorsCount)
+            }
+
+            if (i == dataSource.length - 1) {
+                d.difference = d.size;
+            } else {
+                d.difference = d.size - dataSource[i + 1].size;
+            }
+
+        })
+
+        //console.log(editors)
+
+
+        //console.log(dataSource.length)
+
+        var totalEdits = 0;
+
+        var totalEditors = 0;
+
+        var brokenDownDataSource = []
+
+        dataSource.forEach(function(d) {
+
+            if (timeLimit == null && timeLimitUpper == null) {
+                totalEdits = totalEdits + 1
+                brokenDownDataSource.push({
+                    user: d.user,
+                    timestamp: d.timestamp
+                })
+            } else if (timeLimit == null && timeLimitUpper != null) {
+                if (moment(d.timestamp).diff(moment(timeLimitUpper)) < 0) {
+                    totalEdits = totalEdits + 1
+                    brokenDownDataSource.push({
+                        user: d.user,
+                        timestamp: d.timestamp
+                    })
+                }
+            } else if (timeLimit != null && timeLimitUpper == null) {
+                if (moment(d.timestamp).diff(moment(timeLimit)) > 0) {
+                    totalEdits = totalEdits + 1
+                    brokenDownDataSource.push({
+                        user: d.user,
+                        timestamp: d.timestamp
+                    })
+                }
+            } else if (timeLimit != null && timeLimitUpper != null) {
+                if (moment(d.timestamp).diff(moment(timeLimit)) < 0) {} else {
+                    if (moment(d.timestamp).diff(moment(timeLimitUpper)) < 0) {
+                        totalEdits = totalEdits + 1
+                        brokenDownDataSource.push({
+                            user: d.user,
+                            timestamp: d.timestamp
+                        })
+                    }
+                }
+            }
+
+        })
+
+        var distances = {},
+            e;
+        for (var i = 0, l = brokenDownDataSource.length; i < l; i++) {
+            e = brokenDownDataSource[i];
+            distances[e.user] = (distances[e.user] || 0) + 1;
+        }
+
+        var totalEditors = Object.keys(distances).length
+
+        $('#loader').html('');
+        $(idname).html('')
+
+        var fullBleedWidth = 1008;
+        var fullBleedHeight = 572;
+
+        var margin = {
+                top: 20,
+                right: 20,
+                bottom: 30,
+                left: 50
+            },
+            width = fullBleedWidth - margin.left - margin.right,
+            height = fullBleedHeight - margin.top - margin.bottom;
+
+        //var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
+        var parseDate = d3.time.format("%Y-%m-%dT%H:%M:%S.%LZ").parse;
+
+        var x = d3.time.scale()
+            .range([25, width - 25]);
+
+        var y = d3.scale.linear()
+            .range([height, 150]);
+
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .ticks(4)
+            .tickPadding(8)
+            .tickSize(0)
+            .innerTickSize(0)
+            .outerTickSize(0)
+            // .tickSize(6, 0)
+            .orient("bottom");
+
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .ticks(5)
+            .tickSize(-width + 20)
+            .outerTickSize(0)
+            .orient("left");
+
+        var knotChecker;
+
+        var upperline = d3.svg.line()
+            .tension(0.92)
+            .interpolate("bundle")
+            .x(function(d, i) {
+
+                if (timeLimit == null && timeLimitUpper == null) {
+                    return x(parseDate(d.key));
+                } else if (timeLimit == null && timeLimitUpper != null) {
+                    if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                        return x(parseDate(d.key))
+                    }
+                    return x(timeLimitUpper)
+                } else if (timeLimit != null && timeLimitUpper == null) {
+                    if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                        return x(parseDate(d.key))
+                    }
+                    return x(timeLimit)
+                } else if (timeLimit != null && timeLimitUpper != null) {
+                    if (moment(d.key).diff(moment(timeLimit)) < 0) {
+                        return x(timeLimit)
+                    } else {
+                        if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                            return x(parseDate(d.key))
+                        } else {
+                            return x(timeLimitUpper)
+                        }
+                    }
+                }
+
+            })
+            .y(function(d, i) {
+
+                if (timeLimit == null && timeLimitUpper == null) {
+                    return y(d.values);
+                } else if (timeLimit == null && timeLimitUpper != null) {
+                    if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                        return y(d.values);
+                    } else {
+                        return y(0)
+                    }
+                } else if (timeLimit != null && timeLimitUpper == null) {
+                    if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                        return y(d.values);
+                    } else {
+                        return y(0)
+                    }
+                } else if (timeLimit != null && timeLimitUpper != null) {
+
+                    if (moment(d.key).diff(moment(timeLimit)) < 0) {
+                        return y(0)
+                    } else {
+                        if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                            return y(d.values);
+                        } else {
+                            return y(0)
+                        }
+                    }
+                }
+
+            });
+
+        var svgBase = d3.select("body").select(idname).append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .attr('id', 'testing')
+            .append("g")
+            .attr('class', 'svgBase')
+
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var svgFull = svgBase.append("g")
+            .attr('class', 'svgFull')
+            // .attr("width", width + margin.left + margin.right)
+            // .attr("height", height + margin.top + margin.bottom)
+            .attr("transform", "translate(" + (-1) * margin.left + "," + (-1) * margin.top + ")");
+
+        var count = 0;
+
+        var previousParameter = 0;
+        var weekInitial;
+        var weekNumber;
+        var thisWeekNumber;
+
+        var lastDate;
+        var totalCount = 0;
+
+        dataSource.forEach(function(d) {
+
+            var trueTime = d.timestamp
+
+            //// Adding zero insertor for date checker as well. 
+            if (timeDuration == "hour") {
+                var tempDate = d.timestamp;
+                tempDate = tempDate.substring(0, 14)
+                tempDate = tempDate.concat("00:01.000Z")
+                d.timestamp = tempDate;
+            }
+
+            if (timeDuration == "day") {
+
+                // Days
+                var tempDate = d.timestamp;
+                tempDate = tempDate.substring(0, 10);
+                tempDate = tempDate.concat("T00:00:01.000Z");
+                d.timestamp = tempDate;
+                lastDate = tempDate;
+                totalCount = totalCount + 1;
+
+            }
+
+            if (timeDuration == "week") {
+
+                // Weeks
+                thisWeekNumber = moment(d.timestamp).week();
+                if (weekNumber == thisWeekNumber) {
+                    d.timestamp = weekInitial
+                    d.timestamp = d.timestamp.substring(0, 10);
+                    d.timestamp = d.timestamp.concat("T00:00:01.000Z");
+                } else {
+                    d.timestamp = d.timestamp.substring(0, 10);
+                    d.timestamp = d.timestamp.concat("T00:00:01.000Z");
+
+                    dayOfTheWeek = moment(d.timestamp).day()
+                    d.timestamp = JSON.stringify(moment(d.timestamp).subtract(dayOfTheWeek, "days")).replace("\"", "").replace("\"", "")
+                    weekInitial = d.timestamp;
+
+                    // console.log(moment(d.timestamp).day())
+
+                    weekNumber = thisWeekNumber
+                }
+
+            }
+
+            if (timeDuration == "month") {
+
+                // Month
+                var tempDate = d.timestamp;
+                tempDate = tempDate.substring(0, 7);
+                tempDate = tempDate.concat("-01T00:00:01.000Z");
+                d.timestamp = tempDate;
+                // console.log(d.timestamp)
+
+            }
+
+            d.timestamptrue = trueTime;
+
+            d.values = 1;
+
+        });
+
+        var data = d3.nest()
+            .key(function(d) {
+                return d.timestamp;
+            })
+            .rollup(function(d) {
+                return d3.mean(d, function(d) {
+                    return d.difference;
+                });
+            }).entries(dataSource);
+
+        // Attempting to fix the Zero Date problem
+        var finale = data
+
+
+        if (timeDuration == "hour") {
+
+            var previousDateActual = "";
+            var dayMinusOne;
+
+            data.forEach(function(d, i) {
+
+                var dayPlusOne = moment(d.key).add(1, 'hour')
+
+                var theDay = moment(d.key)
+
+                var previousDate = moment(previousDateActual)
+
+                //  console.log(JSON.stringify(dayPlusOne) + "  |  " + JSON.stringify(previousDate) + "  |  " + JSON.stringify(dayMinusOne) + "  |  " + JSON.stringify(d.key))
+
+                // START: At all costs, this needs to be in front of the second part.
+
+                if (i == 0) {} else {
+                    if (JSON.stringify(dayMinusOne) != JSON.stringify(d.key)) {
+
+                        // tempIn is just of temporary string conversions. '"' need to be removed.å
+                        var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
+                        var smoothner = moment(dayMinusOne).subtract(5, "minutes")
+
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+
+
+                        var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
+
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+
+
+                        //  console.log('two  ' + tempIn)
+
+                    } else {
+
+                    }
+                }
+
+                // END
+
+                if (i != 0) {
+
+                    if (JSON.stringify(dayPlusOne) != JSON.stringify(previousDate)) {
+
+                        var smoothner = moment(dayPlusOne).add(1, "hour")
+
+                        // tempIn is just of temporary string conversions.
+                        var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
+                            // console.log(tempIn)
+
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+
+                        var smoothner = moment(dayPlusOne).add(5, "minutes")
+
+                        var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
+
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+
+                    } else {
+                        finale.push({
+                            key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
+                            values: d.values
+                        })
+                    }
+                } else {}
+
+                finale.push({
+                    key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
+                    values: d.values
+                })
+
+                // Checks for the next 
+                dayMinusOne = moment(d.key).subtract(1, 'hour')
+
+                // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
+                previousDateActual = d.key;
+            })
+
+        } else if (timeDuration == "day") {
+
+            // BEWARE BEWARE BEWARE!
+            // Countless hours have been spent trying to get this part to work. 
+            // TLDR; On MediaWiki APIs, time runs backwards!
+
+            var previousDateActual = "";
+            var dayMinusOne;
+
+            // console.log(data)
+
+            data.forEach(function(d, i) {
+
+                // console.log(d.key)
+
+                var dayPlusOne = moment(d.key).add(1, 'days')
+
+                // Daylight Savings (the knot problem)
+                if (JSON.stringify(dayPlusOne).indexOf("T23:00:01.000Z") > -1) {
+                    dayPlusOne = moment(dayPlusOne).add(1, "hour")
+
+                    // console.log(JSON.stringify(dayPlusOne))
+                }
+                if (JSON.stringify(dayPlusOne).indexOf("T01:00:01.000Z") > -1) {
+                    dayPlusOne = moment(dayPlusOne).subtract(1, "hour")
+
+                    // console.log(JSON.stringify(dayPlusOne))
+                }
+
+                var theDay = moment(d.key)
+
+                var previousDate = moment(previousDateActual)
+
+                //  console.log(JSON.stringify(dayPlusOne) + "  |  " + JSON.stringify(previousDate) + "  |  " + JSON.stringify(dayMinusOne) + "  |  " + JSON.stringify(d.key))
+
+                // START: At all costs, this needs to be in front of the second part.
+
+                if (i == 0) {} else {
+                    if (JSON.stringify(dayMinusOne) != JSON.stringify(d.key)) {
+
+                        // tempIn is just of temporary string conversions. '"' need to be removed.å
+                        var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
+                        var smoothner = moment(dayMinusOne).subtract(1, "hour")
+
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+
+                        var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
+
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+
+                        // console.log('two  ' + tempIn)
+
+                    } else {
+
+                    }
+                }
+
+                // END
+
+                if (i != 0) {
+
+                    if (JSON.stringify(dayPlusOne) != JSON.stringify(previousDate)) {
+
+                        var smoothner = moment(dayPlusOne).add(1, "hour")
+
+                        // tempIn is just of temporary string conversions.
+                        var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
+                            // console.log(tempIn)
+
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+
+                        var tempIn = JSON.stringify(smoothner).replace("\"", "").replace("\"", "")
+
+                        finale.push({
+                                key: tempIn,
+                                values: 0
+                            })
+                            // console.log('One  ' + tempIn)
+
+                    } else {
+                        finale.push({
+                            key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
+                            values: d.values
+                        })
+                    }
+                } else {}
+
+                finale.push({
+                    key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
+                    values: d.values
+                })
+
+                // Checks for the next 
+                dayMinusOne = moment(d.key).subtract(1, 'days')
+
+                // Daylight Savings (the knot problem)
+                if (JSON.stringify(dayMinusOne).indexOf("T23:00:01.000Z") > -1) {
+                    dayMinusOne = moment(dayMinusOne).add(1, "hour")
+
+                    // console.log('asdasd' + JSON.stringify(dayMinusOne))
+                }
+                if (JSON.stringify(dayMinusOne).indexOf("T01:00:01.000Z") > -1) {
+                    dayMinusOne = moment(dayMinusOne).subtract(1, "hour")
+
+                    // console.log('asdasd' + JSON.stringify(dayMinusOne))
+                }
+
+                // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
+                previousDateActual = d.key;
+            })
+
+        } else if (timeDuration == "week") {
+
+            // console.log('asdsa')
+
+            // BEWARE BEWARE BEWARE!
+            // Countless hours have been spent trying to get this part to work. 
+            // TLDR; On MediaWiki APIs, time runs backwards!
+
+            var previousDateActual = "";
+            var dayMinusOne;
+
+            data.forEach(function(d, i) {
+
+                var dayPlusOne = moment(d.key).add(1, 'week')
+
+                // Daylight Savings (the knot problem)
+                if (JSON.stringify(dayPlusOne).indexOf("T23:00:01.000Z") > -1) {
+                    dayPlusOne = moment(dayPlusOne).add(1, "hour")
+                }
+                if (JSON.stringify(dayPlusOne).indexOf("T01:00:01.000Z") > -1) {
+                    dayPlusOne = moment(dayPlusOne).subtract(1, "hour")
+                }
+
+                var theDay = moment(d.key)
+
+                var previousDate = moment(previousDateActual)
+
+                // console.log('Week: ' + JSON.stringify(dayPlusOne) + "  |  " + JSON.stringify(previousDate) + "  |  " + JSON.stringify(dayMinusOne) + "  |  " + JSON.stringify(d.key))
+
+                // START: At all costs, this needs to be in front of the second part.
+
+                if (i == 0) {} else {
+                    if (JSON.stringify(dayMinusOne) != JSON.stringify(d.key)) {
+
+                        // tempIn is just of temporary string conversions. '"' need to be removed.å
+                        var tempIn = JSON.stringify(dayMinusOne).replace("\"", "").replace("\"", "")
+
+                        finale.push({
+                            key: tempIn,
+                            values: 0
+                        })
+                    } else {
+
+                    }
+                }
+                // END
+
+                if (i != 0) {
+
+                    if (JSON.stringify(dayPlusOne) != JSON.stringify(previousDate)) {
+
+                        // tempIn is just of temporary string conversions.
+                        var tempIn = JSON.stringify(dayPlusOne).replace("\"", "").replace("\"", "")
+                            // console.log(tempIn)
+
+                        finale.push({
+                                key: tempIn,
+                                values: 0
+                            })
+                            //  console.log('One  ' + tempIn)
+
+                    } else {
+                        finale.push({
+                            key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
+                            values: d.values
+                        })
+                    }
+                } else {}
+
+                finale.push({
+                    key: JSON.stringify(d.key).replace("\"", "").replace("\"", ""),
+                    values: d.values
+                })
+
+                // Checks for the next 
+                dayMinusOne = moment(d.key).subtract(1, 'week')
+
+                // Daylight Savings (the knot problem)
+                if (JSON.stringify(dayMinusOne).indexOf("T23:00:01.000Z") > -1) {
+                    dayMinusOne = moment(dayMinusOne).add(1, "hour")
+                }
+                if (JSON.stringify(dayMinusOne).indexOf("T01:00:01.000Z") > -1) {
+                    dayMinusOne = moment(dayMinusOne).subtract(1, "hour")
+                }
+
+                // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
+                previousDateActual = d.key;
+
+            })
+
+        } else if (timeDuration == "month") {
+
+            // BEWARE BEWARE BEWARE!
+            // Countless hours have been spent trying to get this part to work. 
+            // TLDR; On MediaWiki APIs, time runs backwards!
+
+            var previousDateActual = "";
+            var theDayMisnomerPlus;
+
+            data.forEach(function(d, i) {
+
+                var theDayMisnomerMonth = (d.key).substr(5, 6)
+
+                var initialPart = (d.key).substr(0, 4)
+                var latterPart = "-01T00:00:01.000Z"
+
+                var theDayMisnomerMinus = parseInt(theDayMisnomerMonth);
+
+                if (theDayMisnomerMinus == 12) {
+
+                    // Getting year + 1 & month = 01
+                    initialPart = (parseInt(initialPart) + 1).toString()
+                    theDayMisnomerMinus = "01"
+
+                    theDayMisnomerMinus = initialPart + "-" + theDayMisnomerMinus + latterPart;
+
+                } else {
+                    theDayMisnomerMinus = theDayMisnomerMinus + 1;
+                    theDayMisnomerMinus = theDayMisnomerMinus.toString()
+
+                    // To add 0 in front of months. String socery.
+                    if (theDayMisnomerMinus.length == 1) {
+                        theDayMisnomerMinus = initialPart + "-0" + theDayMisnomerMinus + latterPart;
+                    } else {
+                        theDayMisnomerMinus = initialPart + "-" + theDayMisnomerMinus + latterPart;
+                    }
+
+                    // console.log(theDayMisnomerMinus)
+                }
+
+                var theDay = moment(d.key)
+
+                var previousDate = moment(previousDateActual)
+
+                if (JSON.stringify(theDayMisnomerMinus) != JSON.stringify(previousDate)) {
+
+                    // tempIn is just of temporary string conversions.
+                    var tempIn = JSON.stringify(theDayMisnomerMinus).replace("\"", "").replace("\"", "")
+                        // console.log(tempIn)
+
+                    // Adding the new Zeroed entry at relevant location so as to avoid sorting.
+                    data.splice(i, 1, {
+                        key: tempIn,
+                        values: 0
+                    })
+
+                } else {}
+
+                // START: At all costs, this needs to be in front before -> theDayMisnomerPlus = moment(d.key).subtract(1, 'days')
+                if (i != 0) {
+                    if (JSON.stringify(theDayMisnomerPlus) != JSON.stringify(d.key)) {
+
+                        // tempIn is just of temporary string conversions. '"' need to be removed.å
+                        var tempIn = JSON.stringify(theDayMisnomerPlus).replace("\"", "").replace("\"", "")
+
+                        // Adding the new Zeroed entry at relevant location so as to avoid sorting.
+                        data.splice(i - 1, 1, {
+                            key: tempIn,
+                            values: 0
+                        })
+
+                    } else {}
+                }
+
+                // END
+
+                // Checks for the next 
+
+                var theDayMisnomerMonth = (d.key).substr(5, 6)
+
+                var initialPart = (d.key).substr(0, 4)
+                var latterPart = "-01T00:00:01.000Z"
+
+                var theDayMisnomerPlus = parseInt(theDayMisnomerMonth);
+
+                if (theDayMisnomerPlus == 1) {
+
+                    // Getting year + 1 & month = 01
+                    initialPart = (parseInt(initialPart) - 1).toString()
+                    theDayMisnomerPlus = "12"
+
+                    theDayMisnomerPlus = initialPart + "-" + theDayMisnomerPlus + latterPart;
+                    // console.log(theDayMisnomerPlus)
+
+                } else {
+                    theDayMisnomerPlus = theDayMisnomerPlus - 1;
+                    theDayMisnomerPlus = theDayMisnomerPlus.toString()
+
+                    // To add 0 in front of months. String socery.
+                    if (theDayMisnomerPlus.length == 1) {
+                        theDayMisnomerPlus = initialPart + "-0" + theDayMisnomerPlus + latterPart;
+                    } else {
+                        theDayMisnomerPlus = initialPart + "-" + theDayMisnomerPlus + latterPart;
+                    }
+
+                    // console.log(theDayMisnomerMinus)
+                }
+                theDayMisnomerPlus = moment(d.key).subtract(1, 'month')
+                    // console.log(theDayMisnomerPlus)
+
+                // PreviosDateActual is the actual date which follows the current date. It is a misnomer too. 
+                previousDateActual = d.key;
+
+            })
+
+        }
+
+        var tip = d3.tip()
+            .attr('class', 'd3-tip')
+            .offset([-10, 0])
+            .html(function(d) {
+                return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+            })
+
+        svgBase.call(tip);
+
+        x.domain(d3.extent(finale, function(d) {
+
+            if (timeLimit == null && timeLimitUpper == null) {
+                // console.log("nullnull")
+                return parseDate(d.key);
+            } else if (timeLimit == null && timeLimitUpper != null) {
+                if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                    // console.log(x(timeLimitUpper)) 
+                    // console.log(moment(timeLimitUpper))
+                    // console.log(x(parseDate(d.key)))
+                    // console.log("nullN")                        
+                    return parseDate(d.key)
+                }
+                return timeLimitUpper
+            } else if (timeLimit != null && timeLimitUpper == null) {
+                if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                    // console.log("Nnull")
+                    return parseDate(d.key)
+                }
+                return timeLimit
+            } else if (timeLimit != null && timeLimitUpper != null) {
+                // console.log("NN")
+                // if (moment(d.key).diff(moment(timeLimit)) > 0 && moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                // } 
+                if (moment(d.key).diff(moment(timeLimit)) < 0) {
+                    return timeLimit
+                } else {
+                    if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                        return parseDate(d.key)
+                    } else {
+                        return timeLimitUpper
+                    }
+                }
+            }
+        }))
+        y.domain(d3.extent(finale, function(d) {
+
+            if (timeLimit == null && timeLimitUpper == null) {
+                return d.values;
+            } else if (timeLimit == null && timeLimitUpper != null) {
+                if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                    return d.values;
+                } else {
+                    return 0
+                }
+            } else if (timeLimit != null && timeLimitUpper == null) {
+                if (moment(d.key).diff(moment(timeLimit)) > 0) {
+                    return d.values;
+                } else {
+                    return 0
+                }
+            } else if (timeLimit != null && timeLimitUpper != null) {
+
+                if (moment(d.key).diff(moment(timeLimit)) < 0) {
+                    return 0
+                } else {
+                    if (moment(d.key).diff(moment(timeLimitUpper)) < 0) {
+                        return d.values;
+                    } else {
+                        return 0
+                    }
+                }
+            }
+        }));
+
+        // The opacity rectangle and the image need to be above everything else. Otherwise the graphs and the text would be hidden
+
+        // Image Bleed Stuff
+        var imageBase64 = "";
+
+        if (picUrl === undefined || picUrl === "assets/defaultImage.jpg") {
+            picUrl = "http://wikitrends.github.io/assets/defaultImage.jpg"
+        } else {}
+
+        convertImgToBase64(picUrl, picHeight, picWidth, function(base64Img) {
+
+            imageBase64 = base64Img
+
+            // Image Bleed Stuff
+            var imgs = svgFull.selectAll("image").data([0]);
+            imgs.enter()
+                .append("svg:image")
+                .attr('class', "images")
+                .attr('id', "image" + idname.slice(1))
+                .attr("xlink:href", function(d) {
+                    // if (picUrl == undefined) {
+                    //     picUrl = "assets/defaultImage.jpg"
+                    //     return "assets/defaultImage.jpg"
+                    // } else {
+                    // console.log(imageBase64)
+                    return imageBase64
+                        // }
+                })
+                .attr("x", function(d) {
+                    // console.log(picHeight)
+                    // console.log(picWidth)
+                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                            return (((0.5) * (fullBleedHeight / picHeight) * picWidth) - (fullBleedWidth / 2))
+                        } else {
+                            return 0
+                        }
+                    } else {
+                        return 0
+                    }
+                })
+                .attr("y", function(d) {
+                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                            return 0
+                        } else {
+                            return (((-0.5) * (fullBleedWidth / picWidth) * picHeight) + (fullBleedHeight / 2))
+                        }
+                    } else {
+                        return 0
+                    }
+                })
+                .attr("width", function(d) {
+                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                            return (fullBleedHeight / picHeight) * picWidth
+                        } else {
+                            return fullBleedWidth
+                        }
+                    } else {
+                        return fullBleedWidth
+                    }
+                })
+                .attr("height", function(d) {
+                    if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+                        if (picHeight / picWidth <= fullBleedHeight / fullBleedWidth) {
+                            return fullBleedHeight
+                        } else {
+                            return (fullBleedWidth / picWidth) * picHeight
+                        }
+                    } else {
+                        return fullBleedHeight
+                    }
+                });
+
+            if (picUrl != "http://wikitrends.github.io/assets/defaultImage.jpg") {
+
+                var opacityRect = svgFull.append("rect")
+                    .attr("id", "rect" + idname.slice(1))
+                    .attr("width", width + margin.right + margin.left)
+                    .attr("fill", "black")
+                    .attr("opacity", 0.7)
+                    .attr("height", height + margin.top + margin.bottom);
+
+            }
+        });
+
+        convertImgToBase64("assets/wikipediaW.png", picHeight, picWidth, function(base64Img) {
+            imageBase64 = base64Img
+
+            // Adding Wikipedia Logo
+            d3.select(idname).select('.svgBase')
+                .append("svg:image")
+                .attr("xlink:href", imageBase64)
+                .attr("x", 0)
+                .attr("y", 0)
+                .attr("width", 80)
+                .attr("height", 80);
+        })
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text("Page Edits")
+            .attr("x", function(d) {
+                var length = numberWithSpaces(totalEditors).length
+                var lengthTwo = numberWithSpaces(totalEdits).length
+                return width - (24 * length) - 90 - (24 * lengthTwo) + 5
+            })
+            .attr("y", 25)
+            .attr("font-family", "Helvetica Neue")
+            .attr("font-size", function(d) {
+                return "12.33px"
+            })
+            .attr("font-weight", "500")
+            .attr("fill", "#DCDCDC")
+            .attr('opacity', "1");
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text(numberWithSpaces(totalEdits))
+            .attr("x", function(d) {
+                var length = numberWithSpaces(totalEditors).length
+                var lengthTwo = numberWithSpaces(totalEdits).length
+                return width - (24 * length) - 90 - (24 * lengthTwo)
+            })
+            .attr("y", 75)
+            .attr("font-family", "Open Sans")
+            .attr("font-weight", 700)
+            .attr("font-size", function(d) {
+                return "46px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "1");
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text("Editors")
+            .attr("x", function(d) {
+                var length = numberWithSpaces(totalEditors).length
+                    //console.log(width - (24 * length) - 45)
+                return width - (24 * length) - 45 + 5
+            })
+            .attr("y", 25)
+            .attr("font-family", "Helvetica Neue")
+            .attr("font-size", function(d) {
+                return "12.33px"
+            })
+            .attr("font-weight", "500")
+            .attr("fill", "#DCDCDC")
+            .attr('opacity', "1");
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text(numberWithSpaces(totalEditors))
+            .attr("x", function(d) {
+                var length = numberWithSpaces(totalEditors).length
+                return width - (24 * length) - 45
+            })
+            .attr("y", 75)
+            .attr("font-family", "Open Sans")
+            .attr("font-weight", 700)
+            .attr("font-size", function(d) {
+                return "46px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "1");
+
+        d3.select(idname).select('.svgBase')
+            .append('text')
+            .text(pageTitle)
+            // .attr("text-anchor", "end")
+            .attr("x", 100)
+            .attr("y", 39)
+            .attr("font-family", "Georgia")
+            .attr("font-size", function(d) {
+                //console.log(this.getBBox().width)
+
+                //console.log(pageTitle + picUrl)
+                return "29px"
+            })
+            .attr("fill", "white")
+            .attr('opacity', "0.8");
+
+        // .attr("transform", "translate(0," + height + ")") shifts the axis to the bottom part of the G element. 
+        svgBase.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+            .selectAll("text")
+            .style("fill", "#999")
+            .style("font-family", "Source Sans Pro")
+            .style("font-weight", "100")
+            .style("font-size", "16px");
+
+        svgBase.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+            .selectAll("text")
+            // .attr("transform", "rotate(-90)")
+            .attr("dx", 1)
+            .attr("dy", -9)
+            .style("text-anchor", "start")
+            .style("fill", "#999")
+            .style("font-family", "Source Sans Pro")
+            .style("font-weight", "100")
+            .style("font-size", "16px")
+            // .selectAll("line")
+            //     .style("stroke-width", "30px")
+            //     .style("stroke", "white")
+
+        svgBase.selectAll('.axis line, .axis path')
+            .style({
+                'stroke': '#ddd',
+                'fill': 'none',
+                'stroke-width': '0.7px',
+                "opacity": "0.4"
+            });
+
+        svgBase.append("path")
+            .datum(finale)
+            .attr("class", "upperline")
+            .attr("d", upperline)
+            .attr("fill", "none")
+            .attr("stroke", "rgb(94, 255, 176)")
+            .attr("stroke-width", "3px")
+
+        svgBase.selectAll("circle.line")
+            .data(data)
+            .enter().append("svg:circle")
+            .attr("class", "line")
+            .style("fill", "green")
+            .attr("cx", upperline.x())
+            .attr("cy", upperline.y())
+            .attr("r", 12)
+            .attr('opacity', 0)
+            .on('click', tip.show)
+
+        d3.select(idname)
+            .selectAll("div")
+            .data([0])
+            .enter()
+            .append("div")
+            .attr("id", function(d) {
+                return "controls" + idname.slice(1)
+            })
+
+        var controlsInsertor = d3.select("#" + "controls" + idname.slice(1))
+            .selectAll("button")
+            .data([0])
+            .enter()
+
+        controlsInsertor.append("input")
+            .attr("type", "range")
+            .attr("min", 1)
+            .attr("max", 100)
+            .style("width", "200px")
+            .attr("id", "opacitySlider" + idname.slice(1))
+
+        controlsInsertor.append("input")
+            .attr("type", "range")
+            .attr("min", -picHeight)
+            .attr("max", picHeight)
+            .style("width", "200px")
+            .attr("id", "imageHeightSlider" + idname.slice(1))
+
+        controlsInsertor.append("input")
+            .attr("type", "range")
+            .attr("min", -picWidth)
+            .attr("max", picWidth)
+            .style("width", "200px")
+            .attr("id", "imageWidthSlider" + idname.slice(1))
+
+        d3.select("#" + "opacitySlider" + idname.slice(1)).on("input", function() {
+            updateOpacity(+this.value);
+        });
+
+        d3.select("#" + "imageHeightSlider" + idname.slice(1)).on("input", function() {
+            updateImageHeight(+this.value);
+        });
+
+        d3.select("#" + "imageWidthSlider" + idname.slice(1)).on("input", function() {
+            updateImageWidth(+this.value);
+        });
+
+        function updateOpacity(ina) {
+            d3.select("#" + "rect" + idname.slice(1))
+                .data([0])
+                .style("opacity", function(d) {
+                    // console.log(ina)
+                    return ina * 0.01
+                })
+        }
+
+        function updateImageHeight(ina) {
+            d3.select("#" + "image" + idname.slice(1))
+                .data([0])
+                .attr("y", function(d) {
+                    return ina
+                })
+        }
+
+        function updateImageWidth(ina) {
+            d3.select("#" + "image" + idname.slice(1))
+                .data([0])
+                .attr("x", function(d) {
+                    return ina
+                })
+        }
+
+        d3.select(idname)
+            .selectAll("path.domain")
+            .remove()
+
+        d3.select(idname + "PngConvertor").on("click", function() {
+            var html = d3.select(idname).select("svg")
+                .attr("version", 1.1)
+                .attr("xmlns", "http://www.w3.org/2000/svg")
+                .node().parentNode.innerHTML;
+
+            html = html.match(/(.*)<\/svg>/g)[0]
+
+            var imgsrc = 'data:image/svg+xml;base64,' + btoa(html);
+            var img = '<img src="' + imgsrc + '">';
+            // d3.select("#svgdataurl").html(img);
+
+            var canvas = document.querySelector("canvas"),
+                context = canvas.getContext("2d");
+
+            var image = new Image;
+            image.src = imgsrc;
+            image.onload = function() {
+
+                canvas.height = 572;
+                canvas.width = 1095;
+
+                context.drawImage(image, 0, 0);
+
+                // context.drawImage(image, -48, -72);
+
+                //save and serve it as an actual filename
+                binaryblob();
+
+                var a = document.createElement("a");
+                a.download = "sample.png";
+                a.href = canvas.toDataURL("image/png");
+
+                var pngimg = '<img src="' + a.href + '">';
+                d3.select("#pngdataurl").html(pngimg);
+
+                a.click();
+            };
+        });
+
+        function binaryblob() {
+            var byteString = atob(document.querySelector("canvas").toDataURL().replace(/^data:image\/(png|jpg);base64,/, "")); //wtf is atob?? https://developer.mozilla.org/en-US/docs/Web/API/Window.atob
+            var ab = new ArrayBuffer(byteString.length);
+            var ia = new Uint8Array(ab);
+            for (var i = 0; i < byteString.length; i++) {
+                ia[i] = byteString.charCodeAt(i);
+            }
+            var dataView = new DataView(ab);
+            var blob = new Blob([dataView], {
+                type: "image/png"
+            });
+            var DOMURL = self.URL || self.webkitURL || self;
+            var newurl = DOMURL.createObjectURL(blob);
+
+            var img = '<img src="' + newurl + '">';
+            d3.select("#img").html(img);
+        }
     }
 
     // This runs the pageEdit graph!

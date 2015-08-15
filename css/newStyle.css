@@ -13,32 +13,39 @@
     padding-right: 15px;
     padding-left: 15px;
 }
+
 #selectedArticles {
     margin-bottom: 30px;
 }
+
 .span-underline {
     border-bottom: black 1px solid;
     padding-bottom: 5px;
 }
+
 .navbar-brand img {
     width: 40px;
 }
+
 .selectionCard {
     width: 158px;
     float: left;
 }
+
 .closingIcon {
     float: left;
     display: inline-block;
     margin-left: 0px;
     line-height: 20px;
-        padding-top: 5px;
+    padding-top: 5px;
 }
+
 .scrollable-menu {
     height: auto;
     max-height: 180px;
     overflow-x: hidden;
 }
+
 .navbar-text {
     font-size: 24px;
     line-height: 40px;
@@ -46,9 +53,11 @@
     border-left: rgb(199, 199, 199) 1px solid;
     padding-left: 38px;
 }
+
 .borderless {
     border-left: rgb(199, 199, 199) 0px solid;
 }
+
 .navbar-header.offshift {
     margin-left: -50px;
 }
@@ -99,16 +108,19 @@ body {
     padding: 6px 12px;
     margin-bottom: 13px;
 }
+
 .result_card:hover {
     background-color: #e6e6e6;
     border-left: 6px grey solid;
     cursor: pointer;
 }
+
 .result_card p {
     color: #222;
     font-size: 14px;
     margin: 0;
 }
+
 .result_card a:hover {
     text-decoration: none;
 }
@@ -125,16 +137,19 @@ body {
     padding: 6px 12px;
     margin-bottom: 13px;
 }
+
 .selected_card:hover {
     background-color: #e6e6e6;
     border-left: 6px grey solid;
     cursor: pointer;
 }
+
 .selected_card p {
     color: #222;
     font-size: 14px;
     margin: 0;
 }
+
 .selected_card a:hover {
     text-decoration: none;
 }
@@ -156,6 +171,7 @@ body {
 .graphsControls {
     margin-bottom: 50px;
 }
+
 
 /*!
  * Pikaday
@@ -471,7 +487,7 @@ input[type=range]:focus::-webkit-slider-runnable-track {
 
 .graphSectionHeader {
     font-family: "Roboto Slab";
-    margin-top: 10px;
+    margin-top: 25px;
     font-weight: 600;
     font-size: 36px;
     margin-left: -10px;

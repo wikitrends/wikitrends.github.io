@@ -33,6 +33,7 @@
     <script src="test.js"></script>
     <script src="js/scriptGrandPlotter.js"></script>
     -->   
+    
 </head>
 
 <body>
@@ -155,10 +156,23 @@
             <div class="graphs" id='hidden'>
 
                 <div class="col-md-12">
-                    <h1 class="graphSectionHeader"> Line Charts</h1>
+                    <h1 class="graphSectionHeader"> Time / edits graphs</h1>
                     <div class="graphsControls">
-                        <label class="input-labels-graph">ATTRIBUTION</label>
+                        <label class="input-labels-graph">TIME AGGREGATION</label>
                         
+                        <div style="margin-top: 5px" class="btn-group" data-toggle="buttons">
+                            <label  id="weekShow" class="btn btn-primary active">
+                                <input type="radio" name="options" autocomplete="off" checked>WEEK
+                            </label>
+                            <label  id="dayShow" class="btn btn-primary">
+                                <input type="radio" name="options" autocomplete="off">DAY
+                            </label>
+                            <label id="hourShow" class="btn btn-primary">
+                                <input type="radio" name="options" id="CCSANC" autocomplete="off">HOUR
+                            </label>
+                        </div>
+
+                        <!-- 
                         <div class="btn-group" data-toggle="buttons">
                             <label  id="CCSA" class="btn btn-primary active">
                                 <input type="radio" name="options" autocomplete="off" checked>CC BY
@@ -170,6 +184,8 @@
                                 <input type="radio" name="options" id="CCSANC" autocomplete="off">CC SA NC
                             </label>
                         </div>
+                         -->
+                    
                     </div>
                     <div class="graphsControls">
                         <p class="input-labels-graph" id="imageURL"></p>
@@ -179,33 +195,26 @@
                 </div>
 
 
-                <div class="col-md-12">
+                <div class="col-md-12 placeholderOne">
                     <h1 class="graphTitle" class="graphHeader"> Weekly Aggregated Edits 
                     <a id="onePop" href="#" data-toggle="popover"><i class="fa fa-info-circle"></i></a></h1>
                     <div id="oneControls"></div>
                     <div class="graphPlace" id="one"></div>
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-12 placeholderTwo">
                     <h1 class="graphTitle" class="graphHeader"> Daily Aggregated Edits 
                     <a id="twoPop" href="#" data-toggle="popover" title="Popover Header"><i class="fa fa-info-circle"></i></a></h1>
                     <div id="twoControls"></div>
                     <div class="graphPlace" id="two"></div>
                 </div>
 
-                <div class="col-md-12">
+                <div class="col-md-12 placeholderThree">
                     <h1 class="graphTitle" class="graphHeader"> Hourly Aggregated Edits 
                     <a id="threePop" href="#" data-toggle="popover" title="Popover Header"><i class="fa fa-info-circle"></i></a></h1>
                     <div id="threeControls"></div>
                     <div class="graphPlace" id="three"></div>
                 </div>
-                <!-- 
-                <div class="col-md-12">
-                    <h1 class="graphTitle" class="graphHeader"> Hourly Aggregated Edits <button class="btn btn-default input-button pngExporter" id="threePngConvertor">Woohoo!</button></h1>
-                    <p class="graphDescription">Since the day the article was created. </p>
-                    <div class="graphPlace" id="three"></div>
-                </div>
-                -->
 
                 <div class="col-md-12">
                     <h1 class="graphTitle" class="graphHeader"> WordCloud
@@ -213,52 +222,13 @@
                     <div id="fourControls"></div>
                     <div class="graphPlace" id="four"></div>
                 </div>
-<!-- 
-                <div class="col-md-12">
-                    <h1 class="graphTitle" class="graphHeader"> Pie Chart
-                    <a id="fivePop" href="#" data-toggle="popover" title="Popover Header"><i class="fa fa-info-circle"></i></a></h1>
-                    <div id="fiveControls"></div>
-                    <div class="graphPlace" id="five"></div>
-                </div>
-
-                 -->
-<!-- 
-                <h1 class="graphTitle" class="graphHeader"> PageViews</h1>
-                <p class="graphDescription">For the past 90 days (stat.grok.se)</p>
-                <div id="seven"></div> -->
-                                <!-- <div id=""></div> -->
-
-
-<!-- 
-                <h1 class="graphTitle" class="graphHeader"> WordCloud Graph (Page Titles)</h1>
-                <p class="graphDescription">Since the day the article was created. </p>
-                <div id="three"></div>
-                <h1 class="graphTitle" class="graphHeader"> WordCloud Graph (Language Name)</h1>
-                <p class="graphDescription">Since the day the article was created. </p>
-                <div id="four"></div>
-                <h1 class="graphTitle" class="graphHeader"> Pie Chart (By Language)</h1>
-                <p class="graphDescription">Since the day the article was created. </p>
-
-                <h1 class="graphTitle" class="graphHeader"> PageViews (Interpolated)</h1>
-                <p class="graphDescription">For the past 90 days (stat.grok.se)</p>
-                <div id="eight"></div>
- -->
-                <!-- 
-                <h1 class="graphTitle" class="graphHeader"> Geo-Plot (Number of Edits) <button style="margin-left: 80px" id="nineB">Tada!</button></h1>
-                <p class="graphDescription">Uses CartoDB</p>
-                <div id="nine"></div>
-                <h1 class="graphTitle" class="graphHeader"> Geo-Plot (Edits Torque Timeplot) <button style="margin-left: 80px" id="tenB">Tada!</button></h1>
-                <p class="graphDescription">Uses CartoDB</p>
-                <div id="ten"></div>
-                <h1 class="graphTitle" class="graphHeader"> Geo-Plot (Edits Clustermap) <button style="margin-left: 80px" id="elevenB">Tada!</button></h1>
-                <p class="graphDescription">Uses CartoDB</p> -->
-
 
                 <canvas width="960" height="500" style="display:none"></canvas>
             </div>
         </div>
     </div>
 </body>
+
 <script>
 $(document).ready(function() {
 
