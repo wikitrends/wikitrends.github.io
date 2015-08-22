@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+    <!-- Bootstrap and JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    <!-- Font Files -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,500,600,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:100,200,300,400,700,900' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,700,300,100' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Mono:300,400,100,500,700' rel='stylesheet' type='text/css'>
+    <!-- StyleSheets -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/newStyle.css" rel="stylesheet">
+    <!--   <link href="css/style.css" rel="stylesheet">   -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+    <!-- Core D3 files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+    <script src="js/d3.min.js"></script>
+    <!-- Extensions or Addons -->
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.15/themes/css/cartodb.css" />
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/3.15/cartodb.js"></script>
+    <script src="js/geo.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header offshift">
+                <a class="navbar-brand" href="#"> <img alt="Brand" src="assets/wikipediaWBlack.png"> </a>
+                <p class="navbar-text">Wikipedia Visualizer</p>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="navbar-text borderless" href="index.html"><span  class="span-underline">GeoPlot</span></a></li>
+                <li><a class="navbar-text borderless" href="compare.html"><span>Compare</span></a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="controls">
+            <label class="input-labels">ARTICLE SELECTOR</label>
+            <div class="input-group">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">en<span class="caret"></span></button>
+                    <ul class="scrollable-menu dropdown-menu lang-selector">
+                        <li><a>en</a></li>
+                        <li><a>All</a></li>
+                    </ul>
+                </div>
+                <!-- /btn-group -->
+                <input type="text" class="form-control" name='searchQuery' placeholder='Search Articles' /> </div>
+            <label class="input-labels">POPULAR ARTICLES (EDITS)</label>
+            <button id="mostEdits" class="btn btn-default input-button button-half-one" onclick="weeklyPedia('Most Edits')" type="submit">All Articles</button>
+            <button id="mostNewEdits" class="btn btn-default input-button button-half-two" onclick="weeklyPedia('Most New Edits')" type="submit">New Articles</button>
+            <label class="input-labels">RESULTS</label>
+            <div id="suggestionsPane">
+                <div class="mostEdits"></div>
+                <div class="mostNewEdits"></div>
+            </div>
+            <div class="num_results"></div>
+            <div id="results_pane">
+                <div class="searchResults"></div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <!-- Trigger the modal with a button -->
+            <!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Open Modal</button> -->
+            <!-- Modal -->
+            <div id="myModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Enter your WMF username</h4> </div>
+                        <div class="modal-body">
+                            <p>It wouldn't work for all WMF usernames. If you would like to request </p>
+                            <div class="input-group col-md-12">
+                                <!-- /btn-group -->
+                                <div class="col-md-10 input-half-one">
+                                    <input type="text" class="form-control" name="username" id="username" placeholder="Username (without @wikimedia.org)">
+                                </div>
+                                <!-- 
+                <div class="col-md-5 input-half-two">
+                    <input type="text" class="datepicker form-control" placeholder='End Date' id="datepickerTwo">
+                </div> -->
+                                <div class="col-md-2 input-half-two">
+                                    <button class="btn btn-default input-button button-half-one" id="usernameSubmit" type="submit"><i style="  margin-left: -6px;" class="fa fa-arrow-right"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="graphs">
+                <div class="col-md-12"> </div>
+                <div class="col-md-12">
+                    <h1 class="graphTitle" class="graphHeader"> GeoPlot
+                    <a id="onePop" href="#" data-toggle="popover"><i class="fa fa-info-circle"></i></a></h1>
+                    <div id="oneControls">
+                        <div id="controlsone"></div>
+                        <div class="sliderSections">
+                            <label class="input-labels-graph">PLOT</label>
+                            <div class="btn-group" data-toggle="buttons">
+                                <button class="btn btn-default input-button" id="oneB">Woohoo!</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 900px;height: 500px" id="oneIn">
+                        <div id="spinnerOne" style="position: absolute"></div> <img class="graphPlace" style="width: 900px;height: 500px" id="one"></div>
+                </div>
+            </div>
+            <div style="margin-top: 120px" class="col-md-12">
+                <h1 class="graphTitle" class="graphHeader"> GeoPlot (America) 
+                    <a id="twoPop" href="#" data-toggle="popover"><i class="fa fa-info-circle"></i></a></h1>
+                <div id="twoControls">
+                    <div id="controlstwo"></div>
+                    <div class="sliderSections">
+                        <label class="input-labels-graph">PLOT</label>
+                        <div class="btn-group" data-toggle="buttons">
+                            <button class="btn btn-default input-button" id="twoB">Woohoo!</button>
+                        </div>
+                    </div>
+                </div>
+                <div style="width: 900px;height: 500px" id="oneIn"> <i class="fa fa-circle-o-notch fa-spin"></i>
+                    <div id="spinnerTwo" style="position: absolute"></div> <img class="graphPlace" style="width: 900px;height: 500px" id="two">
+                    <div class="" style="margin-top: 50px;width: 900px;height: 500px" id="three"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+$(document).ready(function() {
+    $('#onePop').popover({
+        title: "INFO",
+        content: "Some important points to be noted: </br> - This visualization contains the edits only from the English Wikipedia. The edits are aggregated weekly.",
+        html: true,
+        placement: "right"
+    })
+});
+// This has to be here. Otherwise the datepicker UI wouldn't load!
+</script>
