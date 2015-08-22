@@ -436,7 +436,7 @@ function grandPlotter(pageIDin, pageTitlein) {
 
         var xhr = new XMLHttpRequest();
 
-        locateUrl = "http://trusty.tools.wmflabs.org:4000/locate" + "?username=" + username + "&language=" + lang + "&pageid=" + pageid;
+        locateUrl = "http://tools.wmflabs.org/geoplotter:8123/locate" + "?username=" + username + "&language=" + lang + "&pageid=" + pageid;
 
         console.log(locateUrl)
         xhr.open("POST", locateUrl, true);
